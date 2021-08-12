@@ -1,3 +1,4 @@
 # GITIGNORE
 # Use this file to blacklist any particular file or folder to be blacklisted from git.
 **/.DS_Store**
+**/target
