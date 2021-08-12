@@ -1,7 +1,7 @@
 # Nabu's Algorithm
 
-1. Take `QUERY` and `GENRE` as input.
-2. Loop through the `GENRE` file for the list of sites to be scraped. 
+1. Take `QUERY` and `CATEGORY` as input.
+2. Loop through the `CATEGORY` file for the list of sites to be scraped. 
 > File should look like 
 > ```
 > Amazon
