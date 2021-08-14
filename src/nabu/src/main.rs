@@ -1,5 +1,6 @@
 // Main.rs
 mod orel;
+mod scrape;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead,BufReader};
@@ -46,4 +47,5 @@ fn main() {
     //let site_list = read_category(category);
     println!("Category: {}\nQuery: {:?}\nCategory File Says: {:#?}", category,search_query,read_category(category)); // Verbose Output
     println!("Website Configuration is:\n{:#?}",read_profiles(read_category(category)));
+    println!("{}",scrape::make_request("https://www.amazon.in/s?k=mac+m1").unwrap());
 }
