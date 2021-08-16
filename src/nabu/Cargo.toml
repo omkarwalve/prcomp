@@ -8,3 +8,5 @@ edition = "2018"
 [dependencies]
 ureq = { version = "2.1.1", features = ["json"] }
 regex = "1.5.4"               # An implementation of regular expressions for Rust. This implementation uses finite automata and g…
+html5ever = "0.25.1"
+select = "0.5.0"
