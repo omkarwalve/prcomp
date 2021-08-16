@@ -41,11 +41,12 @@ fn read_profiles(website_list: Vec<String>)  -> Vec<HashMap<String,String>> {
 
 // Call the program as `nabu <CATEGORY> <SEARCH_QUERY>`
 fn main() {
-    let arguments: Vec<String> = env::args().collect();
-    let category: &String = &arguments[1];
-    let search_query: &[String] = &arguments[2..];
-    //let site_list = read_category(category);
-    println!("Category: {}\nQuery: {:?}\nCategory File Says: {:#?}", category,search_query,read_category(category)); // Verbose Output
-    println!("Website Configuration is:\n{:#?}",read_profiles(read_category(category)));
-    println!("{}",scrape::make_request("https://www.amazon.in/s?k=mac+m1").unwrap());
+    //let arguments: Vec<String> = env::args().collect();
+    //let category: &String = &arguments[1];
+    //let search_query: &[String] = &arguments[2..];
+    ////let site_list = read_category(category);
+    //println!("Category: {}\nQuery: {:?}\nCategory File Says: {:#?}", category,search_query,read_category(category)); // Verbose Output
+    //println!("Website Configuration is:\n{:#?}",read_profiles(read_category(category)));
+    //println!("{}",scrape::make_request("https://www.amazon.in/s?k=mac+m1").unwrap());
+    scrape::stage_one(&scrape::make_request("https://www.amazon.in/s?k=corsair+harpoon").unwrap());
 }
