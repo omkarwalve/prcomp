@@ -3,12 +3,10 @@
 
 #[allow(deprecated)]
 #[allow(unused_imports)]
-use ureq;
-//use regex::Regex;
-//use html5ever;
-use select::document::Document;
-use select::predicate::{Attr, Class, Name, Predicate};
+use ureq::{get,Error};
+use regex::Regex;
 mod types;
+mod orel;
 
 pub fn make_request(url: &str) -> Result<String,ureq::Error>{
     let http_response: String = ureq::get(url)
@@ -19,24 +17,13 @@ pub fn make_request(url: &str) -> Result<String,ureq::Error>{
 }
 
 pub fn stage_one(html_response: &str) {
-    let html_document = Document::from(html_response);
-    //println!("{:#?}",html_document);
-    // -- Amazon Study
-    // Image tag
-    //   <img class="s-image" src="https://m.media-amazon.com/images/I/81lCHTRxa4S._AC_UY218_.jpg" srcset="https://m.media-amazon.com/images/I/81lCHTRxa4S._AC_UY218_.jpg 1x, https://m.media-amazon.com/images/I/81lCHTRxa4S._AC_UY327_FMwebp_QL65_.jpg 1.5x, https://m.media-amazon.com/images/I/81lCHTRxa4S._AC_UY436_FMwebp_QL65_.jpg 2x, https://m.media-amazon.com/images/I/81lCHTRxa4S._AC_UY545_FMwebp_QL65_.jpg 2.5x, https://m.media-amazon.com/images/I/81lCHTRxa4S._AC_UY654_FMwebp_QL65_.jpg 3x" alt="realme X7 (Space Silver, 6GB RAM, 128GB Storage) with No Cost EMI/Additional Exchange Offers" data-image-index="2" data-image-load="" data-image-latency="s-product-image" data-image-source-density="1">
-    // Product Name and URL
-    //   <a class="a-link-normal a-text-normal" target="_blank" href="/Renewed-Realme-Nebula-Storage-Without/dp/B097Q2C6B3/ref=sr_1_4?crid=13WS9OJ4SFKDS&amp;dchild=1&amp;keywords=realme+x7&amp;qid=1629094995&amp;refinements=p_89%3ANokia%7Crealme&amp;rnid=3837712031&amp;s=electronics&amp;sprefix=realme+x%2Caps%2C331&amp;sr=1-4"><span class="a-size-medium a-color-base a-text-normal">(Renewed) Realme X7 (Nebula, 8GB RAM, 128GB Storage) Without Offer</span> </a>
-    // Product Price
-    //   <span class="a-price" data-a-size="l" data-a-color="price"><span class="a-offscreen">₹20,999</span><span aria-hidden="true"><span class="a-price-symbol">₹</span><span class="a-price-whole">20,999</span></span></span>
-    for dnode in html_document.find(Attr("data-component-type", "s-search-result")) {
-	let pimg = dnode.find(Class("s-image")).next().unwrap().attr("src").unwrap();
-	let product_name_url = dnode.find(Class("a-text-normal")).next().unwrap();
-	let price = match dnode.find(Attr("data-a-color", "price")).next() { Some(node) => node.first_child().unwrap().text(), None => "Not Available".to_string(), };
-	let site_root = "https://www.amazon.in";
-	//let pname = dnode.find(Class("s-image")).next().unwrap();
-	//{ Some(node) => node, None => panic!("NO LINKS FOUND"), };
-	println!("==== Found ====\n-PRODUCT: {}\n-URL: {}{}\n-IMG.SRC :-{}\nPRICE: {}",product_name_url.text(), site_root, product_name_url.attr("href").unwrap(),pimg, price);
-    }
+    let listing_expression = Regex::new(r#"<a class="(?:.*?)" target="(?:.*?)" rel="(?:.*?)" href="(.*?)"><div class="(?:.*?)"><div class="(?:.*?)"><div><div class="(?:.*?)" style="(?:.*?)"><img class="(?:.*?)" alt="(?:.*?)" src="(.*?[^">])">"#).unwrap();
+    let listing_url = listing_expression.captures_iter(html_response)
+                                        .map(|something| {
+                                            vec![something[1].to_string() ,something[2][0..something[2].to_string().find('"').unwrap()].to_string() ]
+                                        }).collect::<Vec<Vec<String>>>();
+    println!("Found: {:#?}",listing_url);
+	//println!("==== Found ====\n-PRODUCT: {}\n-URL: {}{}\n-IMG.SRC :-{}\nPRICE: {}",product_name_url.text(), site_root, product_name_url.attr("href").unwrap(),pimg, price);
 }
 
 #[test]

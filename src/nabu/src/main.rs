@@ -1,5 +1,5 @@
 // Main.rs
-mod orel;
+//mod orel;
 mod scrape;
 use std::collections::HashMap;
 use std::fs::File;
@@ -34,7 +34,7 @@ fn read_profiles(website_list: Vec<String>)  -> Vec<HashMap<String,String>> {
     let mut nabu_index: Vec<HashMap<String,String>> = Vec::new();
     for website_file in website_list.iter() {
         //println!("Website Configuration is:\n{:?}",orel::parse_orel(&format!("{}/{}",PROFILE_DIR,website_file)));
-        nabu_index.push(orel::parse_orel(&format!("{}/{}",PROFILE_DIR,website_file)));
+        //nabu_index.push(orel::parse_orel(&format!("{}/{}",PROFILE_DIR,website_file)));
     }
     nabu_index
 }
@@ -48,5 +48,5 @@ fn main() {
     //println!("Category: {}\nQuery: {:?}\nCategory File Says: {:#?}", category,search_query,read_category(category)); // Verbose Output
     //println!("Website Configuration is:\n{:#?}",read_profiles(read_category(category)));
     //println!("{}",scrape::make_request("https://www.amazon.in/s?k=mac+m1").unwrap());
-    scrape::stage_one(&scrape::make_request("https://www.amazon.in/s?k=corsair+harpoon").unwrap());
+    scrape::stage_one(&scrape::make_request("https://www.flipkart.com/search?q=m1%20macbook").unwrap());
 }
