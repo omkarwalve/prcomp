@@ -6,7 +6,6 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ureq = { version = "2.1.1", features = ["json"] }
+ureq = { version = "2.1.1", features = ["json"] } # HTTP requests library
 regex = "1.5.4"               # An implementation of regular expressions for Rust. This implementation uses finite automata and g…
-html5ever = "0.25.1"
-select = "0.5.0"
+

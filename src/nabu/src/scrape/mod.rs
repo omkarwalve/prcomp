@@ -1,12 +1,22 @@
-// scrape/mod.rs
-//      The core scraper - nabu.
+//                      /$$                
+//                      | $$                
+//   /$$$$$$$   /$$$$$$ | $$$$$$$  /$$   /$$
+//  | $$__  $$ |____  $$| $$__  $$| $$  | $$
+//  | $$  \ $$  /$$$$$$$| $$  \ $$| $$  | $$
+//  | $$  | $$ /$$__  $$| $$  | $$| $$  | $$
+//  | $$  | $$|  $$$$$$$| $$$$$$$/|  $$$$$$/
+//  |__/  |__/ \_______/|_______/  \______/ 
+//                              src/scrape/mod.rs
+//                                  - The core scraper nabu.
 
 #[allow(deprecated)]
 #[allow(unused_imports)]
+
 use ureq::{get,Error};
 use regex::Regex;
 mod types;
 mod orel;
+
 
 pub fn make_request(url: &str) -> Result<String,ureq::Error>{
     let http_response: String = ureq::get(url)
@@ -16,7 +26,7 @@ pub fn make_request(url: &str) -> Result<String,ureq::Error>{
     Ok(http_response)
 }
 
-pub fn stage_one(html_response: &str) {
+pub fn stage_one(html_response: &str, website_profile: types::Profile ) {
     let listing_expression = Regex::new(r#"<a class="(?:.*?)" target="(?:.*?)" rel="(?:.*?)" href="(.*?)"><div class="(?:.*?)"><div class="(?:.*?)"><div><div class="(?:.*?)" style="(?:.*?)"><img class="(?:.*?)" alt="(?:.*?)" src="(.*?[^">])">"#).unwrap();
     let listing_url = listing_expression.captures_iter(html_response)
                                         .map(|something| {
@@ -27,6 +37,6 @@ pub fn stage_one(html_response: &str) {
 }
 
 #[test]
-fn mans_gotta_test() {
+fn is_http_request_working() {
     assert_ne!(make_request("https://www.amazon.in/s?k=realme+x7").unwrap().bytes().count(),0);
 }

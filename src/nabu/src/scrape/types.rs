@@ -1,5 +1,6 @@
 // scrape/types.rs
 //         - Data structures for nabu.
+use std::collections::HashMap;
 
 // HTML Attribute-Value pairs
 struct Attribute<'t> {
@@ -40,6 +41,8 @@ struct Product<'t> {
     warranty: &'t str,
     specs: &'t str,
 }
+
+pub type Profile = HashMap<String,String>;
 
 pub trait JSONize {
     fn to_json(&self) -> String;

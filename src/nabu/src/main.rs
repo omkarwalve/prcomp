@@ -1,5 +1,9 @@
-// Main.rs
-//mod orel;
+//   src/main.rs
+//  - A frontend wrapper for the underlying scraper.
+
+#[allow(unused_variables)]
+
+mod orel;
 mod scrape;
 use std::collections::HashMap;
 use std::fs::File;
@@ -33,8 +37,8 @@ fn read_category(file_name: &str) -> Vec<String>{
 fn read_profiles(website_list: Vec<String>)  -> Vec<HashMap<String,String>> {
     let mut nabu_index: Vec<HashMap<String,String>> = Vec::new();
     for website_file in website_list.iter() {
-        //println!("Website Configuration is:\n{:?}",orel::parse_orel(&format!("{}/{}",PROFILE_DIR,website_file)));
-        //nabu_index.push(orel::parse_orel(&format!("{}/{}",PROFILE_DIR,website_file)));
+        //println!("Website Configuration is:\n{:?}",orel::parse_orel(&format!("{}/{}",PROFILE_DIR,website_file))); // VERBOSE
+        nabu_index.push(orel::parse_orel(&format!("{}/{}",PROFILE_DIR,website_file)));
     }
     nabu_index
 }
