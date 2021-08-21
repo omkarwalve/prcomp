@@ -1,10 +1,15 @@
-NAME
-ROOT_URI
-QUERY_STYLE
-URI_SEPERATOR
+[NAME]={( amazon | flipkart | urbanladder )}
+[ROOT_URI]={"https://(amazon.in | flipkart.com | urbanladder.com | ajio.com"}
+[QUERY_SPACE]={/(?q= | products/search?utf8= | search/?text=)}
+[URI_SEPERATOR]={'+'/'%20'}
+-x-[CONFIG_STYLE]={REGEX/SELECT}
+[LISTING_FIND_BY]={Class,Name,Attr,Descendant}
 LISTING_ATTR
 LISTING_ATTR_VALUE
-IMG_CLASS
-PNAME_CLASS
+[IMG_FIND_BY]={Class,Name,Attr,Descendant}
+[PNAME_FIND_BY]={Class,Name,Attr,Descendant}
+PNAME_ATTR
+PNAME_VALUE
+[PRICE_FIND_BY]={Class,Name,Attr,Descendant}
 PRICE_ATTR
 PRICE_ATTR_VALUE

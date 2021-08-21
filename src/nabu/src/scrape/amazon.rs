@@ -28,10 +28,10 @@ pub fn stage_one(html_response: &str) {
     //   <a class="a-link-normal a-text-normal" target="_blank" href="/Renewed-Realme-Nebula-Storage-Without/dp/B097Q2C6B3/ref=sr_1_4?crid=13WS9OJ4SFKDS&amp;dchild=1&amp;keywords=realme+x7&amp;qid=1629094995&amp;refinements=p_89%3ANokia%7Crealme&amp;rnid=3837712031&amp;s=electronics&amp;sprefix=realme+x%2Caps%2C331&amp;sr=1-4"><span class="a-size-medium a-color-base a-text-normal">(Renewed) Realme X7 (Nebula, 8GB RAM, 128GB Storage) Without Offer</span> </a>
     // Product Price
     //   <span class="a-price" data-a-size="l" data-a-color="price"><span class="a-offscreen">₹20,999</span><span aria-hidden="true"><span class="a-price-symbol">₹</span><span class="a-price-whole">20,999</span></span></span>
-    for dnode in html_document.find(Attr("data-component-type", "s-search-result")) {
-	let pimg = dnode.find(Class("s-image")).next().unwrap().attr("src").unwrap();
-	let product_name_url = dnode.find(Class("a-text-normal")).next().unwrap();
-	let price = match dnode.find(Attr("data-a-color", "price")).next() { Some(node) => node.first_child().unwrap().text(), None => "Not Available".to_string(), };
+    for lnode in html_document.find(Attr("data-component-type", "s-search-result")) {
+	let pimg = lnode.find(Class("s-image")).next().unwrap().attr("src").unwrap();
+	let product_name_url = lnode.find(Class("a-text-normal")).next().unwrap();
+	let price = match lnode.find(Attr("data-a-color", "price")).next() { Some(node) => node.first_child().unwrap().text(), None => "Not Available".to_string(), };
 	let site_root = "https://www.amazon.in";
 	//{ Some(node) => node, None => panic!("NO LINKS FOUND"), };
 	println!("==== Found ====\n-PRODUCT: {}\n-URL: {}{}\n-IMG.SRC :-{}\nPRICE: {}",product_name_url.text(), site_root, product_name_url.attr("href").unwrap(),pimg, price);
