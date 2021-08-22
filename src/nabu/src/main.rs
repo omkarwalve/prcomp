@@ -1,14 +1,17 @@
-//   src/main.rs
-//  - A frontend wrapper for the underlying scraper.
+//         __      __  __  ___ __  
+//    |  ||__) /\ |__)|__)|__ |__) 
+//    |/\||  \/~~\|   |   |___|  \ 
+//                      src/main.rs
+//                       - A frontend wrapper for the underlying scraper.
 
-#[allow(unused_variables)]
 
 mod orel;
 mod scrape;
-use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead,BufReader};
 use std::env;
+use std::thread;
+use std::future::Future;
 
 // == Global Variables
 const CATEGORY_DIR: &str = "./cnp/categories";
@@ -34,21 +37,30 @@ fn read_category(file_name: &str) -> Vec<String>{
 }
 
 // Function to read the websites profiles
-fn read_profiles(website_list: Vec<String>)  -> Vec<HashMap<String,String>> {
-    let mut nabu_index: Vec<HashMap<String,String>> = Vec::new();
+fn read_profiles(website_list: Vec<String>)  -> Vec<orel::Orel<String>> {
+    let mut nabu_index: Vec<orel::Orel<String>> = Vec::new();
     for website_file in website_list.iter() {
         //println!("Website Configuration is:\n{:?}",orel::parse_orel(&format!("{}/{}",PROFILE_DIR,website_file))); // VERBOSE
         nabu_index.push(orel::parse_orel(&format!("{}/{}",PROFILE_DIR,website_file)));
     }
     nabu_index
 }
+// Alt Function to parallely read website profiles
+fn read_profile(website_profile: &String) -> orel::Orel<String> {
+        orel::parse_orel(&format!("{}/{}",PROFILE_DIR,website_profile))
+}
 
 // Call the program as `nabu <CATEGORY> <SEARCH_QUERY>`
 fn main() {
-    //let arguments: Vec<String> = env::args().collect();
-    //let category: &String = &arguments[1];
-    //let search_query: &[String] = &arguments[2..];
-    ////let site_list = read_category(category);
+    let arguments: Vec<String> = env::args().collect();
+    let category: &String = &arguments[1];
+    let search_query: &[String] = &arguments[2..];
+    let site_list = read_category(category);
+    for i in 0..site_list.len() { // Spawn a thread for each concurrent website
+        thread::spawn(move || {
+            read_profile(&site_list[i]);
+        });
+    }
     //println!("Category: {}\nQuery: {:?}\nCategory File Says: {:#?}", category,search_query,read_category(category)); // Verbose Output
     //println!("Website Configuration is:\n{:#?}",read_profiles(read_category(category)));
     //println!("{}",scrape::make_request("https://www.amazon.in/s?k=mac+m1").unwrap());

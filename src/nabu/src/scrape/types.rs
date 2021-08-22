@@ -27,6 +27,32 @@ enum Document<'t> {
     NonHTML
 }
 
+// ===== OREL ======
+struct Orel<'t> {
+    name: &'t str,
+    root_uri: &'t str,
+    query_space: &'t str,
+    uri_seperator: &'t str,
+
+    listing_find_by: &'t str,
+    listing_attr: &'t str,
+    listing_value: &'t str,
+
+    image_find_by: &'t str,
+
+    product_url_find_by: &'t str,
+    product_url_attr: &'t str,
+    product_url_value: &'t str,
+
+    product_name_find_by: &'t str,
+    product_name_attr: &'t str,
+    product_name_value: &'t str,
+
+    product_price_find_by: &'t str,
+    product_price_attr: &'t str,
+    product_price_value: &'t str
+}
+
 // -- Stage One --
 struct Listing<'t> {
     pname: &'t str,

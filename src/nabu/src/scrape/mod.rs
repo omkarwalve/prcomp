@@ -19,6 +19,7 @@ use select::document::Document;
 use select::predicate::{Attr, Class, Name, Predicate};
 use serde_json;
 mod types;
+mod orel;
 
 pub fn make_request(url: &str) -> Result<String,ureq::Error>{
     println!("Making Request!");
