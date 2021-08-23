@@ -17,9 +17,11 @@ This project aims to solve this exact problem by enhancing on the problem of a s
     - [ ] Scraper
         - [x] Configuration Model(*OREL*)
         - [ ] Website Profiling
+            - [x] Stage One Profiling
+            - [ ] Stage Two Profiling
         - [ ] Stage One Scraping
         - [ ] Stage Two Scraping
         - [ ] JSON Output
-        - [ ] Asynchronization
+        - [ ] Asynchronization/?Parallelism
     - [ ] Server
         - [ ] Actix/Rocket Implementation
