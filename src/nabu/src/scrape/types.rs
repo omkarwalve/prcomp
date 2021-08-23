@@ -1,6 +1,5 @@
 // scrape/types.rs
 //         - Data structures for nabu.
-use std::collections::HashMap;
 
 // HTML Attribute-Value pairs
 struct Attribute<'t> {
@@ -27,70 +26,60 @@ enum Document<'t> {
     NonHTML
 }
 
-// ===== OREL ======
-struct Orel<'t> {
-    name: &'t str,
-    root_uri: &'t str,
-    query_space: &'t str,
-    uri_seperator: &'t str,
-
-    listing_find_by: &'t str,
-    listing_attr: &'t str,
-    listing_value: &'t str,
-
-    image_find_by: &'t str,
-
-    product_url_find_by: &'t str,
-    product_url_attr: &'t str,
-    product_url_value: &'t str,
-
-    product_name_find_by: &'t str,
-    product_name_attr: &'t str,
-    product_name_value: &'t str,
-
-    product_price_find_by: &'t str,
-    product_price_attr: &'t str,
-    product_price_value: &'t str
+pub struct Listing<T> { 
+    pub name: T,
+    pub store: T,
+    pub return_replace: T,
+    pub warranty: T,
+    pub specs: T,
+    pub price: T,
+    pub img: T,
+    pub url: T,
 }
 
-// -- Stage One --
-struct Listing<'t> {
-    pname: &'t str,
-    price: &'t f32,
-    img_src: &'t str,
-    prl: &'t str
+pub struct Listings<T> {
+    query: T,
+    category: T,
+    date_time: T,
+    listings: Vec<Listing<T>>,
 }
-
-// -- Stage Two --
-struct Product<'t> {
-    return_replace: &'t str,
-    warranty: &'t str,
-    specs: &'t str,
-}
-
-pub type Profile = HashMap<String,String>;
 
 pub trait JSONize {
     fn to_json(&self) -> String;
 }
 
-//<table id="productDetails_techSpec_section_1" class="a-keyvalue prodDetTable" role="presentation">
-
-impl JSONize for Listing<'_> {
+impl JSONize for Listing<String> {
     fn to_json(&self) -> String {
-        format!("{{ NAME : {}
-                    PRICE: {}
-                    IMG: {}
-                    URL: {}
-                 }}", self.pname,self.price,self.img_src,self.prl)
+        format!("{{\n
+                    \"NAME\" : \"{}\",\n
+                    \"STORE\" : \"{}\",\n
+                    \"RET_POLICY\" : \"{}\",\n
+                    \"WARRANTY\" : \"{}\",\n
+                    \"SPECS\" : \"{}\",\n
+                    \"PRICE\" : \"{}\",\n
+                    \"IMG\" : \"{}\",\n
+                    \"URL\" : \"{}\",\n
+                }}\n",self.name,
+                      self.store,
+                      self.return_replace,
+                      self.warranty,
+                      self.specs,
+                      self.price,
+                      self.img,
+                      self.url)
     }
 }
 
-impl JSONize for Product<'_> {
+impl JSONize for Listings<String> {
     fn to_json(&self) -> String {
-        format!("{{ RETURN_REPLACE : {}
-                    WARRANTY : {}
-                    SPECS : {}
-                 }}", self.return_replace,self.warranty,self.specs)
+        format!("{{\n
+                    \"DATE\" : \"{}\",\n
+                    \"CATEGORY\" : \"{}\",\n
+                    \"QUERY\" : \"{}\",\n
+                    \"RESULTS\" : {}\n
+                }}\n",self.date_time,
+                      self.category,
+                      self.query,
+                      self.listings.iter().map(|listing| listing.to_json()).collect::<String>())
     }
 }

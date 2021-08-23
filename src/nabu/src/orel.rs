@@ -1,8 +1,8 @@
-//    ╔═╗╦═╗╔═╗╦  
-//    ║ ║╠╦╝║╣ ║  
-//    ╚═╝╩╚═╚═╝╩═╝
-//         OBJECT-RELATIONS(OREL) FILE PARSER
-//           - A simplistic json,yaml,toml,etc like configuration syntax
+//        ╔═╗╦═╗╔═╗╦  
+//        ║ ║╠╦╝║╣ ║  
+//        ╚═╝╩╚═╚═╝╩═╝
+//             Object-Relations(OREL) File
+//               - A simplistic json,yaml,toml,etc like configuration syntax
 
 use std::fs::File;
 use std::io::{BufRead,BufReader};
@@ -10,97 +10,101 @@ use std::io::{BufRead,BufReader};
 #[derive(Default)]
 pub struct Orel<T> {
     name: T,
-    root_uri: T,
-    query_space: T,
-    uri_seperator: T,
+    pub root_uri: T,
+    pub query_cmd: T,
+    pub uri_seperator: T,
 
-    listing_find_by: T,
-    listing_attr: T,
-    listing_value: T,
+    pub listing_find_by: T,
+    pub listing_identifier: T,
+    pub listing_ivalue: T,
 
-    image_find_by: T,
+    pub image_find_by: T,
+    pub image_identifier: T,
 
-    product_url_find_by: T,
-    product_url_attr: T,
-    product_url_value: T,
+    pub product_url_find_by: T,
+    pub product_url_identifier: T,
+    pub product_url_ivalue: T,
 
-    product_name_find_by: T,
-    product_name_attr: T,
-    product_name_value: T,
+    pub product_name_find_by: T,
+    pub product_name_identifier: T,
+    pub product_name_ivalue: T,
 
-    product_price_find_by: T,
-    product_price_attr: T,
-    product_price_value: T
+    pub product_price_find_by: T,
+    pub product_price_identifier: T,
+    pub product_price_ivalue: T
 }
 
 impl Orel<String> {
     fn catch<'t>(&mut self, var: String, val: String) -> Option<String> { 
         if var == "NAME" { self.name = val; None }
         else if var == "ROOT_URI" { self.root_uri = val; None}
-        else if var == "QUERY_SPACE" { self.query_space = val; None}
+        else if var == "QUERY_CMD" { self.query_cmd = val; None}
         else if var == "URI_SEPERATOR" { self.uri_seperator = val; None}
 
         else if var == "LISTING_FIND_BY" { self.listing_find_by = val; None }
-        else if var == "LISTING_ATTR" { self.listing_attr = val; None}
-        else if var == "LISTING_ATTR_VALUE" { self.listing_value = val; None }
+        else if var == "LISTING_IDENTIFIER" { self.listing_identifier = val; None}
+        else if var == "LISTING_IDENTIFIER_VALUE" { self.listing_ivalue = val; None }
 
         else if var == "IMG_FIND_BY" { self.image_find_by = val; None }
+        else if var == "IMG_IDENTIFIER" { self.image_identifier = val; None }
 
         else if var == "PNAME_FIND_BY" { self.product_name_find_by = val; None }
-        else if var == "PNAME_ATTR" { self.product_name_attr = val; None }
-        else if var == "PNAME_VALUE" { self.product_name_value = val; None }
+        else if var == "PNAME_IDENTIFIER" { self.product_name_identifier = val; None }
+        else if var == "PNAME_IDENTIFIER_VALUE" { self.product_name_ivalue = val; None }
 
         else if var == "PRICE_FIND_BY" { self.product_price_find_by = val; None }
-        else if var == "PRICE_ATTR" { self.product_price_attr = val; None }
-        else if var == "PRICE_ATTR_VALUE" { self.product_price_value = val; None }
+        else if var == "PRICE_IDENTIFIER" { self.product_price_identifier = val; None }
+        else if var == "PRICE_IDENTIFIER_VALUE" { self.product_price_ivalue = val; None }
 
         else if var == "PURL_FIND_BY" { self.product_url_find_by = val; None }
-        else if var == "PURL_ATTR" { self.product_url_attr = val; None }
-        else if var == "PURL_ATTR_VALUE" { self.product_url_value = val; None }
+        else if var == "PURL_IDENTIFIER" { self.product_url_identifier = val; None }
+        else if var == "PURL_IDENTIFIER_VALUE" { self.product_url_ivalue = val; None }
         else { Some(var) }
     }
 
     fn pretty_print(&self) { 
         println!("name: {}\n
                   root_uri: {}\n
-                  query_space: {}\n
+                  query_cmd: {}\n
                   uri_sep: {}\n
                   listing_find_by: {}\n
-                  listing_attr: {}\n
+                  listing_identifier: {}\n
                   listing_at_val: {}\n
                   image_find_by: {}\n
+                  image_identifier: {}\n
                   pname_fby: {}\n
-                  pname_attr: {}\n
+                  pname_identifier: {}\n
                   pname_val: {}\n
                   pprice_fby: {}\n
-                  pprice_attr: {}\n
+                  pprice_identifier: {}\n
                   pprice_val: {}\n
                   purl_fby: {}\n
-                  purl_attr: {}\n
+                  purl_identifier: {}\n
                   purl_val: {}",
                   self.name,
                   self.root_uri,
-                  self.query_space,
+                  self.query_cmd,
                   self.uri_seperator,
                   self.listing_find_by,
-                  self.listing_attr,
-                  self.listing_value,
+                  self.listing_identifier,
+                  self.listing_ivalue,
                   self.image_find_by,
+                  self.image_identifier,
                   self.product_name_find_by,
-                  self.product_name_attr,
-                  self.product_name_value,
+                  self.product_name_identifier,
+                  self.product_name_ivalue,
                   self.product_price_find_by,
-                  self.product_price_attr,
-                  self.product_price_value,
+                  self.product_price_identifier,
+                  self.product_price_ivalue,
                   self.product_url_find_by,
-                  self.product_url_attr,
-                  self.product_url_value);
+                  self.product_url_identifier,
+                  self.product_url_ivalue);
     }
 }
 
-pub fn parse_orel(orel_file_path: &String) -> Orel<String> {
+pub fn parse_orel(orel_file_path: &std::path::Path) -> Orel<String> {
     let orelfile = match File::open(orel_file_path) {
-        Err(why) => panic!("Couldn't open {} ,\nbecause {}", orel_file_path,why),
+        Err(why) => panic!("Couldn't open {} ,\nbecause {}", orel_file_path.display(),why),
         Ok(file) => file,
     };
     let mut orelcfg : Orel<String> = Default::default();
