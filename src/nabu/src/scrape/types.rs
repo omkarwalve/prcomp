@@ -26,6 +26,7 @@ enum Document<'t> {
     NonHTML
 }
 
+#[derive(Default)]
 pub struct Listing<T> { 
     pub name: T,
     pub store: T,
