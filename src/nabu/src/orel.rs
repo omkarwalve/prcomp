@@ -62,7 +62,7 @@ impl Orel<String> {
         else { Some(var) }
     }
 
-    fn pretty_print(&self) { 
+    pub fn pretty_print(&self) { 
         println!("name: {}\n
                   root_uri: {}\n
                   query_cmd: {}\n
@@ -102,9 +102,10 @@ impl Orel<String> {
     }
 }
 
-pub fn parse_orel(orel_file_path: &std::path::Path) -> Orel<String> {
+pub fn parse_orel(orel_file_path: &String) -> Orel<String> {
+    println!("File to parse is: {}",orel_file_path);
     let orelfile = match File::open(orel_file_path) {
-        Err(why) => panic!("Couldn't open {} ,\nbecause {}", orel_file_path.display(),why),
+        Err(why) => panic!("Couldn't open {} ,\nbecause {}", orel_file_path,why),
         Ok(file) => file,
     };
     let mut orelcfg : Orel<String> = Default::default();
@@ -119,6 +120,6 @@ pub fn parse_orel(orel_file_path: &std::path::Path) -> Orel<String> {
 // == Main Function - Only for testing it out as a binary ==
 //fn main() {
     //let arguments: Vec<String> = std::env::args().collect();
-    ////println!("{:#?}",parse_orel("./orel_format"));
+    //println!("{:#?}",parse_orel("./orel_format"));
     //parse_orel(&arguments[1]).pretty_print();
 //}
