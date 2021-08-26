@@ -63,24 +63,7 @@ impl Orel<String> {
     }
 
     pub fn pretty_print(&self) { 
-        println!("name: {}\n
-                  root_uri: {}\n
-                  query_cmd: {}\n
-                  uri_sep: {}\n
-                  listing_find_by: {}\n
-                  listing_identifier: {}\n
-                  listing_at_val: {}\n
-                  image_find_by: {}\n
-                  image_identifier: {}\n
-                  pname_fby: {}\n
-                  pname_identifier: {}\n
-                  pname_val: {}\n
-                  pprice_fby: {}\n
-                  pprice_identifier: {}\n
-                  pprice_val: {}\n
-                  purl_fby: {}\n
-                  purl_identifier: {}\n
-                  purl_val: {}",
+        println!("\tname: {}\n\troot_uri: {}\n\tquery_cmd: {}\n\turi_sep: {}\n\tlisting_find_by: {}\n\tlisting_identifier: {}\n\tlisting_at_val: {}\n\timage_find_by: {}\n\timage_identifier: {}\n\tpname_fby: {}\n\tpname_identifier: {}\n\tpname_val: {}\n\tpprice_fby: {}\n\tpprice_identifier: {}\n\tpprice_val: {}\n\tpurl_fby: {}\n\tpurl_identifier: {}\n\tpurl_val: {}",
                   self.name,
                   self.root_uri,
                   self.query_cmd,
