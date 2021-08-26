@@ -50,15 +50,16 @@ fn read_profiles(website_list: Vec<String>)  -> Vec<orel::Orel<String>> {
 }
 // Alt Function to parallely read website profiles
 fn read_profile(website_profile: &String) -> orel::Orel<String> {
-        println!("Inside read_profile() function");
+        //println!("Inside read_profile() function");
         orel::parse_orel(&format!("{}/{}",&PROFILE_DIR,website_profile))
 }
 
 fn make_url(root_url: &String, query_cmd: &String, uri_seperator: &str, query: &String) -> String {
     format!("{}/{}={}",root_url,query_cmd,query.replace(" ", uri_seperator))
 }
+
 #[test]
-fn is_url_generated_coreectly(){
+fn is_url_generated_correctly(){
     assert_eq!(make_url(&"https://urbanladder.com".to_string(),&"products/search?keywords".to_string(),"+",&"Queen Size Bed".to_string()),"https://www.urbanladder.com/products/search?keywords=Queen+Size+Bed");
 }
 
@@ -72,10 +73,10 @@ fn main() {
     let _n_output = Arc::new(Mutex::new(String::new()));
     println!("Category: {}\nQuery: {}\nCategory File Says: {:#?}\nSite Count: {}", category,&search_query,&site_list,sites_count); // Verbose Output
     for i in 0..sites_count { // Spawn a thread for each concurrent website
-        println!("Inside thread for loop!");
+        //println!("Inside thread for loop!");
         let squery = search_query.clone();
         let slist = site_list.clone();
-        println!("Done Cloning arc variables");
+        //println!("Done Cloning arc variables");
         let FetchHandle: thread::JoinHandle<()> 
             = thread::spawn(move || {
                 println!("Inside spawned thread!");
@@ -84,12 +85,13 @@ fn main() {
                 site_profile.pretty_print();
                 //println!("{}",make_url(&site_profile.root_uri,&site_profile.query_cmd,&site_profile.uri_seperator,&squery));
                 scrape::stage_one(match &scrape::make_request(&make_url(&site_profile.root_uri,&site_profile.query_cmd,&site_profile.uri_seperator,&squery)) { 
-                                         Err(why) => panic!("ERROR::NO_RESPONSE:: Failed to get response from the server.\nReason: {}",why),
+                                         Err(why) => panic!("ERROR::NO_RESPONSE:: Failed to get response from the server.\nReason: {}\nKind: {}",why,why.kind()),
                                          Ok(response) => response,
                                   },
                                   site_profile);
             });
         FetchHandle.join().unwrap();
+        println!("----------------X-------------------");
     }
     //println!("Website Configuration is:\n{:#?}",read_profiles(read_category(category)));
     //println!("{}",scrape::make_request("https://www.amazon.in/s?k=mac+m1").unwrap());
