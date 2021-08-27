@@ -9,7 +9,7 @@ use std::io::{BufRead,BufReader};
 
 #[derive(Default)]
 pub struct Orel<T> {
-    name: T,
+    pub name: T,
     pub root_uri: T,
     pub query_cmd: T,
     pub uri_seperator: T,
@@ -31,7 +31,22 @@ pub struct Orel<T> {
 
     pub product_price_find_by: T,
     pub product_price_identifier: T,
-    pub product_price_ivalue: T
+    pub product_price_ivalue: T,
+
+    pub product_return_policy_find_by: T,
+    pub product_return_policy_identifier: T,
+    pub product_return_policy_ivalue: T,
+    pub product_return_policy_idescendant: T,
+
+    pub product_warranty_find_by: T,
+    pub product_warranty_identifier: T,
+    pub product_warranty_ivalue: T,
+    pub product_warranty_idescendant: T,
+
+    pub product_specs_find_by: T,
+    pub product_specs_identifier: T,
+    pub product_specs_ivalue: T,
+    pub product_specs_idescendant: T,
 }
 
 impl Orel<String> {
@@ -59,11 +74,27 @@ impl Orel<String> {
         else if var == "PURL_FIND_BY" { self.product_url_find_by = val; None }
         else if var == "PURL_IDENTIFIER" { self.product_url_identifier = val; None }
         else if var == "PURL_IDENTIFIER_VALUE" { self.product_url_ivalue = val; None }
+
+        else if var == "RETPOL_FIND_BY" { self.product_return_policy_find_by = val; None }
+        else if var == "RETPOL_IDENTIFIER" { self.product_return_policy_identifier = val; None }
+        else if var == "RETPOL_IDENTIFIER_VALUE" { self.product_return_policy_ivalue = val; None }
+        else if var == "RETPOL_DESCENDANT" { self.product_return_policy_idescendant = val; None }
+
+        else if var == "WARRANTY_FIND_BY" { self.product_warranty_find_by = val; None }
+        else if var == "WARRANTY_IDENTIFIER" { self.product_warranty_identifier = val; None }
+        else if var == "WARRANTY_IDENTIFIER_VALUE" { self.product_warranty_ivalue = val; None }
+        else if var == "WARRANTY_DESCENDANT" { self.product_warranty_idescendant = val; None }
+
+        else if var == "SPECS_FIND_BY" { self.product_specs_find_by = val; None }
+        else if var == "SPECS_IDENTIFIER" { self.product_specs_identifier = val; None }
+        else if var == "SPECS_IDENTIFIER_VALUE" { self.product_specs_ivalue = val; None }
+        else if var == "SPECS_DESCENDANT" { self.product_specs_idescendant = val; None }
+
         else { Some(var) }
     }
 
     pub fn pretty_print(&self) { 
-        println!("\tname: {}\n\troot_uri: {}\n\tquery_cmd: {}\n\turi_sep: {}\n\tlisting_find_by: {}\n\tlisting_identifier: {}\n\tlisting_at_val: {}\n\timage_find_by: {}\n\timage_identifier: {}\n\tpname_fby: {}\n\tpname_identifier: {}\n\tpname_val: {}\n\tpprice_fby: {}\n\tpprice_identifier: {}\n\tpprice_val: {}\n\tpurl_fby: {}\n\tpurl_identifier: {}\n\tpurl_val: {}",
+        println!("\tname: {}\n\troot_uri: {}\n\tquery_cmd: {}\n\turi_sep: {}\n\tlisting_find_by: {}\n\tlisting_identifier: {}\n\tlisting_at_val: {}\n\timage_find_by: {}\n\timage_identifier: {}\n\tpname_fby: {}\n\tpname_identifier: {}\n\tpname_val: {}\n\tpprice_fby: {}\n\tpprice_identifier: {}\n\tpprice_val: {}\n\tpurl_fby: {}\n\tpurl_identifier: {}\n\tpurl_val: {}\n\tret_pol_fby: {}\n\tret_pol_iden: {}\n\tret_pol_ival: {}\n\tret_pol_idesc: {}\n\twarranty_fby: {}\n\twarranty_iden: {}\n\twarranty_ival: {}\n\twarranty_idesc: {}\n\tspecs_fby: {}\n\tspecs_iden: {}\n\tspecs_ival: {}\n\tspecs_idesc: {}",
                   self.name,
                   self.root_uri,
                   self.query_cmd,
@@ -81,7 +112,20 @@ impl Orel<String> {
                   self.product_price_ivalue,
                   self.product_url_find_by,
                   self.product_url_identifier,
-                  self.product_url_ivalue);
+                  self.product_url_ivalue,
+                  self.product_return_policy_find_by,
+                  self.product_return_policy_identifier,
+                  self.product_return_policy_ivalue,
+                  self.product_return_policy_idescendant,
+                  self.product_warranty_find_by,
+                  self.product_warranty_identifier,
+                  self.product_warranty_ivalue,
+                  self.product_warranty_idescendant,
+                  self.product_specs_find_by,
+                  self.product_specs_identifier,
+                  self.product_specs_ivalue,
+                  self.product_specs_idescendant,
+                  );
     }
 }
 
