@@ -11,6 +11,7 @@ regex = "1.5.4"               # An implementation of regular expressions for Rus
 select = "0.5.0"      # A library to extract useful data from HTML documents, suitable for web scraping.
 serde_json = "1.0.66"                     # A JSON serialization file format
 fastrand = "1.5.0"      # A simple and fast random number generator
+chrono = "0.4.19"                   # Date and time library for Rust
 
 [profile.dev.package."*"]
 opt-level = 3
