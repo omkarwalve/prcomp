@@ -16,3 +16,15 @@
 [PURL_FIND_BY]={ find_url_by? }
 [PURL_IDENTIFIER]={ url_attr_comes_here }
 [PURL_IDENTIFIER_VALUE]={ url_value_comes_here }
+[RETPOL_FIND_BY]={Class,Name,Attr,Descendant}
+[RETPOL_IDENTIFIER]={identifier_here}
+[RETPOL_IDENTIFIER_VALUE]={identifier_value}
+[RETPOL_DESCENDANT]={identifier's_descendant}
+[WARRANTY_FIND_BY]={Class,Name,Attr,Descendant}
+[WARRANTY_IDENTIFIER]={identifier_here}
+[WARRANTY_IDENTIFIER_VALUE]={identifier_value}
+[WARRANTY_DESCENDANT]={identifier's_descendant}
+[SPECS_FIND_BY]={Class,Name,Attr,Descendant}
+[SPECS_IDENTIFIER]={identifier_here}
+[SPECS_IDENTIFIER_VALUE]={identifier_value}
+[SPECS_DESCENDANT]={identifier's_descendant}

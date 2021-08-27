@@ -10,7 +10,7 @@
 [PNAME_FIND_BY]={Class}
 [PNAME_IDENTIFIER]={product-title}
 [PNAME_IDENTIFIER_VALUE]={-}
-[PRICE_FIND_BY]={Class}
+[PRICE_FIND_BY]={Class.d}
 [PRICE_IDENTIFIER]={price-number}
 [PRICE_IDENTIFIER_VALUE]={span}
 [PURL_FIND_BY]={Class}
