@@ -26,7 +26,7 @@
     //NonHTML
 //}
 
-#[derive(Default)]
+#[derive(Default,Debug,Clone)]
 pub struct Listing<T> { 
     pub name: T,
     pub store: T,
@@ -38,11 +38,11 @@ pub struct Listing<T> {
     pub url: T,
 }
 
-pub struct Listings<T> {
-    query: T,
-    category: T,
-    date_time: T,
-    listings: Vec<Vec<Listing<T>>>,
+pub struct Listings<'t, T> {
+    pub query: T,
+    pub category: T,
+    pub date_time: T,
+    pub listings: &'t Vec<Vec<Listing<T>>>,
 }
 
 pub trait JSONize {
@@ -62,16 +62,16 @@ impl JSONize for Listing<String> {
                     \"URL\" : \"{}\",\n
                 }}\n",self.name,
                       self.store,
-                      self.return_replace,
-                      self.warranty,
-                      self.specs,
+                      self.return_replace.trim(),
+                      self.warranty.trim(),
+                      self.specs.trim().replace("\n",""),
                       self.price,
                       self.img,
                       self.url)
     }
 }
 
-impl JSONize for Listings<String> {
+impl JSONize for Listings<'_, String> {
     fn to_json(&self) -> String {
         format!("{{\n
                     \"DATE\" : \"{}\",\n
@@ -81,9 +81,19 @@ impl JSONize for Listings<String> {
                 }}\n",self.date_time,
                       self.category,
                       self.query,
-                      self.listings.iter().map(|listing| for product in listing.iter() {
-                                                                return product.to_json();
-                                                         }
-                                              ).collect::<Vec<String>>().join(",")
+                      self.listings_to_json().join(",\n")
+                      )
+    }
+}
+
+impl Listings<'_, String>{ 
+    pub fn listings_to_json(&self) -> Vec<String> { 
+        let mut product_json : Vec<String> = Vec::new();
+        for listing in self.listings.iter() {
+            for product in listing.iter() { 
+                product_json.push(product.to_json())
+            }
+        }
+        product_json
     }
 }
