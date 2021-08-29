@@ -123,7 +123,7 @@ pub fn stage_one(html_response: &str, website_profile: orel::Orel<String>) -> (V
                                                              None => "Not Available".to_string(), };
             }
             plisting.store = website_profile.name.clone();
-            println!("==== Found ====\n-PRODUCT: {}\n-URL: {}\n-IMG.SRC :-{}\nPRICE: {}",
+            println!("==== Found ====\n╸▶ PRODUCT: {}\n╸▶ URL: {}\n╸▶ IMG.SRC:- {}\n╸▶ PRICE: {}",
                      plisting.name,
                      plisting.url,
                      plisting.img,
@@ -170,7 +170,7 @@ pub fn stage_one(html_response: &str, website_profile: orel::Orel<String>) -> (V
                                                       None => "Not Available".to_string(), };
             }
             plisting.store = website_profile.name.clone();
-            println!("==== Found ====\n-PRODUCT: {}\n-URL: {}\n-IMG.SRC :-{}\nPRICE: {}",
+            println!("==== Found ====\n╸▶ PRODUCT: {}\n╸▶ URL: {}\n╸▶ IMG.SRC:- {}\n╸▶ PRICE: {}",
                      plisting.name,
                      plisting.url,
                      plisting.img,
@@ -185,68 +185,69 @@ pub fn stage_one(html_response: &str, website_profile: orel::Orel<String>) -> (V
 pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, orel::Orel<String>)) -> Vec<types::Listing<String>> {
     for listing in listings.iter_mut() {
         let product_page = Document::from(make_request(&listing.url).unwrap().as_str());
+        println!("Parsing product info for {} from {}", &listing.name, &listing.store);
         // RETURN POLICY
         if profile.product_return_policy_find_by == "Attr.d" {
         listing.return_replace = product_page.find(Attr(&profile.product_return_policy_identifier[..],
                                                         &profile.product_return_policy_ivalue[..])
                                                    .descendant(Name(&profile.product_return_policy_idescendant[..])))
-                                             .next().unwrap().text() ;
+                                             .next().unwrap().text();
         }
         else if profile.product_return_policy_find_by == "Class.d" {
         listing.return_replace = product_page.find(Class(&profile.product_return_policy_identifier[..])
                                                    .descendant(Name(&profile.product_return_policy_idescendant[..])))
-                                             .next().unwrap().text() ;
+                                             .next().unwrap().text();
         }
         else if profile.product_return_policy_find_by == "Class" {
         listing.return_replace = product_page.find(Class(&profile.product_return_policy_identifier[..]))
-                                             .next().unwrap().text() ;
+                                             .next().unwrap().text();
         }
         else if profile.product_return_policy_find_by == "Attr" {
         listing.return_replace = product_page.find(Attr(&profile.product_return_policy_identifier[..],
                                                         &profile.product_return_policy_ivalue[..]))
-                                             .next().unwrap().text() ;
+                                             .next().unwrap().text();
         }
         // WARRANTY
         if profile.product_warranty_find_by == "Attr.d" { 
         listing.warranty = product_page.find(Attr(&profile.product_warranty_identifier[..],
                                                   &profile.product_warranty_ivalue[..])
                                               .descendant(Name(&profile.product_warranty_idescendant[..])))
-                                       .next().unwrap().text() ;
+                                       .next().unwrap().text();
         }
         else if profile.product_warranty_find_by == "Class.d" { 
         listing.warranty = product_page.find(Class(&profile.product_warranty_identifier[..])
                                                .descendant(Name(&profile.product_warranty_idescendant[..])))
-                                       .next().unwrap().text() ;
+                                       .next().unwrap().text();
         }
         else if profile.product_warranty_find_by == "Class" {
         listing.warranty = product_page.find(Class(&profile.product_warranty_identifier[..]))
-                                       .next().unwrap().text() ;
+                                       .next().unwrap().text();
         }
         else if profile.product_warranty_find_by == "Attr" {
         listing.warranty = product_page.find(Attr(&profile.product_warranty_identifier[..],
                                                   &profile.product_warranty_ivalue[..]))
-                                       .next().unwrap().text() ;
+                                       .next().unwrap().text();
         }
         // SPECS
         if profile.product_specs_find_by == "Attr.d" { 
         listing.specs = product_page.find(Attr(&profile.product_specs_identifier[..],
                                                &profile.product_specs_ivalue[..])
                                            .descendant(Name(&profile.product_specs_idescendant[..])))
-                                    .next().unwrap().html() ;
+                                    .next().unwrap().html();
         }
         else if profile.product_specs_find_by == "Class.d" { 
         listing.specs = product_page.find(Class(&profile.product_specs_identifier[..])
                                              .descendant(Name(&profile.product_specs_idescendant[..])))
-                                    .next().unwrap().html() ;
+                                    .next().unwrap().html();
         }
         else if profile.product_specs_find_by == "Class" {
         listing.specs = product_page.find(Class(&profile.product_specs_identifier[..]))
-                                    .next().unwrap().html() ;
+                                    .next().unwrap().html();
         }
         else if profile.product_specs_find_by == "Attr" {
         listing.specs = product_page.find(Attr(&profile.product_specs_identifier[..],
                                                &profile.product_specs_ivalue[..]))
-                                    .next().unwrap().html() ;
+                                    .next().unwrap().html();
         }
     }
     listings
