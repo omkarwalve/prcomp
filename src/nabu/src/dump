@@ -1,0 +1,65 @@
+// Some old code from nabu.rs
+        //if profile.product_return_policy_find_by == "Attr.d" {
+        //listing.return_replace = product_page.find(Attr(&profile.product_return_policy_identifier[..],
+                                                        //&profile.product_return_policy_ivalue[..])
+                                                   //.descendant(Name(&profile.product_return_policy_idescendant[..])))
+                                             //.next().unwrap().text();
+        //}
+        //else if profile.product_return_policy_find_by == "Class.d" {
+        //listing.return_replace = product_page.find(Class(&profile.product_return_policy_identifier[..])
+                                                   //.descendant(Name(&profile.product_return_policy_idescendant[..])))
+                                             //.next().unwrap().text();
+        //}
+        //else if profile.product_return_policy_find_by == "Class" {
+        //listing.return_replace = product_page.find(Class(&profile.product_return_policy_identifier[..]))
+                                             //.next().unwrap().text();
+        //}
+        //else if profile.product_return_policy_find_by == "Attr" {
+        //listing.return_replace = product_page.find(Attr(&profile.product_return_policy_identifier[..],
+                                                        //&profile.product_return_policy_ivalue[..]))
+                                             //.next().unwrap().text();
+        //}
+
+
+        //if profile.product_warranty_find_by == "Attr.d" { 
+        //listing.warranty = product_page.find(Attr(&profile.product_warranty_identifier[..],
+                                                  //&profile.product_warranty_ivalue[..])
+                                              //.descendant(Name(&profile.product_warranty_idescendant[..])))
+                                       //.next().unwrap().text();
+        //}
+        //else if profile.product_warranty_find_by == "Class.d" { 
+        //listing.warranty = product_page.find(Class(&profile.product_warranty_identifier[..])
+                                               //.descendant(Name(&profile.product_warranty_idescendant[..])))
+                                       //.next().unwrap().text();
+        //}
+        //else if profile.product_warranty_find_by == "Class" {
+        //listing.warranty = product_page.find(Class(&profile.product_warranty_identifier[..]))
+                                       //.next().unwrap().text();
+        //}
+        //else if profile.product_warranty_find_by == "Attr" {
+        //listing.warranty = product_page.find(Attr(&profile.product_warranty_identifier[..],
+                                                  //&profile.product_warranty_ivalue[..]))
+                                       //.next().unwrap().text();
+        //}
+
+
+        //if profile.product_specs_find_by == "Attr.d" { 
+        //listing.specs = product_page.find(Attr(&profile.product_specs_identifier[..],
+                                               //&profile.product_specs_ivalue[..])
+                                           //.descendant(Name(&profile.product_specs_idescendant[..])))
+                                    //.next().unwrap().html();
+        //}
+        //else if profile.product_specs_find_by == "Class.d" { 
+        //listing.specs = product_page.find(Class(&profile.product_specs_identifier[..])
+                                             //.descendant(Name(&profile.product_specs_idescendant[..])))
+                                    //.next().unwrap().html();
+        //}
+        //else if profile.product_specs_find_by == "Class" {
+        //listing.specs = product_page.find(Class(&profile.product_specs_identifier[..]))
+                                    //.next().unwrap().html();
+        //}
+        //else if profile.product_specs_find_by == "Attr" {
+        //listing.specs = product_page.find(Attr(&profile.product_specs_identifier[..],
+                                               //&profile.product_specs_ivalue[..]))
+                                    //.next().unwrap().html();
+        //}
