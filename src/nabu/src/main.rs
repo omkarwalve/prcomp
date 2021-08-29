@@ -70,38 +70,53 @@ fn main() {
     let site_list = Arc::new(read_category(category));
     let sites_count = site_list.len();
     let _n_output = Arc::new(Mutex::new(String::new()));
-    let mut listings: Arc<Mutex<Vec<Vec<types::Listing<String>>>>> = Arc::new(Mutex::new(Vec::new()));
-    let FetchHandle: thread::JoinHandle<()>;
+    let listings: Arc<Mutex<Vec<Vec<types::Listing<String>>>>> = Arc::new(Mutex::new(Vec::new()));
+    let mut fetch_handle: Vec<thread::JoinHandle<()>> = Vec::new();
+    //let mut fetch_handle = Vec::new();
+    //let (trx: mpsc::Sender<Arc<Mutex<Vec<Vec<types::Listing<String>>>>>>,
+        //rcv: mpsc::Receiver<Arc<Mutex<Vec<Vec<types::Listing<String>>>>>>) = mpsc::channel();
     println!("Category: {}\nQuery: {}\nCategory File Says: {:#?}\nSite Count: {}", category,&search_query,&site_list,sites_count); // Verbose Output
-    for i in 0..sites_count { // Spawn a thread for each concurrent website
+    // Spawn a thread for each concurrent website
+    for i in 0..sites_count { 
         //println!("Inside thread for loop!");
-        let squery = search_query.clone();
-        let slist = site_list.clone();
+        let squery = Arc::clone(&search_query);
+        let slist = Arc::clone(&site_list);
+        let listng = Arc::clone(&listings);
         //println!("Done Cloning arc variables");
-        FetchHandle
-            = thread::spawn(move || {
-                println!("Inside spawned thread!");
+        fetch_handle.push(
+            //thread::Builder::new().name(site_list[i][..site_list[i].find('.').unwrap()].to_string()).spawn(move || {
+            thread::spawn(move || {
+                println!("⌛ Spawned Thread: {}",i);
                 let site_profile = read_profile(&slist[i]);
-                println!("pre pretty print now");
+                println!("☀ Configuration:");
                 site_profile.pretty_print();
-                let mut raw_listings = listings.lock().unwrap();
+                //let mut raw_listings = listng.lock().unwrap();
                 //println!("{}",make_url(&site_profile.root_uri,&site_profile.query_cmd,&site_profile.uri_seperator,&squery));
-                raw_listings.push(nabu::stage_two(nabu::stage_one(match &nabu::make_request(&make_url(&site_profile.root_uri,
-                                                                                                      &site_profile.query_cmd,
-                                                                                                      &site_profile.uri_seperator,
-                                                                                                      &squery)) { 
-                                                                     Err(why) => panic!("ERROR::NO_RESPONSE:: Failed to get response from the server.\nReason: {}\nKind: {}",why,why.kind()),
-                                                                     Ok(response) => response,
-                                                              },
-                                                              site_profile)));
-            });
+                let results 
+                    = nabu::stage_two(nabu::stage_one(match &nabu::make_request(&make_url(&site_profile.root_uri,
+                                                                                                                  &site_profile.query_cmd,
+                                                                                                                  &site_profile.uri_seperator,
+                                                                                                                  &squery)) { 
+                                                                                 Err(why) => panic!("ERROR::NO_RESPONSE:: Failed to get response from the server.\nReason: {}\nKind: {}",why,why.kind()),
+                                                                                 Ok(response) => response },
+                                                                              site_profile));
+                listng.lock().unwrap().push(results);
+                //raw_listings.push(results);//drop(listings);
+            //}).join().unwrap();
+            }));
         println!("----------------X-------------------");
     }
-    FetchHandle.join().unwrap();
+    //fetch_handle.into_iter().map(|thread| thread.join().unwrap());
+ 
+    for thread in fetch_handle.into_iter() { 
+        thread.join().unwrap();
+    }
+    //let all_listings = *listings.lock().unwrap();
+
     println!("{}",types::Listings{ date_time: format!("{}", chrono::offset::Local::now()),
                                    category: category.to_string(),
                                    query: (&search_query).to_string(),
-                                   listings: *listings.lock().unwrap()
+                                   listings: &listings.lock().unwrap()
                                  }.to_json());
     //println!("Website Configuration is:\n{:#?}",read_profiles(read_category(category)));
     //println!("{}",scrape::make_request("https://www.amazon.in/s?k=mac+m1").unwrap());
