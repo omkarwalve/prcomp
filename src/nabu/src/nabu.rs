@@ -7,7 +7,7 @@
 //  | $$  | $$|  $$$$$$$| $$$$$$$/|  $$$$$$/
 //  |__/  |__/ \_______/|_______/  \______/ 
 //                              src/scrape/mod.rs
-//                                  - The core scraper nabu.
+//                                  - The core scraper/crawler nabu.
 
 #[allow(deprecated)]
 
@@ -46,7 +46,8 @@ const PROXY_POOL : [&'static str; 10 ] = [
                                            "117.241.98.189:44643",
                                            "103.216.82.18:6666",
                                          ];
-const NOT_FOUND_MESSAGE : &'static str = "Unknown";
+const NOT_FOUND_MESSAGE : &'static str = "❔";
+const CONFIG_ERROR_MESSAGE : &'static str = "❗CONFIGURATION-ERROR❗";
 
 //const FIND_BY : [&'static String; 4 ] = [ &"Attr.d".to_string(), &"Class.d".to_string() , &"Attr".to_string() , &"Class".to_string() ];
 
@@ -72,59 +73,63 @@ pub fn make_request(url: &str) -> Result<String,ureq::Error>{
                                        .set("Upgrade-Insecure-Requests", "1")
                                        .call()?
                                        .into_string()?;
-                                               //{ Ok(resp) => resp.into_string().unwrap(),
-                                                 //Err(Error::Status(code,response)) => format!("ERROR::HTTP({})::Response from server: {}",code,response.status_text()), 
-                                                 //Err(_) => panic!("Transport/IO Error!"),
-                                               //};
-    //if &http_response[..4] == "ERROR" { panic!("{}",http_response)}
     println!("Got Response!");
     Ok(http_response)
 }
 
-pub fn stage_one(html_response: &str, website_profile: orel::Orel<String>) -> (Vec<types::Listing<String>>,orel::Orel<String>) {
+pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String>) -> (Vec<types::Listing<String>>,&'t orel::Orel<String>) {
     //println!("{:#?}",html_response); // VERBOSE
     //panic!("--BREAKPOINT--");
     println!("Parsing..");
     let html_document = Document::from(html_response);
     let mut plistings : Vec<types::Listing<String>> = Vec::new();
-    if website_profile.listing_find_by == "Class"
-    {   for lnode in html_document.find(Class(&website_profile.listing_identifier[..])) {
-            let mut plisting: types::Listing<String> = Default::default();
-            //println!("Inside for loop");
-            //URL-------
-            if website_profile.product_url_find_by == "Class" {
-                plisting.url = format!("{}{}",&website_profile.root_uri,lnode.find(Class(&website_profile.product_url_identifier[..]))
-                                                                             .next().unwrap().attr("href").unwrap().to_string());
-            } else {
-                plisting.url = format!("{}{}",&website_profile.root_uri,lnode.find(Attr(&website_profile.product_url_identifier[..],
-                                                                                        &website_profile.product_url_ivalue[..]))
-                                                                             .next().unwrap().attr("href").unwrap().to_string());
-            }
+    let listing_iterator: Box<dyn Iterator<Item = select::node::Node>> 
+        = match website_profile.listing_find_by.as_str() {
+            "Class" =>  Box::new(html_document.find(Class(&website_profile.listing_identifier[..]))),
+            "Attr"  =>  Box::new(html_document.find(Attr(&website_profile.listing_identifier[..],
+                                                         &website_profile.listing_ivalue[..]))),
+            _ => panic!("{}",CONFIG_ERROR_MESSAGE),
+        };
 
-            //IMAGE
+    for lnode in listing_iterator {
+            let mut plisting: types::Listing<String> = Default::default();
+            //-- URL
+            plisting.url
+                = match website_profile.product_url_find_by.as_str() {
+                    "Class" => format!("{}{}",&website_profile.root_uri,lnode.find(Class(&website_profile.product_url_identifier[..]))
+                                                                             .next().unwrap().attr("href").unwrap().to_string()),
+                    "Attr" => format!("{}{}",&website_profile.root_uri,lnode.find(Attr(&website_profile.product_url_identifier[..],
+                                                                                        &website_profile.product_url_ivalue[..]))
+                                                                             .next().unwrap().attr("href").unwrap().to_string()),
+                    _ => CONFIG_ERROR_MESSAGE.to_string()
+                };
+            //-- IMAGE
             plisting.img = lnode.find(Class(&website_profile.image_identifier[..]))
                                 .next().unwrap().attr("src").unwrap().to_string();
-            // PRODUCT NAME
-            if website_profile.product_name_find_by == "Class" {
-                plisting.name = lnode.find(Class(&website_profile.product_url_identifier[..]))
-                                     .next().unwrap().text();
-            } else {
-                plisting.name = lnode.find(Attr(&website_profile.product_name_identifier[..],
+            //-- PRODUCT NAME
+            plisting.name
+                = match website_profile.product_name_find_by.as_str() {
+                    "Class" => lnode.find(Class(&website_profile.product_url_identifier[..]))
+                                     .next().unwrap().text(),
+                    "Attr" => lnode.find(Attr(&website_profile.product_name_identifier[..],
                                                 &website_profile.product_name_ivalue[..]))
-                                     .next().unwrap().text();
-            }
-            //PRICE
-            if website_profile.product_price_find_by == "Class.d" {
-                plisting.price = match lnode.find(Class(&website_profile.product_price_identifier[..])
+                                     .next().unwrap().text(),
+                    _ => CONFIG_ERROR_MESSAGE.to_string(),
+            };
+            //-- PRICE
+            plisting.price
+                = match website_profile.product_price_find_by.as_str() {
+                    "Class.d" => match lnode.find(Class(&website_profile.product_price_identifier[..])
                                                    .descendant(Name(&website_profile.product_price_ivalue[..])))
                                             .next() { Some(node) => node.text(), 
-                                                      None => "Not Available".to_string(), };
-            } else {
-                plisting.price = match lnode.find(Attr(&website_profile.product_price_identifier[..],
+                                                      None => "Not Available".to_string(), },
+                    "Attr"  => match lnode.find(Attr(&website_profile.product_price_identifier[..],
                                                        &website_profile.product_price_ivalue[..]))
                                                    .next() { Some(node) => node.text(),
-                                                             None => "Not Available".to_string(), };
-            }
+                                                             None => "Not Available".to_string(), },
+                    _ => CONFIG_ERROR_MESSAGE.to_string(),
+            };
+            //-- STORE
             plisting.store = website_profile.name.clone();
             println!("==== Found ====\n╸▶ PRODUCT: {}\n╸▶ URL: {}\n╸▶ IMG.SRC:- {}\n╸▶ PRICE: {}",
                      plisting.name,
@@ -135,57 +140,9 @@ pub fn stage_one(html_response: &str, website_profile: orel::Orel<String>) -> (V
             plistings.push(plisting);
         }
         (plistings,website_profile)
-    }
-    else 
-    {   for lnode in html_document.find(Attr(&website_profile.listing_identifier[..],
-                                             &website_profile.listing_ivalue[..])) {
-            let mut plisting: types::Listing<String> = Default::default();
-            // URL
-            if website_profile.product_url_find_by == "Class" {
-                plisting.url = format!("{}{}",&website_profile.root_uri,lnode.find(Class(&website_profile.product_url_identifier[..]))
-                                                                             .next().unwrap().attr("href").unwrap().to_string());
-            } else {
-                plisting.url = format!("{}{}",&website_profile.root_uri,lnode.find(Attr(&website_profile.product_url_identifier[..],
-                                                                                        &website_profile.product_url_ivalue[..]))
-                                                                             .next().unwrap().attr("href").unwrap().to_string());
-            }
-            // IMAGE
-            plisting.img = lnode.find(Class(&website_profile.image_identifier[..]))
-                                .next().unwrap().attr("src").unwrap().to_string();
-            // PRODUCT NAME
-            if website_profile.product_name_find_by == "Class" {
-                plisting.name = lnode.find(Class(&website_profile.product_url_identifier[..])).next().unwrap().text();
-            } else {
-                plisting.name = lnode.find(Attr(&website_profile.product_name_identifier[..],
-                                                &website_profile.product_name_ivalue[..]))
-                                     .next().unwrap().text();
-            }
-            // PRICE
-            if website_profile.product_price_find_by == "Class.d" {
-                plisting.price = match lnode.find(Class(&website_profile.product_price_identifier[..])
-                                                    .descendant(Name(&website_profile.product_price_ivalue[..])))
-                                            .next() { Some(node) => node.text(),
-                                                      None => "Not Available".to_string(), };
-            } else {
-                plisting.price = match lnode.find(Attr(&website_profile.product_price_identifier[..],
-                                                       &website_profile.product_price_ivalue[..]))
-                                            .next() { Some(node) => node.text(),
-                                                      None => "Not Available".to_string(), };
-            }
-            plisting.store = website_profile.name.clone();
-            println!("==== Found ====\n╸▶ PRODUCT: {}\n╸▶ URL: {}\n╸▶ IMG.SRC:- {}\n╸▶ PRICE: {}",
-                     plisting.name,
-                     plisting.url,
-                     plisting.img,
-                     plisting.price);
-
-            plistings.push(plisting);
-        }
-        (plistings,website_profile)
-    }
 }
 
-pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, orel::Orel<String>)) -> Vec<types::Listing<String>> {
+pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, &orel::Orel<String>)) -> Vec<types::Listing<String>> {
     for listing in listings.iter_mut() {
         let product_page = Document::from(make_request(&listing.url).unwrap().as_str());
         println!("Parsing product info for {} from {}", &listing.name, &listing.store);
@@ -208,9 +165,8 @@ pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, orel::Or
                                                        &profile.product_return_policy_ivalue[..]))
                                             .next() { Some(node) => node.text(),
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
-                _ => "-x- Configuration Error -x-".to_string()
+                _ => CONFIG_ERROR_MESSAGE.to_string()
         };
-
         // WARRANTY
         listing.warranty
             = match profile.product_warranty_find_by.as_str() {
@@ -230,7 +186,7 @@ pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, orel::Or
                                                        &profile.product_warranty_ivalue[..]))
                                             .next() { Some(node) => node.text(),
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
-                _ => "-x- Configuration Error -x-".to_string()
+                _ => CONFIG_ERROR_MESSAGE.to_string()
         };
         // SPECS
         listing.specs
@@ -251,9 +207,8 @@ pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, orel::Or
                                                        &profile.product_specs_ivalue[..]))
                                             .next() { Some(node) => node.html(),
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
-                _ => "-x- Configuration Error -x-".to_string()
+                _ => CONFIG_ERROR_MESSAGE.to_string()
         };
-
     }
     listings
 }
