@@ -1,4 +1,40 @@
 // Some old code from nabu.rs
+
+#//====== Old if else blocks from stage_one() ======
+    //if website_profile.listing_find_by == "Class"
+    //{   for lnode in html_document.find(Class(&website_profile.listing_identifier[..])) {
+
+            //if website_profile.product_url_find_by == "Class" {
+                //plisting.url = format!("{}{}",&website_profile.root_uri,lnode.find(Class(&website_profile.product_url_identifier[..]))
+                                                                             //.next().unwrap().attr("href").unwrap().to_string());
+            //} else {
+                //plisting.url = format!("{}{}",&website_profile.root_uri,lnode.find(Attr(&website_profile.product_url_identifier[..],
+                                                                                        //&website_profile.product_url_ivalue[..]))
+                                                                             //.next().unwrap().attr("href").unwrap().to_string());
+            //}
+
+            //if website_profile.product_name_find_by == "Class" {
+                //plisting.name = lnode.find(Class(&website_profile.product_url_identifier[..]))
+                                     //.next().unwrap().text();
+            //} else {
+                //plisting.name = lnode.find(Attr(&website_profile.product_name_identifier[..],
+                                                //&website_profile.product_name_ivalue[..]))
+                                     //.next().unwrap().text();
+            //}
+
+            //if website_profile.product_price_find_by == "Class.d" {
+                //plisting.price = match lnode.find(Class(&website_profile.product_price_identifier[..])
+                                                   //.descendant(Name(&website_profile.product_price_ivalue[..])))
+                                            //.next() { Some(node) => node.text(), 
+                                                      //None => "Not Available".to_string(), };
+            //} else {
+                //plisting.price = match lnode.find(Attr(&website_profile.product_price_identifier[..],
+                                                       //&website_profile.product_price_ivalue[..]))
+                                                   //.next() { Some(node) => node.text(),
+                                                             //None => "Not Available".to_string(), };
+            //}
+
+#//====== Old if else blocks from stage_two() ======
         //if profile.product_return_policy_find_by == "Attr.d" {
         //listing.return_replace = product_page.find(Attr(&profile.product_return_policy_identifier[..],
                                                         //&profile.product_return_policy_ivalue[..])
@@ -63,3 +99,4 @@
                                                //&profile.product_specs_ivalue[..]))
                                     //.next().unwrap().html();
         //}
+
