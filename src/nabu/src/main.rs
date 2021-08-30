@@ -99,7 +99,7 @@ fn main() {
                                                                                                                   &squery)) { 
                                                                                  Err(why) => panic!("ERROR::NO_RESPONSE:: Failed to get response from the server.\nReason: {}\nKind: {}",why,why.kind()),
                                                                                  Ok(response) => response },
-                                                                              site_profile));
+                                                                              &site_profile));
                 listng.lock().unwrap().push(results);
                 //raw_listings.push(results);//drop(listings);
             //}).join().unwrap();
