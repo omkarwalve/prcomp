@@ -1,0 +1,85 @@
+.navBar{
+    display: flex;
+    margin-left: 0px;
+    margin-right: 00px;
+    /* border: 2px solid blue; */
+    height: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: rgba(2, 2, 95, 0.938);
+    /* margin-top: 0px; */
+}
+
+.logo{
+    text-align: center;
+    justify-items: center;
+    border: 1px solid;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    width: 150px;
+    cursor:pointer;
+    margin-right: 200px; 
+
+}
+.categoryDropdown{
+    background-color:yellow;
+    border: 1px solid yellow;
+    margin-top:12px;
+    margin-bottom: 12px;
+    cursor:pointer;
+    width:50px;
+
+}
+
+.search_bar{
+    font-size: 15px;
+    /* border-radius: 0px; */
+    border: 1px solid white;
+    padding: 10px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+
+
+}
+.search_btn{
+    color: yellow; 
+    background-color: white;
+    border: 1px solid white;
+    /* background-color: white; */
+    /* border-radius: 0px; */
+    width: 50px;
+    cursor: pointer;
+    font-size: 20px;
+    margin-top:12px;
+    margin-bottom: 12px;
+    margin-right: 70px;
+}
+
+.cart{
+    margin-top:12px;
+    margin-bottom: 12px;
+    cursor:pointer;
+    margin-right: 60px;
+    width: 120px;
+    border-radius: 10px;
+    font-size: 1rem;
+} 
+
+.cart:hover{
+    font-size: 1.3rem;
+}
+
+.userSigning{
+    background-color:yellow;
+    margin-top:12px;
+    margin-bottom: 12px;
+    cursor:pointer;
+    width: 150px;
+    text-align:center;
+}
+
+.userSigning:hover{
+    font-size: 1rem;
+}
+
+
