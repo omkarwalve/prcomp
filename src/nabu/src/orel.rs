@@ -47,6 +47,12 @@ pub struct Orel<T> {
     pub product_specs_identifier: T,
     pub product_specs_ivalue: T,
     pub product_specs_idescendant: T,
+    pub product_specs_key_find_by: T,
+    pub product_specs_keyi: T,
+    pub product_specs_keyv: T,
+    pub product_specs_val_find_by: T,
+    pub product_specs_vali: T,
+    pub product_specs_valv: T,
 }
 
 impl Orel<String> {
@@ -89,6 +95,12 @@ impl Orel<String> {
         else if var == "SPECS_IDENTIFIER" { self.product_specs_identifier = val; None }
         else if var == "SPECS_IDENTIFIER_VALUE" { self.product_specs_ivalue = val; None }
         else if var == "SPECS_DESCENDANT" { self.product_specs_idescendant = val; None }
+        else if var == "SPECS_KEY_FIND_BY" { self.product_specs_key_find_by = val; None }
+        else if var == "SPECS_KEY_IDENTIFIER" { self.product_specs_keyi = val; None }
+        else if var == "SPECS_KEY_IDENTIFIER_VALUE" { self.product_specs_keyv = val; None }
+        else if var == "SPECS_VALUE_FIND_BY" { self.product_specs_val_find_by = val; None }
+        else if var == "SPECS_VALUE_IDENTIFIER" { self.product_specs_vali = val; None }
+        else if var == "SPECS_VALUE_IDENTIFIER_VALUE" { self.product_specs_valv = val; None }
 
         else { Some(var) }
     }
