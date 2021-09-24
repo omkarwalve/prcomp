@@ -45,6 +45,12 @@ pub struct Listings<'t, T> {
     pub listings: &'t Vec<Vec<Listing<T>>>,
 }
 
+#[derive(Default)]
+pub struct Spectable<T> {
+   pub key: Vec<T>,
+   pub value: Vec<T>
+}
+
 pub trait JSONize {
     fn to_json(&self) -> String;
 }
@@ -56,10 +62,10 @@ impl JSONize for Listing<String> {
                     \"STORE\" : \"{}\",\n
                     \"RET_POLICY\" : \"{}\",\n
                     \"WARRANTY\" : \"{}\",\n
-                    \"SPECS\" : \"{}\",\n
+                    \"SPECS\" : [ {} ],\n
                     \"PRICE\" : \"{}\",\n
                     \"IMG\" : \"{}\",\n
-                    \"URL\" : \"{}\",\n
+                    \"URL\" : \"{}\"\n
                 }}\n",self.name,
                       self.store,
                       self.return_replace.trim(),
@@ -77,7 +83,7 @@ impl JSONize for Listings<'_, String> {
                     \"DATE\" : \"{}\",\n
                     \"CATEGORY\" : \"{}\",\n
                     \"QUERY\" : \"{}\",\n
-                    \"RESULTS\" : {{ {}\n\t}}
+                    \"RESULTS\" : [ {}\n\t]
                 }}\n",self.date_time,
                       self.category,
                       self.query,
@@ -95,5 +101,22 @@ impl Listings<'_, String>{
             }
         }
         product_json
+    }
+}
+
+impl JSONize for Spectable<String> {
+    fn to_json(&self) -> String {
+        let mut jsonized_kv_pairs: Vec<String> = Vec::new();
+        for i in 0..self.len() {
+            jsonized_kv_pairs.push(format!("\\\"{}\\\" : \\\"{}\\\"", self.key[i],self.value[i]));
+        }
+        format!("{{ {} }}",jsonized_kv_pairs.join(",\n"))
+    }
+}
+impl Spectable<String> {
+    //fn from_vec(&self,key_vec: Vec<String>, value_vec: Vec<String>) -> Spectable<String> {
+    //}
+    fn len(&self) -> usize {
+        self.key.len()
     }
 }
