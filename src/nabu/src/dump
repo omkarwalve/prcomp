@@ -28,8 +28,7 @@
                                             //.next() { Some(node) => node.text(), 
                                                       //None => "Not Available".to_string(), };
             //} else {
-                //plisting.price = match lnode.find(Attr(&website_profile.product_price_identifier[..],
-                                                       //&website_profile.product_price_ivalue[..]))
+                //plisting.price = match lnode.find(Attr(&website_profile.product_price_identifier[..], &website_profile.product_price_ivalue[..]))
                                                    //.next() { Some(node) => node.text(),
                                                              //None => "Not Available".to_string(), };
             //}
@@ -129,3 +128,13 @@
     //scrape::stage_one(&scrape::make_request("https://www.myntra.com").unwrap());
     //scrape::stage_one(&scrape::make_request("https://www.ajio.com/search/?text=black+sneakers").unwrap());
     //scrape::stage_one(&scrape::make_request("https://www.urbanladder.com/products/search?utf8=%E2%9C%93&keywords=queen+size+bed").unwrap());
+// Ancient code from main.rs to read multiple profiles at the same time - single threaded
+      // Function to read the websites profiles
+      fn read_profiles(profile_folder: &str, website_list: Vec<String>)  -> Vec<orel::Orel<String>> {
+          let mut nabu_index: Vec<orel::Orel<String>> = Vec::new();
+          for website_file in website_list.iter() {
+              //println!("Website Configuration is:\n{:?}",orel::parse_orel(&format!("{}/{}",PROFILE_DIR,website_file))); // VERBOSE
+              nabu_index.push(orel::parse_orel(&format!("{}/{}",profile_folder,website_file)));
+          }
+          nabu_index
+      }
