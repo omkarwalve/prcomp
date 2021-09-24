@@ -25,6 +25,12 @@
 [WARRANTY_IDENTIFIER_VALUE]={identifier_value}
 [WARRANTY_DESCENDANT]={identifier's_descendant}
 [SPECS_FIND_BY]={Class,Name,Attr,Descendant}
+[SPECS_DESCENDANT]={identifier's_descendant}
 [SPECS_IDENTIFIER]={identifier_here}
 [SPECS_IDENTIFIER_VALUE]={identifier_value}
-[SPECS_DESCENDANT]={identifier's_descendant}
+[SPECS_KEY_FIND_BY]={Class,Name,Attr,Descendant}
+[SPECS_KEY_IDENTIFIER]={identifier_of_the_table_lhs}
+[SPECS_KEY_IDENTIFIER_VALUE]={attr_value_of_identifier}
+[SPECS_VALUE_FIND_BY]={Class,Name,Attr,Descendant}
+[SPECS_VALUE_IDENTIFIER]={identifier_of_the_table_rhs}
+[SPECS_VALUE_IDENTIFIER_VALUE]={attr_value_of_identifier}
