@@ -12,14 +12,16 @@ This project aims to solve this exact problem by enhancing on the problem of a s
 - [ ] **Frontend**
     - [ ] Design
     - [ ] HTML/CSS Implementation
-    - [ ] JS Framework
+    - [ ] ReactJS Framework
 - [ ] **Backend**
-    - [ ] Scraper
+    - [x] Scraper
         - [x] Configuration Model(*OREL*)
-        - [ ] Website Profiling
-        - [ ] Stage One Scraping
-        - [ ] Stage Two Scraping
-        - [ ] JSON Output
-        - [ ] Asynchronization
+        - [x] Website Profiling
+            - [x] Stage One Profiling
+            - [x] Stage Two Profiling
+        - [x] Stage One Scraping
+        - [x] Stage Two Scraping
+        - [x] JSON Output
+        - [x] Asynchronization/?Parallelism
     - [ ] Server
         - [ ] Actix/Rocket Implementation
