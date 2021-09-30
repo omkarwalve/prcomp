@@ -1,0 +1,90 @@
+.navBar{
+    display: flex;
+    margin-left: 0px;
+    margin-right: 00px;
+    /* border: 2px solid blue; */
+    height: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: rgba(2, 2, 95, 0.938);
+    /* margin-top: 0px; */
+}
+
+.logo{
+    text-align: center;
+    justify-items: center;
+    border: 1px solid;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    width: 150px;
+    cursor:pointer;
+    margin-right: 200px; 
+
+}
+.categoryDropdown{
+    background-color: rgb(194, 192, 192);
+    border: 1px solid rgb(194, 192, 192);
+    margin-top:12px;
+    margin-bottom: 12px;
+    cursor:pointer;
+    width:50px;
+
+}
+
+.search_bar{
+    font-size: 15px;
+    /* border-radius: 0px; */
+    border: 1px solid white;
+    padding: 10px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+
+
+}
+.search_btn{
+    color:black; 
+    background-color: white;
+    border: 1px solid white;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    width: 50px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top:12px;
+    margin-bottom: 12px;
+    margin-right: 70px;
+    
+}
+
+.cart{
+    margin-top:12px;
+    margin-bottom: 12px;
+    margin-left: 60px;
+    cursor:pointer;
+    margin-right: 60px;
+    width: 60px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    
+} 
+
+.cart:hover{
+    font-size: 1.3rem;
+}
+
+.menu{
+    margin-top:12px;
+    margin-bottom: 12px;
+    margin-left: 60px;
+    cursor:pointer;
+    width: 50px;
+    text-align:center;
+    border-radius: 10px;
+}
+
+.menu:hover{
+    font-size: 1rem;
+}
+
+

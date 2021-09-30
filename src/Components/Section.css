@@ -1,0 +1,220 @@
+.content{
+    background-color: lightblue;
+    /* border: 1px solid red; */
+    padding-top: 5px;
+    padding-bottom: 4px;
+}
+
+.containerRow1{
+    display: flex;
+    /* border:2px solid red; */
+    margin-left: 20px;
+    margin-right: 20px;
+    height: 250px;
+    justify-content:space-between;
+    align-items: center;
+    padding: 10px;
+
+}
+
+.containerRow2{
+    display: flex;
+    /* border:2px solid blue; */
+    margin-left: 20px;
+    margin-right: 20px;
+    height: 250px;
+    padding: 15px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.electronics{
+    width: 210px;
+    height: 220px;
+    /* border:1px solid black; */
+    margin: 10px 10px; 
+    border-radius: 20px;
+    background-color: white;
+}
+
+.electronics img{
+    padding-top: 20px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    height: 70%;
+    /* border: 1px solid red; */
+}
+
+.electronics a{
+    text-decoration: none;
+}
+
+.catName{
+    padding-top: 5px;
+    text-align:center;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: blue;
+    /* border: 1px solid blue;
+    justify-content: center;
+    display: flex; */
+    font-family: 'Cookie', cursive;
+}
+
+.catName:hover{
+    content: "";
+    font-size: 1.55rem;
+}
+
+.furniture{
+    width: 210px;
+    height: 220px;
+    /* border:1px solid black; */
+    margin: 10px 10px;
+    border-radius: 20px; 
+    background-color: white;
+}
+
+.furniture img{
+    padding-top: 20px;
+    align-items: center;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    height: 70%;
+}
+
+.furniture a{
+    text-decoration: none;
+}
+
+.fashion{
+    width: 210px;
+    height: 220px;
+    /* border:1px solid black; */
+    margin: 10px 10px; 
+    border-radius: 20px;
+    background-color: white;
+}
+
+.fashion img{
+    padding-top: 20px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    height: 70%;
+}
+
+.fashion a{
+    text-decoration: none;
+}
+
+.grocery{
+    width: 210px;
+    height: 220px;
+    /* border:1px solid black; */
+    margin: 10px 10px;  
+    border-radius: 20px;
+    background-color: white;
+}
+
+.grocery img{
+    padding-top: 20px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    height: 70%;
+}
+
+.grocery a{
+    text-decoration: none;
+}
+
+.stationary{
+    width: 210px;
+    height: 220px;
+    /* border:1px solid black; */
+    margin: 10px 10px;  
+    border-radius: 20px;
+    background-color: white;
+}
+
+.stationary img{
+    padding-top: 20px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    height: 70%;
+}
+
+.stationary a{
+    text-decoration: none;
+}
+
+
+.garden{
+    width: 210px;
+    height: 220px;
+    /* border:1px solid black; */
+    margin: 10px 10px;  
+    border-radius: 20px;
+    background-color: white;
+}
+
+.garden img{
+    padding-top: 20px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    height: 70%;
+}
+
+.garden a{
+    text-decoration: none;
+}
+
+
+.toys{
+    width: 210px;
+    height: 220px;
+    /* border:1px solid black; */
+    margin: 10px 10px;  
+    border-radius: 20px;
+    background-color: white;
+}
+
+.toys img{
+    padding-top: 20px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    height: 70%;
+}
+
+.toys a{
+    text-decoration: none;
+}
+
+
+.books{
+    width: 210px;
+    height: 220px;
+    /* border:1px solid black; */
+    margin: 10px 10px; 
+    border-radius: 20px;
+    background-color: white; 
+}
+
+.books img{
+    padding-top: 20px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    height: 70%;
+}
+
+.books a{
+    text-decoration: none;
+}
