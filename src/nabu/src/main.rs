@@ -134,7 +134,14 @@ fn fur(furn_query: &str) -> String  {
 fn clo(cloth_query: &str) -> String  {
     nabu_fetch("clothing".to_string(),cloth_query.replace("+"," "))
 }
-
-fn main() {
-    rocket::build().mount("/",routes![root,elx,fur,clo]).launch().await;
+#[rocket::main]
+async fn main() {
+    //tokio::runtime::Runtime::new()
+                            //.unwrap()
+                            //.block_on(
+                rocket::build()
+                       .mount("/",routes![root,elx,fur,clo])
+                       .launch()
+                       .await;
+                                    //);
 }
