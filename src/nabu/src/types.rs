@@ -62,7 +62,7 @@ impl JSONize for Listing<String> {
                     \"STORE\" : \"{}\",\n
                     \"RET_POLICY\" : \"{}\",\n
                     \"WARRANTY\" : \"{}\",\n
-                    \"SPECS\" : [ {} ],\n
+                    \"SPECS\" :  {} ,\n
                     \"PRICE\" : \"{}\",\n
                     \"IMG\" : \"{}\",\n
                     \"URL\" : \"{}\"\n
@@ -108,7 +108,7 @@ impl JSONize for Spectable<String> {
     fn to_json(&self) -> String {
         let mut jsonized_kv_pairs: Vec<String> = Vec::new();
         for i in 0..self.len() {
-            jsonized_kv_pairs.push(format!("\\\"{}\\\" : \\\"{}\\\"", self.key[i],self.value[i]));
+            jsonized_kv_pairs.push(format!("\"{}\" : \"{}\"", self.key[i],self.value[i]));
         }
         format!("{{ {} }}",jsonized_kv_pairs.join(",\n"))
     }

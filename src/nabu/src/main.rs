@@ -7,12 +7,15 @@
 mod orel;
 mod nabu;
 mod types;
-use crate::types::JSONize;
+use types::JSONize;
+#[macro_use] extern crate rocket;
+//use rocket;
 use std::{ fs::File , 
            io::{ BufRead, BufReader },
            thread,
            sync::{ Arc, Mutex },
-           io::Write
+           //path::{ Path, PathBuf},
+           //io::Write
          };
 use chrono;
 
@@ -53,13 +56,15 @@ fn is_url_generated_correctly(){
 }
 
 // Call the function as `nabu(CATEGORY,SEARCH_QUERY)`
-fn main() {
-    let arguments: Vec<String> = std::env::args().collect();
+fn nabu_fetch(category: String, query: String) -> String {
+//fn main() {
+    //let arguments: Vec<String> = std::env::args().collect();
     let category_dir: &str = &format!("{}/src/cnp/categories",env!("CARGO_MANIFEST_DIR"));
     let profile_dir: Arc<String> = Arc::new(format!("{}/src/cnp/profiles",env!("CARGO_MANIFEST_DIR")));
-    let category: &String = &arguments[1];
-    let search_query = Arc::new(arguments[2..].join(" "));
-    let site_list = Arc::new(read_category(category_dir,category));
+    //let category: &String = &arguments[1];
+    //let search_query = Arc::new(arguments[2..].join(" "));
+    let search_query = Arc::new(query);
+    let site_list = Arc::new(read_category(category_dir,category.as_str()));
     let sites_count = site_list.len();
     let _n_output = Arc::new(Mutex::new(String::new()));
     let listings: Arc<Mutex<Vec<Vec<types::Listing<String>>>>> = Arc::new(Mutex::new(Vec::new()));
@@ -72,7 +77,6 @@ fn main() {
         let slist = Arc::clone(&site_list);
         let listng = Arc::clone(&listings);
         let pdir = Arc::clone(&profile_dir);
-        //println!("Done Cloning arc variables");
         fetch_handle.push(
             //thread::Builder::new().name(site_list[i][..site_list[i].find('.').unwrap()].to_string()).spawn(move || {
             thread::spawn(move || {
@@ -98,19 +102,39 @@ fn main() {
     }
     fetch_handle.into_iter().for_each(|thread| thread.join().unwrap());
  
-    //for thread in fetch_handle.into_iter() { 
-        //thread.join().unwrap();
-    //}
-    //let all_listings = *listings.lock().unwrap();
+    //std::fs::File::create("output.json").unwrap().write_all(types::Listings{ date_time: format!("{}", chrono::offset::Local::now()),
+                                                                             //category: category.to_string(),
+                                                                             //query: (&search_query).to_string(),
+                                                                             //listings: &listings.lock().unwrap()
+                                                                           //}.to_json().as_bytes()).unwrap();
+    let all_listings =  &listings.lock().unwrap();
+    types::Listings{ date_time: format!("{}", chrono::offset::Local::now()),
+                                                                                 category: category.to_string(),
+                                                                                 query: (&search_query).to_string(),
+                                                                                 listings: all_listings
+                                                                               }.to_json()
+}
 
-    //println!("{}",types::Listings{ date_time: format!("{}", chrono::offset::Local::now()),
-                                   //category: category.to_string(),
-                                   //query: (&search_query).to_string(),
-                                   //listings: &listings.lock().unwrap()
-                                 //}.to_json());
-    std::fs::File::create("output.json").unwrap().write_all(types::Listings{ date_time: format!("{}", chrono::offset::Local::now()),
-                                                                             category: category.to_string(),
-                                                                             query: (&search_query).to_string(),
-                                                                             listings: &listings.lock().unwrap()
-                                                                           }.to_json().as_bytes()).unwrap();
+#[get("/")]
+fn root() -> &'static str {
+    "This is the root of the website. You shouldn't be here :)'"
+}
+
+#[get("/elx/<ex_query>")]
+fn elx(ex_query: &str) -> String  {
+    nabu_fetch("electronics".to_string(),ex_query.replace("+"," "))
+}
+
+#[get("/fur/<furn_query>")]
+fn fur(furn_query: &str) -> String  {
+    nabu_fetch("furniture".to_string(),furn_query.replace("+"," "))
+}
+
+#[get("/clo/<cloth_query>")]
+fn clo(cloth_query: &str) -> String  {
+    nabu_fetch("clothing".to_string(),cloth_query.replace("+"," "))
+}
+
+fn main() {
+    rocket::build().mount("/",routes![root,elx,fur,clo]).launch().await;
 }
