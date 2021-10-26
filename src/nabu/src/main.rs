@@ -8,12 +8,14 @@ mod orel;
 mod nabu;
 mod types;
 use types::JSONize;
+
 #[macro_use] extern crate rocket;
-//use rocket;
+
 use std::{ fs::File , 
            io::{ BufRead, BufReader },
            thread,
            sync::{ Arc, Mutex },
+           env
            //path::{ Path, PathBuf},
            //io::Write
          };
@@ -56,13 +58,19 @@ fn is_url_generated_correctly(){
 }
 
 // Call the function as `nabu(CATEGORY,SEARCH_QUERY)`
-fn nabu_fetch(category: String, query: String) -> String {
+pub fn nabu_fetch(category: String, query: String) -> String {
 //fn main() {
     //let arguments: Vec<String> = std::env::args().collect();
-    let category_dir: &str = &format!("{}/src/cnp/categories",env!("CARGO_MANIFEST_DIR"));
-    let profile_dir: Arc<String> = Arc::new(format!("{}/src/cnp/profiles",env!("CARGO_MANIFEST_DIR")));
     //let category: &String = &arguments[1];
     //let search_query = Arc::new(arguments[2..].join(" "));
+    
+    let category_dir: &str = &format!("{}/src/cnp/categories",env!("CARGO_MANIFEST_DIR"));
+    let profile_dir: Arc<String> = Arc::new(format!("{}/src/cnp/profiles",env!("CARGO_MANIFEST_DIR")));
+
+    //let current_dir = env::current_dir().unwrap().display().to_string();
+    //let category_dir: &str = &format!("{}/src/cnp/categories",current_dir);
+    //let profile_dir: Arc<String> = Arc::new(format!("{}/src/cnp/profiles",current_dir));
+    
     let search_query = Arc::new(query);
     let site_list = Arc::new(read_category(category_dir,category.as_str()));
     let sites_count = site_list.len();
@@ -72,7 +80,6 @@ fn nabu_fetch(category: String, query: String) -> String {
     //println!("Category: {}\nQuery: {}\nCategory File Says: {:#?}\nSite Count: {}", category,&search_query,&site_list,sites_count); // Verbose Output
     // Spawn a thread for each concurrent website
     for i in 0..sites_count { 
-        //println!("Inside thread for loop!");
         let squery = Arc::clone(&search_query);
         let slist = Arc::clone(&site_list);
         let listng = Arc::clone(&listings);
@@ -88,10 +95,10 @@ fn nabu_fetch(category: String, query: String) -> String {
                 //println!("{}",make_url(&site_profile.root_uri,&site_profile.query_cmd,&site_profile.uri_seperator,&squery));
                 let results 
                     = nabu::stage_two(nabu::stage_one(match &nabu::make_request(&make_url(&site_profile.root_uri,
-                                                                                                                  &site_profile.query_cmd,
-                                                                                                                  &site_profile.uri_seperator,
-                                                                                                                  &squery)) { 
-                                                                                 Err(why) => panic!("ERROR::NO_RESPONSE:: Failed to get response from the server.\nReason: {}\nKind: {}",why,why.kind()),
+                                                                                          &site_profile.query_cmd,
+                                                                                          &site_profile.uri_seperator,
+                                                                                          &squery)) { 
+                                                                                 Err(why) => stringify!("ERROR::NO_RESPONSE:: Failed to get response from the server.\nReason: {}\nKind: {}",why,why.kind()),
                                                                                  Ok(response) => response },
                                                                               &site_profile));
                 listng.lock().unwrap().push(results);
@@ -100,7 +107,7 @@ fn nabu_fetch(category: String, query: String) -> String {
             }));
         println!("----------------X-------------------");
     }
-    fetch_handle.into_iter().for_each(|thread| thread.join().unwrap());
+    fetch_handle.into_iter().for_each(|thread| thread.join().expect("Could not join thread"));
  
     //std::fs::File::create("output.json").unwrap().write_all(types::Listings{ date_time: format!("{}", chrono::offset::Local::now()),
                                                                              //category: category.to_string(),
@@ -109,10 +116,10 @@ fn nabu_fetch(category: String, query: String) -> String {
                                                                            //}.to_json().as_bytes()).unwrap();
     let all_listings =  &listings.lock().unwrap();
     types::Listings{ date_time: format!("{}", chrono::offset::Local::now()),
-                                                                                 category: category.to_string(),
-                                                                                 query: (&search_query).to_string(),
-                                                                                 listings: all_listings
-                                                                               }.to_json()
+                     category: category.to_string(),
+                     query: (&search_query).to_string(),
+                     listings: all_listings
+                   }.to_json()
 }
 
 #[get("/")]
@@ -142,6 +149,6 @@ async fn main() {
                 rocket::build()
                        .mount("/",routes![root,elx,fur,clo])
                        .launch()
-                       .await;
+                       .await.unwrap();
                                     //);
 }
