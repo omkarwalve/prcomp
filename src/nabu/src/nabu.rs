@@ -22,6 +22,7 @@ use reqwest;
 use futures::{ stream, StreamExt};
 use tokio;
 use select::predicate::{Attr, Class, Name, Predicate};
+use ansi_term::Color;
 
 //use serde_json;
 
@@ -53,6 +54,7 @@ const PROXY_POOL : [&'static str; 10 ] = [
                                          ];
 const NOT_FOUND_MESSAGE : &'static str = "❔";
 const CONFIG_ERROR_MESSAGE : &'static str = "❗CONFIGURATION-ERROR❗";
+const FAKE_RESPONSE : &'static str = "<h1>REQUEST FAILED</h1>";
 
 //const FIND_BY : [&'static String; 4 ] = [ &"Attr.d".to_string(), &"Class.d".to_string() , &"Attr".to_string() , &"Class".to_string() ];
 
@@ -108,11 +110,22 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
             //-- URL
             plisting.url
                 = match website_profile.product_url_find_by.as_str() {
-                    "Class" => format!("{}{}",&website_profile.root_uri,lnode.find(Class(&website_profile.product_url_identifier[..]))
-                                                                             .next().unwrap().attr("href").unwrap().to_string()),
-                    "Attr" => format!("{}{}",&website_profile.root_uri,lnode.find(Attr(&website_profile.product_url_identifier[..],
-                                                                                        &website_profile.product_url_ivalue[..]))
-                                                                             .next().unwrap().attr("href").unwrap().to_string()),
+                    "Class" => format!("{}{}",&website_profile.root_uri
+                                             ,lnode.find(Class(&website_profile.product_url_identifier[..]))
+                                                        .next()
+                                                        .unwrap()
+                                                        .attr("href")
+                                                        .unwrap()
+                                                        .to_string()),
+                    "Attr" => format!("{}{}",&website_profile.root_uri
+                                            ,lnode.find(Attr(&website_profile.product_url_identifier[..]
+                                                            ,&website_profile.product_url_ivalue[..]))
+                                                       .next()
+                                                       .unwrap()
+                                                       .attr("href")
+                                                       .unwrap()
+                                                       .to_string()),
+                    "self" => lnode.attr("href").unwrap().to_string(),
                     _ => CONFIG_ERROR_MESSAGE.to_string()
                 };
             //-- IMAGE
@@ -192,7 +205,9 @@ async fn concurrent_requests(urls: Vec<String>) -> Result<Vec<select::document::
         .for_each(|resp| async {
             match resp {
                 Ok(res) => response_vec.lock().unwrap().push(Document::from(res.as_str())),
-                Err(e) => panic!("{}",e),
+                Err(e) => { println!("{}",Color::Red.bold().paint(format!("Async Request failed\tReason: {}",e)));
+                            response_vec.lock().unwrap().push(Document::from(FAKE_RESPONSE))
+                },
             }
         }).await;
     let output = response_vec.lock().unwrap();

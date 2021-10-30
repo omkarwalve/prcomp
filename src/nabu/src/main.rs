@@ -8,18 +8,26 @@ mod orel;
 mod nabu;
 mod types;
 use types::JSONize;
+use ansi_term::Color;
 
 #[macro_use] extern crate rocket;
 
 use std::{ fs::File , 
            io::{ BufRead, BufReader },
            thread,
-           sync::{ Arc, Mutex },
-           env
+           sync::{ self, Arc, Mutex },
+           env,
+           error::Error,
            //path::{ Path, PathBuf},
            //io::Write
          };
 use chrono;
+
+// Error handler :)
+//enum NabuError {
+    //MutexError(sync::LockResult),
+    //ResponseFail(Error),
+//}
 
 // == Global Variables
 const CONFIG_EXTENSION: &str = "orel";
@@ -54,11 +62,14 @@ fn make_url(root_url: &String, query_cmd: &String, uri_seperator: &str, query: &
 
 #[test]
 fn is_url_generated_correctly(){
-    assert_eq!(make_url(&"https://urbanladder.com".to_string(),&"products/search?keywords".to_string(),"+",&"Queen Size Bed".to_string()),"https://www.urbanladder.com/products/search?keywords=Queen+Size+Bed");
+    assert_eq!(make_url(&"https://urbanladder.com".to_string()
+                       ,&"products/search?keywords".to_string()
+                       ,"+",&"Queen Size Bed".to_string())
+              ,"https://www.urbanladder.com/products/search?keywords=Queen+Size+Bed");
 }
 
 // Call the function as `nabu(CATEGORY,SEARCH_QUERY)`
-pub fn nabu_fetch(category: String, query: String) -> String {
+pub fn nabu_fetch(category: String, query: String) -> Option<crate::types::Listings<String>> {
 //fn main() {
     //let arguments: Vec<String> = std::env::args().collect();
     //let category: &String = &arguments[1];
@@ -68,8 +79,8 @@ pub fn nabu_fetch(category: String, query: String) -> String {
     let profile_dir: Arc<String> = Arc::new(format!("{}/src/cnp/profiles",env!("CARGO_MANIFEST_DIR")));
 
     //let current_dir = env::current_dir().unwrap().display().to_string();
-    //let category_dir: &str = &format!("{}/src/cnp/categories",current_dir);
-    //let profile_dir: Arc<String> = Arc::new(format!("{}/src/cnp/profiles",current_dir));
+    //let category_dir: &str = &format!("{}/cnp/categories",current_dir);
+    //let profile_dir: Arc<String> = Arc::new(format!("{}/cnp/profiles",current_dir));
     
     let search_query = Arc::new(query);
     let site_list = Arc::new(read_category(category_dir,category.as_str()));
@@ -89,8 +100,8 @@ pub fn nabu_fetch(category: String, query: String) -> String {
             thread::spawn(move || {
                 println!("⌛ Spawned Thread: {}",i);
                 let site_profile = read_profile(&pdir,&slist[i]);
-                println!("☀ Configuration:");
-                site_profile.pretty_print();
+                //println!("☀ Configuration:");
+                //site_profile.pretty_print();
                 //let mut raw_listings = listng.lock().unwrap();
                 //println!("{}",make_url(&site_profile.root_uri,&site_profile.query_cmd,&site_profile.uri_seperator,&squery));
                 let results 
@@ -101,54 +112,109 @@ pub fn nabu_fetch(category: String, query: String) -> String {
                                                                                  Err(why) => stringify!("ERROR::NO_RESPONSE:: Failed to get response from the server.\nReason: {}\nKind: {}",why,why.kind()),
                                                                                  Ok(response) => response },
                                                                               &site_profile));
-                listng.lock().unwrap().push(results);
+                listng.lock().expect("Error acquiring mutex lock").push(results);
+                println!("{}",Color::Green.paint("Done scraping"));
                 //raw_listings.push(results);//drop(listings);
             //}).join().unwrap();
             }));
         println!("----------------X-------------------");
     }
-    fetch_handle.into_iter().for_each(|thread| thread.join().expect("Could not join thread"));
+    println!("{}",Color::Yellow.paint("Ready to join threads"));
+    fetch_handle.into_iter().for_each(|thread| 
+                                        thread.join().expect("THREAD_JOIN_FAILURE"));
  
     //std::fs::File::create("output.json").unwrap().write_all(types::Listings{ date_time: format!("{}", chrono::offset::Local::now()),
                                                                              //category: category.to_string(),
                                                                              //query: (&search_query).to_string(),
                                                                              //listings: &listings.lock().unwrap()
                                                                            //}.to_json().as_bytes()).unwrap();
-    let all_listings =  &listings.lock().unwrap();
-    types::Listings{ date_time: format!("{}", chrono::offset::Local::now()),
-                     category: category.to_string(),
-                     query: (&search_query).to_string(),
-                     listings: all_listings
-                   }.to_json()
+                                                                           
+    println!("Ready to pass json");
+    let all_listings =  &listings.lock().expect("Failed to acquire lock on listings mutex");
+    Some(types::Listings{ date_time: format!("{}", chrono::offset::Local::now()),
+                          category: category.to_string(),
+                          query: (&search_query).to_string(),
+                          listings: all_listings.to_vec()
+                   })
 }
 
+//-- SERVER --
+
+use rocket::http::Header;
+use rocket::{Request, Response};
+use rocket::fairing::{Fairing, Info, Kind};
+//use rocket::response::content::Json;
+use rocket::serde::json::Json;
+
+pub struct CORS;
+
+#[rocket::async_trait]
+impl Fairing for CORS {
+    fn info(&self) -> Info {
+        Info {
+            name: "Attaching CORS headers to responses",
+            kind: Kind::Response
+        }
+    }
+
+    async fn on_response<'r>(&self, _request: &'r Request<'_>, response: &mut Response<'r>) {
+        response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
+        response.set_header(Header::new("Access-Control-Allow-Methods", "POST, GET, PATCH, OPTIONS"));
+        response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
+        response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
+    }
+}
+
+fn fake_listings()  -> crate::types::Listings<String> {
+    let x = "X".to_string();
+    crate::types::Listings{ date_time: x.clone()
+                          , query: x.clone()
+                          , category: x.clone()
+                          , listings: vec![vec![crate::types::Listing{ name: x.clone()
+                                                                     , store: x.clone()
+                                                                     , return_replace: x.clone()
+                                                                     , warranty: x.clone()
+                                                                     , specs: x.clone()
+                                                                     , price: x.clone()
+                                                                     , img: x.clone()
+                                                                     , url: x.clone()}]]  }
+}
+
+// Routes
 #[get("/")]
 fn root() -> &'static str {
     "This is the root of the website. You shouldn't be here :)'"
 }
 
 #[get("/elx/<ex_query>")]
-fn elx(ex_query: &str) -> String  {
-    nabu_fetch("electronics".to_string(),ex_query.replace("+"," "))
+fn elx(ex_query: &str) -> Json<crate::types::Listings<String>>  {
+    println!("Started elx code");
+    Json(match nabu_fetch("electronics".to_string(),ex_query.replace("+"," ")) {
+        Some(listings) => listings,
+        None => fake_listings()
+    })
 }
 
 #[get("/fur/<furn_query>")]
-fn fur(furn_query: &str) -> String  {
-    nabu_fetch("furniture".to_string(),furn_query.replace("+"," "))
+fn fur(furn_query: &str) -> Json<crate::types::Listings<String>>  {
+    Json(match nabu_fetch("furniture".to_string(),furn_query.replace("+"," ")) {
+        Some(listings) => listings,
+        None => fake_listings()
+    })
 }
 
 #[get("/clo/<cloth_query>")]
-fn clo(cloth_query: &str) -> String  {
-    nabu_fetch("clothing".to_string(),cloth_query.replace("+"," "))
+fn clo(cloth_query: &str) -> Json<crate::types::Listings<String>>  {
+    Json(match nabu_fetch("clothing".to_string(),cloth_query.replace("+"," ")) {
+        Some(listings) => listings,
+        None => fake_listings()
+    })
 }
 #[rocket::main]
 async fn main() {
-    //tokio::runtime::Runtime::new()
-                            //.unwrap()
-                            //.block_on(
                 rocket::build()
                        .mount("/",routes![root,elx,fur,clo])
+                       .attach(CORS)
                        .launch()
                        .await.unwrap();
-                                    //);
 }
