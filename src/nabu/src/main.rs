@@ -15,19 +15,20 @@ use ansi_term::Color;
 use std::{ fs::File , 
            io::{ BufRead, BufReader },
            thread,
-           sync::{ self, Arc, Mutex },
+           sync::{ Arc, Mutex },
            env,
-           error::Error,
+           rc::Rc,
            //path::{ Path, PathBuf},
            //io::Write
          };
 use chrono;
 
-// Error handler :)
-//enum NabuError {
-    //MutexError(sync::LockResult),
-    //ResponseFail(Error),
-//}
+#[macro_export]
+macro_rules! debug {
+    ($format:expr, $($strs:expr),*) => {
+        println!($format, $($strs,)*);
+    }
+}
 
 // == Global Variables
 const CONFIG_EXTENSION: &str = "orel";
@@ -68,56 +69,58 @@ fn is_url_generated_correctly(){
               ,"https://www.urbanladder.com/products/search?keywords=Queen+Size+Bed");
 }
 
+macro_rules! dir_mode {
+    ("raw",$cdir:ident,$pdir:ident) => {
+        let $cdir: &str = &format!("{}/src/cnp/categories",env!("CARGO_MANIFEST_DIR"));
+        let $pdir: Arc<String> = Arc::new(format!("{}/src/cnp/profiles",env!("CARGO_MANIFEST_DIR")));
+    };
+    ("bin",$cdir:ident,$pdir:ident) => {
+        let current_dir = env::current_dir().unwrap().display().to_string();
+        let $cdir: &str = &format!("{}/cnp/categories",current_dir);
+        let $pdir: Arc<String> = Arc::new(format!("{}/cnp/profiles",current_dir));
+    };
+    ("arg",$cdir:ident,$pdir:ident) => {
+        let arguments: Vec<String> = std::env::args().collect();
+        let category: &String = &arguments[1];
+        let search_query = Arc::new(arguments[2..].join(" "));
+    };
+}
+
 // Call the function as `nabu(CATEGORY,SEARCH_QUERY)`
 pub fn nabu_fetch(category: String, query: String) -> Option<crate::types::Listings<String>> {
-//fn main() {
-    //let arguments: Vec<String> = std::env::args().collect();
-    //let category: &String = &arguments[1];
-    //let search_query = Arc::new(arguments[2..].join(" "));
-    
-    let category_dir: &str = &format!("{}/src/cnp/categories",env!("CARGO_MANIFEST_DIR"));
-    let profile_dir: Arc<String> = Arc::new(format!("{}/src/cnp/profiles",env!("CARGO_MANIFEST_DIR")));
-
-    //let current_dir = env::current_dir().unwrap().display().to_string();
-    //let category_dir: &str = &format!("{}/cnp/categories",current_dir);
-    //let profile_dir: Arc<String> = Arc::new(format!("{}/cnp/profiles",current_dir));
-    
+    dir_mode!("raw",category_dir,profile_dir);
     let search_query = Arc::new(query);
     let site_list = Arc::new(read_category(category_dir,category.as_str()));
     let sites_count = site_list.len();
     let _n_output = Arc::new(Mutex::new(String::new()));
     let listings: Arc<Mutex<Vec<Vec<types::Listing<String>>>>> = Arc::new(Mutex::new(Vec::new()));
     let mut fetch_handle: Vec<thread::JoinHandle<()>> = Vec::new();
-    //println!("Category: {}\nQuery: {}\nCategory File Says: {:#?}\nSite Count: {}", category,&search_query,&site_list,sites_count); // Verbose Output
+    //println!("Category: {}\nQuery: {}\nWebsites: {:#?}\nSite Count: {}", category,&search_query,&site_list,sites_count); // Verbose Output
     // Spawn a thread for each concurrent website
     for i in 0..sites_count { 
         let squery = Arc::clone(&search_query);
         let slist = Arc::clone(&site_list);
         let listng = Arc::clone(&listings);
         let pdir = Arc::clone(&profile_dir);
+        let t_name = Rc::new(slist[i].clone().replace(".orel",""));
+        let w_thread = thread::Builder::new().name(t_name.to_string());
         fetch_handle.push(
-            //thread::Builder::new().name(site_list[i][..site_list[i].find('.').unwrap()].to_string()).spawn(move || {
-            thread::spawn(move || {
-                println!("⌛ Spawned Thread: {}",i);
+            w_thread.spawn(move || {
+                println!("⌛ Spawned Thread: {}", thread::current().name().expect("Failed to get name"));
                 let site_profile = read_profile(&pdir,&slist[i]);
-                //println!("☀ Configuration:");
-                //site_profile.pretty_print();
-                //let mut raw_listings = listng.lock().unwrap();
-                //println!("{}",make_url(&site_profile.root_uri,&site_profile.query_cmd,&site_profile.uri_seperator,&squery));
                 let results 
-                    = nabu::stage_two(nabu::stage_one(match &nabu::make_request(&make_url(&site_profile.root_uri,
-                                                                                          &site_profile.query_cmd,
-                                                                                          &site_profile.uri_seperator,
-                                                                                          &squery)) { 
-                                                                                 Err(why) => stringify!("ERROR::NO_RESPONSE:: Failed to get response from the server.\nReason: {}\nKind: {}",why,why.kind()),
-                                                                                 Ok(response) => response },
-                                                                              &site_profile));
+                    = nabu::stage_two(nabu::stage_one(match &nabu::make_request(&make_url(&site_profile.root_uri
+                                                                                         ,&site_profile.query_cmd
+                                                                                         ,&site_profile.uri_seperator
+                                                                                         ,&squery)) { 
+                                                        Err(why) => stringify!("ERROR::NO_RESPONSE:: Failed to get response from the server.\n
+                                                                                Reason: {}\n
+                                                                                Kind: {}",why,why.kind()),
+                                                        Ok(response) => response }
+                                                     ,&site_profile));
                 listng.lock().expect("Error acquiring mutex lock").push(results);
-                println!("{}",Color::Green.paint("Done scraping"));
-                //raw_listings.push(results);//drop(listings);
-            //}).join().unwrap();
-            }));
-        println!("----------------X-------------------");
+                println!("{}",Color::Green.paint(format!("Done scraping from {}", thread::current().name().expect("Failed to get current thread name"))));
+            }).expect(&format!("Failed to create thread {}",t_name)));
     }
     println!("{}",Color::Yellow.paint("Ready to join threads"));
     fetch_handle.into_iter().for_each(|thread| 
@@ -186,7 +189,7 @@ fn root() -> &'static str {
     "This is the root of the website. You shouldn't be here :)'"
 }
 
-#[get("/elx/<ex_query>")]
+#[get("/elx/<ex_query>", format = "application/json")]
 fn elx(ex_query: &str) -> Json<crate::types::Listings<String>>  {
     println!("Started elx code");
     Json(match nabu_fetch("electronics".to_string(),ex_query.replace("+"," ")) {

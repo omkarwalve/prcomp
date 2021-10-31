@@ -65,6 +65,11 @@ macro_rules! mkvec {
     }
 }
 
+macro_rules! clean {
+    ($text: expr, "wty") => { $text.replace("Know More","") };
+    ($text: expr, "rep") => { $text.replace("?","") }
+}
+
 pub fn make_request(url: &str) -> Result<String,ureq::Error>{
     println!("Making Request to {}",url);
     let n_agent: Agent = AgentBuilder::new()
@@ -113,7 +118,7 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                     "Class" => format!("{}{}",&website_profile.root_uri
                                              ,lnode.find(Class(&website_profile.product_url_identifier[..]))
                                                         .next()
-                                                        .unwrap()
+                                                        .expect(&format!("Failed to get URL from {}", Color::Red.paint(&website_profile.product_url_identifier)))
                                                         .attr("href")
                                                         .unwrap()
                                                         .to_string()),
@@ -121,11 +126,12 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                                             ,lnode.find(Attr(&website_profile.product_url_identifier[..]
                                                             ,&website_profile.product_url_ivalue[..]))
                                                        .next()
-                                                       .unwrap()
+                                                       .expect("Failed to get URL")
                                                        .attr("href")
                                                        .unwrap()
                                                        .to_string()),
-                    "self" => lnode.attr("href").unwrap().to_string(),
+                        "self" => format!("{}{}",&website_profile.root_uri
+                                                ,lnode.attr("href").unwrap().to_string()),
                     _ => CONFIG_ERROR_MESSAGE.to_string()
                 };
             //-- IMAGE
@@ -134,7 +140,7 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
             //-- PRODUCT NAME
             plisting.name
                 = match website_profile.product_name_find_by.as_str() {
-                    "Class" => lnode.find(Class(&website_profile.product_url_identifier[..]))
+                    "Class" => lnode.find(Class(&website_profile.product_name_identifier[..]))
                                      .next().unwrap().text().replace("\"","\\\""),
                     "Attr" => lnode.find(Attr(&website_profile.product_name_identifier[..],
                                                 &website_profile.product_name_ivalue[..]))
@@ -237,18 +243,18 @@ pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, &orel::O
                 "Attr.d" => match product_pages[count].find(Attr(&profile.product_return_policy_identifier[..],
                                                         &profile.product_return_policy_ivalue[..])
                                                     .descendant(Name(&profile.product_return_policy_idescendant[..])))
-                                              .next() { Some(node) => node.text(),
+                                              .next() { Some(node) => clean!(node.text(),"rep"),
                                                         None => format!("{}", NOT_FOUND_MESSAGE) },
                 "Class.d" => match product_pages[count].find(Class(&profile.product_return_policy_identifier[..])
                                                      .descendant(Name(&profile.product_return_policy_idescendant[..])))
-                                               .next() { Some(node) => node.text(),
+                                               .next() { Some(node) => clean!(node.text(),"rep"),
                                                         None => format!("{}", NOT_FOUND_MESSAGE) },
                 "Class" => match product_pages[count].find(Class(&profile.product_return_policy_identifier[..]))
-                                             .next() { Some(node) => node.text(),
+                                             .next() { Some(node) => clean!(node.text(),"rep"),
                                                        None => format!("{}", NOT_FOUND_MESSAGE) },
                 "Attr" => match product_pages[count].find(Attr(&profile.product_return_policy_identifier[..],
                                                        &profile.product_return_policy_ivalue[..]))
-                                            .next() { Some(node) => node.text(),
+                                            .next() { Some(node) => clean!(node.text(),"rep"),
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
                 _ => CONFIG_ERROR_MESSAGE.to_string()
         };
@@ -259,18 +265,18 @@ pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, &orel::O
                 "Attr.d" => match product_pages[count].find(Attr(&profile.product_warranty_identifier[..],
                                                          &profile.product_warranty_ivalue[..])
                                                     .descendant(Name(&profile.product_warranty_idescendant[..])))
-                                              .next() { Some(node) => node.text(),
+                                              .next() { Some(node) => clean!(node.text(),"wty"),
                                                         None => format!("{}", NOT_FOUND_MESSAGE) },
                 "Class.d" => match product_pages[count].find(Class(&profile.product_warranty_identifier[..])
                                                      .descendant(Name(&profile.product_warranty_idescendant[..])))
-                                               .next() { Some(node) => node.text(),
+                                               .next() { Some(node) => clean!(node.text(),"wty"),
                                                         None => format!("{}", NOT_FOUND_MESSAGE) },
                 "Class" => match product_pages[count].find(Class(&profile.product_warranty_identifier[..]))
-                                             .next() { Some(node) => node.text(),
+                                             .next() { Some(node) => clean!(node.text(),"wty"),
                                                        None => format!("{}", NOT_FOUND_MESSAGE) },
                 "Attr" => match product_pages[count].find(Attr(&profile.product_warranty_identifier[..],
                                                        &profile.product_warranty_ivalue[..]))
-                                            .next() { Some(node) => node.text(),
+                                            .next() { Some(node) => clean!(node.text(),"wty"),
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
                 _ => CONFIG_ERROR_MESSAGE.to_string()
         };
@@ -279,10 +285,10 @@ pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, &orel::O
         listing.specs
             = match profile.product_specs_find_by.as_str() {
                 "Attr.d" => match product_pages[count].find(Attr(&profile.product_specs_identifier[..],
-                                                         &profile.product_specs_ivalue[..])
+                                                                 &profile.product_specs_ivalue[..])
                                                     .descendant(Name(&profile.product_specs_idescendant[..])))
-                                              .next() { Some(node) => match (profile.product_specs_key_find_by.as_str(),
-                                                                             profile.product_specs_val_find_by.as_str()) {
+                                              .next() { Some(node) => match (profile.product_specs_key_find_by.as_str()
+                                                                            ,profile.product_specs_val_find_by.as_str()) {
                                                                         ("Class","Class") => { types::Spectable { key : mkvec!(node.find(Class(&profile.product_specs_keyi[..]))),
                                                                                                                   value : mkvec!(node.find(Class(&profile.product_specs_vali[..])))
                                                                                                                  }.to_json()
