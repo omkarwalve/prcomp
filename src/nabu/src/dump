@@ -138,3 +138,11 @@
           }
           nabu_index
       }
+// Ancient code to verify configuration in wrapper
+                //println!("☀ Configuration:");
+                //site_profile.pretty_print();
+                //let mut raw_listings = listng.lock().unwrap();
+                //println!("{}",make_url(&site_profile.root_uri,&site_profile.query_cmd,&site_profile.uri_seperator,&squery));
+
+                //raw_listings.push(results);//drop(listings);
+            //}).join().unwrap();

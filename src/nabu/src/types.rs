@@ -25,7 +25,9 @@
     //Nodes(Node<'t>),
     //NonHTML
 //}
+use rocket::serde::{ Serialize, Deserialize };
 
+#[derive(Serialize,Deserialize)]
 #[derive(Default,Debug,Clone)]
 pub struct Listing<T> { 
     pub name: T,
@@ -38,11 +40,12 @@ pub struct Listing<T> {
     pub url: T,
 }
 
-pub struct Listings<'t, T> {
+#[derive(Serialize)]
+pub struct Listings<T> {
     pub query: T,
     pub category: T,
     pub date_time: T,
-    pub listings: &'t Vec<Vec<Listing<T>>>,
+    pub listings: Vec<Vec<Listing<T>>>,
 }
 
 #[derive(Default)]
@@ -57,42 +60,42 @@ pub trait JSONize {
 
 impl JSONize for Listing<String> {
     fn to_json(&self) -> String {
-        format!("{{\n
-                    \"NAME\" : \"{}\",\n
-                    \"STORE\" : \"{}\",\n
-                    \"RET_POLICY\" : \"{}\",\n
-                    \"WARRANTY\" : \"{}\",\n
-                    \"SPECS\" : [ {} ],\n
-                    \"PRICE\" : \"{}\",\n
-                    \"IMG\" : \"{}\",\n
-                    \"URL\" : \"{}\"\n
-                }}\n",self.name,
+        format!("{{
+                    \"NAME\" : \"{}\",
+                    \"STORE\" : \"{}\",
+                    \"RET_POLICY\" : \"{}\",
+                    \"WARRANTY\" : \"{}\",
+                    \"SPECS\" :  {} ,
+                    \"PRICE\" : \"{}\",
+                    \"IMG\" : \"{}\",
+                    \"URL\" : \"{}\"
+                }}",self.name,
                       self.store,
                       self.return_replace.trim(),
                       self.warranty.trim(),
-                      self.specs.trim().replace("\n",""),
+                      { let spec = self.specs.trim().replace("\n",""); if spec.chars().count() < 2 { "\"❔\"".to_string() } else { spec } },
                       self.price,
                       self.img,
                       self.url)
     }
 }
 
-impl JSONize for Listings<'_, String> {
+impl JSONize for Listings<String> {
     fn to_json(&self) -> String {
-        format!("{{\n
-                    \"DATE\" : \"{}\",\n
-                    \"CATEGORY\" : \"{}\",\n
-                    \"QUERY\" : \"{}\",\n
-                    \"RESULTS\" : [ {}\n\t]
-                }}\n",self.date_time,
+        format!("{{
+                    \"DATE\" : \"{}\",
+                    \"CATEGORY\" : \"{}\",
+                    \"QUERY\" : \"{}\",
+                    \"RESULTS\" : [ {} ]
+                }}",self.date_time,
                       self.category,
                       self.query,
-                      self.listings_to_json().join(",\n")
+                      self.listings_to_json().join(",")
                       )
     }
 }
 
-impl Listings<'_, String>{ 
+impl Listings<String>{ 
     pub fn listings_to_json(&self) -> Vec<String> { 
         let mut product_json : Vec<String> = Vec::new();
         for listing in self.listings.iter() {
@@ -108,11 +111,12 @@ impl JSONize for Spectable<String> {
     fn to_json(&self) -> String {
         let mut jsonized_kv_pairs: Vec<String> = Vec::new();
         for i in 0..self.len() {
-            jsonized_kv_pairs.push(format!("\\\"{}\\\" : \\\"{}\\\"", self.key[i],self.value[i]));
+            jsonized_kv_pairs.push(format!("\"{}\" : \"{}\"", { let x = self.key[i].replace("\"","\\\""); x.replace("\n"," ") }, { let x = self.value[i].replace("\"","\\\""); x.replace("\n"," ") } ));
         }
-        format!("{{ {} }}",jsonized_kv_pairs.join(",\n"))
+        format!("{{ {} }}", jsonized_kv_pairs.join(","))
     }
 }
+
 impl Spectable<String> {
     //fn from_vec(&self,key_vec: Vec<String>, value_vec: Vec<String>) -> Spectable<String> {
     //}

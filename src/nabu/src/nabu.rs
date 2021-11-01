@@ -22,6 +22,7 @@ use reqwest;
 use futures::{ stream, StreamExt};
 use tokio;
 use select::predicate::{Attr, Class, Name, Predicate};
+use ansi_term::Color;
 
 //use serde_json;
 
@@ -53,8 +54,21 @@ const PROXY_POOL : [&'static str; 10 ] = [
                                          ];
 const NOT_FOUND_MESSAGE : &'static str = "❔";
 const CONFIG_ERROR_MESSAGE : &'static str = "❗CONFIGURATION-ERROR❗";
+const FAKE_RESPONSE : &'static str = "<h1>REQUEST FAILED</h1>";
 
 //const FIND_BY : [&'static String; 4 ] = [ &"Attr.d".to_string(), &"Class.d".to_string() , &"Attr".to_string() , &"Class".to_string() ];
+
+macro_rules! mkvec {
+    ($node: expr) => { $node.into_iter()
+                             .map(|node| node.text())
+                             .collect::<Vec<String>>()
+    }
+}
+
+macro_rules! clean {
+    ($text: expr, "wty") => { $text.replace("Know More","") };
+    ($text: expr, "rep") => { $text.replace("?","") }
+}
 
 pub fn make_request(url: &str) -> Result<String,ureq::Error>{
     println!("Making Request to {}",url);
@@ -101,11 +115,23 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
             //-- URL
             plisting.url
                 = match website_profile.product_url_find_by.as_str() {
-                    "Class" => format!("{}{}",&website_profile.root_uri,lnode.find(Class(&website_profile.product_url_identifier[..]))
-                                                                             .next().unwrap().attr("href").unwrap().to_string()),
-                    "Attr" => format!("{}{}",&website_profile.root_uri,lnode.find(Attr(&website_profile.product_url_identifier[..],
-                                                                                        &website_profile.product_url_ivalue[..]))
-                                                                             .next().unwrap().attr("href").unwrap().to_string()),
+                    "Class" => format!("{}{}",&website_profile.root_uri
+                                             ,lnode.find(Class(&website_profile.product_url_identifier[..]))
+                                                        .next()
+                                                        .expect(&format!("Failed to get URL from {}", Color::Red.paint(&website_profile.product_url_identifier)))
+                                                        .attr("href")
+                                                        .unwrap()
+                                                        .to_string()),
+                    "Attr" => format!("{}{}",&website_profile.root_uri
+                                            ,lnode.find(Attr(&website_profile.product_url_identifier[..]
+                                                            ,&website_profile.product_url_ivalue[..]))
+                                                       .next()
+                                                       .expect("Failed to get URL")
+                                                       .attr("href")
+                                                       .unwrap()
+                                                       .to_string()),
+                        "self" => format!("{}{}",&website_profile.root_uri
+                                                ,lnode.attr("href").unwrap().to_string()),
                     _ => CONFIG_ERROR_MESSAGE.to_string()
                 };
             //-- IMAGE
@@ -114,7 +140,7 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
             //-- PRODUCT NAME
             plisting.name
                 = match website_profile.product_name_find_by.as_str() {
-                    "Class" => lnode.find(Class(&website_profile.product_url_identifier[..]))
+                    "Class" => lnode.find(Class(&website_profile.product_name_identifier[..]))
                                      .next().unwrap().text().replace("\"","\\\""),
                     "Attr" => lnode.find(Attr(&website_profile.product_name_identifier[..],
                                                 &website_profile.product_name_ivalue[..]))
@@ -136,7 +162,7 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
             };
             //-- STORE
             plisting.store = website_profile.name.clone();
-            println!("==== Found ====\n╸▶ PRODUCT: {}\n╸▶ URL: {}\n╸▶ IMG.SRC:- {}\n╸▶ PRICE: {}",
+            println!("==== Found ====\n=> PRODUCT: {}\n=> URL: {}\n=> IMG.SRC:- {}\n=> PRICE: {}",
                      plisting.name,
                      plisting.url,
                      plisting.img,
@@ -179,13 +205,15 @@ async fn concurrent_requests(urls: Vec<String>) -> Result<Vec<select::document::
                                        }
                                 ).buffer_unordered(concurrent_requests);
 
-    let mut response_vec: Arc<Mutex<Vec<select::document::Document>>> = Arc::new(Mutex::new(Vec::new()));
+    let response_vec: Arc<Mutex<Vec<select::document::Document>>> = Arc::new(Mutex::new(Vec::new()));
 
     all_the_responses
         .for_each(|resp| async {
             match resp {
                 Ok(res) => response_vec.lock().unwrap().push(Document::from(res.as_str())),
-                Err(e) => panic!("{}",e),
+                Err(e) => { println!("{}",Color::Red.bold().paint(format!("Async Request failed\tReason: {}",e)));
+                            response_vec.lock().unwrap().push(Document::from(FAKE_RESPONSE))
+                },
             }
         }).await;
     let output = response_vec.lock().unwrap();
@@ -215,71 +243,61 @@ pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, &orel::O
                 "Attr.d" => match product_pages[count].find(Attr(&profile.product_return_policy_identifier[..],
                                                         &profile.product_return_policy_ivalue[..])
                                                     .descendant(Name(&profile.product_return_policy_idescendant[..])))
-                                              .next() { Some(node) => node.text(),
+                                              .next() { Some(node) => clean!(node.text(),"rep"),
                                                         None => format!("{}", NOT_FOUND_MESSAGE) },
                 "Class.d" => match product_pages[count].find(Class(&profile.product_return_policy_identifier[..])
                                                      .descendant(Name(&profile.product_return_policy_idescendant[..])))
-                                               .next() { Some(node) => node.text(),
+                                               .next() { Some(node) => clean!(node.text(),"rep"),
                                                         None => format!("{}", NOT_FOUND_MESSAGE) },
                 "Class" => match product_pages[count].find(Class(&profile.product_return_policy_identifier[..]))
-                                             .next() { Some(node) => node.text(),
+                                             .next() { Some(node) => clean!(node.text(),"rep"),
                                                        None => format!("{}", NOT_FOUND_MESSAGE) },
                 "Attr" => match product_pages[count].find(Attr(&profile.product_return_policy_identifier[..],
                                                        &profile.product_return_policy_ivalue[..]))
-                                            .next() { Some(node) => node.text(),
+                                            .next() { Some(node) => clean!(node.text(),"rep"),
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
                 _ => CONFIG_ERROR_MESSAGE.to_string()
         };
+        println!("Done with replace");
         // WARRANTY
         listing.warranty
             = match profile.product_warranty_find_by.as_str() {
                 "Attr.d" => match product_pages[count].find(Attr(&profile.product_warranty_identifier[..],
                                                          &profile.product_warranty_ivalue[..])
                                                     .descendant(Name(&profile.product_warranty_idescendant[..])))
-                                              .next() { Some(node) => node.text(),
+                                              .next() { Some(node) => clean!(node.text(),"wty"),
                                                         None => format!("{}", NOT_FOUND_MESSAGE) },
                 "Class.d" => match product_pages[count].find(Class(&profile.product_warranty_identifier[..])
                                                      .descendant(Name(&profile.product_warranty_idescendant[..])))
-                                               .next() { Some(node) => node.text(),
+                                               .next() { Some(node) => clean!(node.text(),"wty"),
                                                         None => format!("{}", NOT_FOUND_MESSAGE) },
                 "Class" => match product_pages[count].find(Class(&profile.product_warranty_identifier[..]))
-                                             .next() { Some(node) => node.text(),
+                                             .next() { Some(node) => clean!(node.text(),"wty"),
                                                        None => format!("{}", NOT_FOUND_MESSAGE) },
                 "Attr" => match product_pages[count].find(Attr(&profile.product_warranty_identifier[..],
                                                        &profile.product_warranty_ivalue[..]))
-                                            .next() { Some(node) => node.text(),
+                                            .next() { Some(node) => clean!(node.text(),"wty"),
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
                 _ => CONFIG_ERROR_MESSAGE.to_string()
         };
+        println!("Done with warranty");
         // SPECS
         listing.specs
             = match profile.product_specs_find_by.as_str() {
                 "Attr.d" => match product_pages[count].find(Attr(&profile.product_specs_identifier[..],
-                                                         &profile.product_specs_ivalue[..])
+                                                                 &profile.product_specs_ivalue[..])
                                                     .descendant(Name(&profile.product_specs_idescendant[..])))
-                                              .next() { Some(node) => match (profile.product_specs_key_find_by.as_str(),
-                                                                             profile.product_specs_val_find_by.as_str()) {
-                                                                        ("Class","Class") => { types::Spectable { key : node.find(Class(&profile.product_specs_keyi[..]))
-                                                                                                                            .into_iter()
-                                                                                                                            .map(|node| node.text())
-                                                                                                                            .collect::<Vec<String>>(),
-                                                                                                                  value : node.find(Class(&profile.product_specs_vali[..]))
-                                                                                                                              .into_iter()
-                                                                                                                              .map(|node| node.text())
-                                                                                                                              .collect::<Vec<String>>()
+                                              .next() { Some(node) => match (profile.product_specs_key_find_by.as_str()
+                                                                            ,profile.product_specs_val_find_by.as_str()) {
+                                                                        ("Class","Class") => { types::Spectable { key : mkvec!(node.find(Class(&profile.product_specs_keyi[..]))),
+                                                                                                                  value : mkvec!(node.find(Class(&profile.product_specs_vali[..])))
                                                                                                                  }.to_json()
                                                                                              },
-                                                                        ("Attr","Attr") => { types::Spectable { key : node.find(Attr(&profile.product_specs_keyi[..]
-                                                                                                                                    ,&profile.product_specs_keyv[..]))
-                                                                                                                            .into_iter()
-                                                                                                                            .map(|node| node.text())
-                                                                                                                            .collect::<Vec<String>>(),
-                                                                                                                  value : node.find(Attr(&profile.product_specs_vali[..],
-                                                                                                                                         &profile.product_specs_valv[..]))
-                                                                                                                              .into_iter()
-                                                                                                                              .map(|node| node.text())
-                                                                                                                              .collect::<Vec<String>>()
-                                                                                                                 }.to_json()
+                                                                        ("Attr","Attr") => { types::Spectable { key : mkvec!(node.find(Attr(&profile.product_specs_keyi[..]
+                                                                                                                                    ,&profile.product_specs_keyv[..]))),
+                                                                                                                value : mkvec!(node.find(Attr(&profile.product_specs_vali[..],
+                                                                                                                                         &profile.product_specs_valv[..])))
+                                                                                                              }.to_json()
                                                                                              },
                                                                         _ => CONFIG_ERROR_MESSAGE.to_string(),
                                                                       },
@@ -288,27 +306,15 @@ pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, &orel::O
                                                      .descendant(Name(&profile.product_specs_idescendant[..])))
                                               .next() { Some(node) => match (profile.product_specs_key_find_by.as_str(),
                                                                              profile.product_specs_val_find_by.as_str()) {
-                                                                        ("Class","Class") => { types::Spectable { key : node.find(Class(&profile.product_specs_keyi[..]))
-                                                                                                                            .into_iter()
-                                                                                                                            .map(|node| node.text())
-                                                                                                                            .collect::<Vec<String>>(),
-                                                                                                                  value : node.find(Class(&profile.product_specs_vali[..]))
-                                                                                                                              .into_iter()
-                                                                                                                              .map(|node| node.text())
-                                                                                                                              .collect::<Vec<String>>()
+                                                                        ("Class","Class") => { types::Spectable { key : mkvec!(node.find(Class(&profile.product_specs_keyi[..]))),
+                                                                                                                  value : mkvec!(node.find(Class(&profile.product_specs_vali[..])))
                                                                                                                  }.to_json()
                                                                                              },
-                                                                        ("Attr","Attr") => { types::Spectable { key : node.find(Attr(&profile.product_specs_keyi[..]
-                                                                                                                                    ,&profile.product_specs_keyv[..]))
-                                                                                                                            .into_iter()
-                                                                                                                            .map(|node| node.text())
-                                                                                                                            .collect::<Vec<String>>(),
-                                                                                                                  value : node.find(Attr(&profile.product_specs_vali[..],
-                                                                                                                                         &profile.product_specs_valv[..]))
-                                                                                                                              .into_iter()
-                                                                                                                              .map(|node| node.text())
-                                                                                                                              .collect::<Vec<String>>()
-                                                                                                                 }.to_json()
+                                                                        ("Attr","Attr") => { types::Spectable { key : mkvec!(node.find(Attr(&profile.product_specs_keyi[..]
+                                                                                                                                    ,&profile.product_specs_keyv[..]))),
+                                                                                                                value : mkvec!(node.find(Attr(&profile.product_specs_vali[..],
+                                                                                                                                         &profile.product_specs_valv[..])))
+                                                                                                              }.to_json()
                                                                                              },
                                                                         _ => CONFIG_ERROR_MESSAGE.to_string(),
                                                                       },
@@ -316,27 +322,15 @@ pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, &orel::O
                 "Class" => match product_pages[count].find(Class(&profile.product_specs_identifier[..]))
                                               .next() { Some(node) => match (profile.product_specs_key_find_by.as_str(),
                                                                              profile.product_specs_val_find_by.as_str()) {
-                                                                        ("Class","Class") => { types::Spectable { key : node.find(Class(&profile.product_specs_keyi[..]))
-                                                                                                                            .into_iter()
-                                                                                                                            .map(|node| node.text())
-                                                                                                                            .collect::<Vec<String>>(),
-                                                                                                                  value : node.find(Class(&profile.product_specs_vali[..]))
-                                                                                                                              .into_iter()
-                                                                                                                              .map(|node| node.text())
-                                                                                                                              .collect::<Vec<String>>()
+                                                                        ("Class","Class") => { types::Spectable { key : mkvec!(node.find(Class(&profile.product_specs_keyi[..]))),
+                                                                                                                  value : mkvec!(node.find(Class(&profile.product_specs_vali[..])))
                                                                                                                  }.to_json()
                                                                                              },
-                                                                        ("Attr","Attr") => { types::Spectable { key : node.find(Attr(&profile.product_specs_keyi[..]
-                                                                                                                                    ,&profile.product_specs_keyv[..]))
-                                                                                                                            .into_iter()
-                                                                                                                            .map(|node| node.text())
-                                                                                                                            .collect::<Vec<String>>(),
-                                                                                                                  value : node.find(Attr(&profile.product_specs_vali[..],
-                                                                                                                                         &profile.product_specs_valv[..]))
-                                                                                                                              .into_iter()
-                                                                                                                              .map(|node| node.text())
-                                                                                                                              .collect::<Vec<String>>()
-                                                                                                                 }.to_json()
+                                                                        ("Attr","Attr") => { types::Spectable { key : mkvec!(node.find(Attr(&profile.product_specs_keyi[..]
+                                                                                                                                    ,&profile.product_specs_keyv[..]))),
+                                                                                                                value : mkvec!(node.find(Attr(&profile.product_specs_vali[..],
+                                                                                                                                         &profile.product_specs_valv[..])))
+                                                                                                               }.to_json()
                                                                                              },
                                                                         _ => CONFIG_ERROR_MESSAGE.to_string(),
                                                                       },
@@ -345,33 +339,23 @@ pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, &orel::O
                                                        &profile.product_specs_ivalue[..]))
                                               .next() { Some(node) => match (profile.product_specs_key_find_by.as_str(),
                                                                              profile.product_specs_val_find_by.as_str()) {
-                                                                        ("Class","Class") => { types::Spectable { key : node.find(Class(&profile.product_specs_keyi[..]))
-                                                                                                                            .into_iter()
-                                                                                                                            .map(|node| node.text())
-                                                                                                                            .collect::<Vec<String>>(),
-                                                                                                                  value : node.find(Class(&profile.product_specs_vali[..]))
-                                                                                                                              .into_iter()
-                                                                                                                              .map(|node| node.text())
-                                                                                                                              .collect::<Vec<String>>()
+                                                                        ("Class","Class") => { types::Spectable { key : mkvec!(node.find(Class(&profile.product_specs_keyi[..]))),
+                                                                                                                  value : mkvec!(node.find(Class(&profile.product_specs_vali[..])))
                                                                                                                  }.to_json()
                                                                                              },
-                                                                        ("Attr","Attr") => { types::Spectable { key : node.find(Attr(&profile.product_specs_keyi[..]
+                                                                        ("Attr","Attr") => { types::Spectable { key : mkvec!(node.find(Attr(&profile.product_specs_keyi[..]
                                                                                                                                     ,&profile.product_specs_keyv[..]))
-                                                                                                                            .into_iter()
-                                                                                                                            .map(|node| node.text())
-                                                                                                                            .collect::<Vec<String>>(),
-                                                                                                                  value : node.find(Attr(&profile.product_specs_vali[..],
-                                                                                                                                         &profile.product_specs_valv[..]))
-                                                                                                                              .into_iter()
-                                                                                                                              .map(|node| node.text())
-                                                                                                                              .collect::<Vec<String>>()
-                                                                                                                 }.to_json()
+                                                                                                                            ),
+                                                                                                                value : mkvec!(node.find(Attr(&profile.product_specs_vali[..],
+                                                                                                                                         &profile.product_specs_valv[..])))
+                                                                                                               }.to_json()
                                                                                              },
                                                                         _ => CONFIG_ERROR_MESSAGE.to_string(),
                                                                       },
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
                 _ => CONFIG_ERROR_MESSAGE.to_string()
         };
+        println!("Done with specs");
         count = count+1;
     }
     listings
