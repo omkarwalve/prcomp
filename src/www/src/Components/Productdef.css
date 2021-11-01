@@ -1,0 +1,43 @@
+.header_container{
+    width: 455px;
+    height: fit-content;
+}
+
+.header_container > a:link {
+    color: #4f4f4f;
+}
+
+.header_container > a:hover {
+    color: #000000;
+}
+
+.header_container > a:visited {
+    color: #bababa;
+}
+
+.header_container > a:visited:hover {
+    color: #000000;
+}
+
+.pricetag {
+    font-weight: italic;
+    font-style: underline;
+    font-size: 28px;
+    float: right;
+    top: 50%;
+}
+
+.storeIcon {
+    height: 19px;
+    width: 69px;
+}
+
+.rating {
+    font-style: italic;
+}
+
+.servIcon {
+    padding-top: 6px;
+    width: 20px;
+    height: 20px;
+}

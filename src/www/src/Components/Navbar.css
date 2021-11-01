@@ -1,0 +1,158 @@
+.navBar{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    /*margin-left: 0px;*/
+    /*margin-right: 00px;*/
+    /* border: 2px solid blue; */
+    height: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #424656;
+    
+}
+
+.logoName {
+    display: flex;
+    cursor: pointer;
+}
+
+.logo{
+    /*margin-top: 2px;*/
+    height: 75px;
+    width: 120px;
+}
+
+.siteName {
+    font-family: 'Renner*';
+    font-weight: bold;
+    font-size: 28px;
+    padding-top: 6px;
+    padding-bottom: 1px;
+    color: white;
+}
+
+.sBarGroup {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: fit-content;
+}
+
+#triangle-bottomright {
+    width: 0;
+    height: 0;
+    border-bottom: 100px solid red;
+    border-left: 100px solid transparent;
+  }
+
+
+.categoryDropdown::-ms-expand {
+    display: none;
+}
+.categoryDropdown {
+    appearance: none;
+    background-color:white;
+    font-family: 'Avenir';
+    font-size: 14px;
+    display: inline-block;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    position: relative;
+    padding: 0.8em 0.5em;
+    /*display: grid;*/
+    margin-top:12px;
+    margin-left: 0px;
+    margin-right: 1px;
+    margin-bottom: 12px;
+    align-items: center;
+    width:fit-content;
+    cursor:pointer;
+    grid-template-areas: "select";
+    grid-area: select;
+}
+
+.categoryDropdown::after{
+    content: "";
+    width: 0.8em;
+    height: 0.5em;
+    color: black;
+    display: grid;
+    position: absolute;
+    justify-self: end;
+    background-color: #FF0000;
+    grid-area: select;
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+}
+
+.catOpts {
+    border-radius: 0px;
+    background-color: white;
+}
+
+.search_bar{
+    font-size: 15px;
+    font-family: 'Avenir';
+    border: 1px solid white;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 10px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+
+
+}
+.search_btn{
+    color:black; 
+    background-color: white;
+    border: 1px solid white;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    width: fit-content;
+    padding: 12.5px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top:11px;
+    margin-bottom: 12px;
+    margin-left: 0px;
+    margin-right: 0px;
+    
+}
+
+.userOpts {
+    display:flex;
+    width: fit-content;
+    align-items:center;
+    gap:2rem;
+}
+
+.shopcart {
+    cursor:pointer;
+    width: 60px;
+    height: 30px;
+    border-radius: 10px;
+} 
+
+.shopcart:hover{
+    width: 61px;
+    height: 31px;
+}
+
+.userSigning{
+    cursor:pointer;
+    width: fit-content;
+    text-align:center;
+}
+.userSigning > svg{
+    fill: white;
+    width: 60px;
+    height: 27.5px;
+}
+
+.userSigning:hover{
+    font-size: 1rem;
+}
+
+

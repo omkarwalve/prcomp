@@ -1,0 +1,117 @@
+
+*{
+    box-sizing: border-box;
+    /* overflow: hidden; */
+  
+  }
+
+.product_container{
+    display: flex;
+    border-top: 5px solid  rgb(153, 147, 147);
+    border-bottom: 5px solid  rgb(153, 147, 147);
+    border-left: 5px solid  rgb(153, 147, 147);
+    border-right: 5px solid  rgb(153, 147, 147);
+    height: 200px;
+
+
+
+}
+
+.leftdiv{
+    height: 200px;
+    width: 50%;
+    display: flex;
+    /* border-right: 5px solid  rgb(153, 147, 147); */
+}
+
+.rightdiv{
+    display: flex;
+    border-left: 5px solid  rgb(153, 147, 147);
+    height: 200px;
+    width:50%;
+
+}
+
+.prod_img > img{
+    display: flex;
+    width: 95%;
+    height: 100%;
+
+
+}
+
+.prod_img{
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    /* border: 1px solid green; */
+    margin-top: 5px;
+    height: 90%;
+    width: 25%;
+
+}
+  
+
+  /* Popover styling */
+  
+  a {
+    text-decoration: none;
+  }
+  
+  .popover__title {
+    font-size: 20px;
+    line-height: 36px;
+    text-decoration: none;
+    color: rgb(71, 69, 69);
+    text-align: center;
+    padding: 130px 0px 0px 0px;
+    /* border: 1px solid yellow; */
+  }
+  
+  .popover__wrapper {
+    /* position: relative; */
+    /* margin-top: 1.5rem; */
+    display: inline-block;
+    /* border: 1px solid blue; */
+    height: 190px;
+    width: 50px;
+  }
+  .popover__content {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    /* left: 0px; */
+    /* transform: translate(0, 10px); */
+    background-color: white;
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    /* width: auto; */
+    width: 300px;
+    height: 600px;
+
+  }
+  .popover__content:before {
+    position: absolute;
+    z-index: -1;
+    content: "";
+    right: calc(50% - 10px);
+    top: -8px;
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent #bfbfbf transparent;
+    transition-duration: 0.3s;
+    transition-property: transform;
+
+
+  }
+  .popover__wrapper:hover .popover__content {
+    z-index: 10;
+    opacity: 1;
+    visibility: visible;
+    /* transform: translate(-260px, -20px); */
+    /* transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97); */
+  }
+  .popover__message {
+    /* text-align: center; */
+
+  }

@@ -1,0 +1,151 @@
+.product-container{
+    width:100%;
+    height:fit-content;
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 1rem;
+}
+
+*{ box-sizing: border-box; }
+
+.leftdiv{
+    height: fit-content;
+    width: 50%;
+    display: flex;
+    padding: 1rem;
+    font-family: 'Avenir';
+}
+.leftdiv:hover{
+    height: fit-content;
+    width: 50%;
+    display: flex;
+    padding: 1rem;
+    font-family: 'Avenir';
+    background-color: #e8e8e8;
+}
+
+.rightdiv{
+    display: flex;
+    height: 200px;
+    width:50%;
+}
+
+.prod_img > img {
+    display: flex;
+    width: 95%;
+    height: 100%;
+}
+
+.prod_img {
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    margin-top: 5px;
+    height: 90%;
+    width: fit-content;
+    margin-right: 1.2rem;
+}
+
+  /* Popover styling */
+.specHead {
+  font-family: 'Avenir';
+  font-weight: bold;
+  color: gray;
+}
+.unavail {
+  color: gray;
+}
+a {
+  text-decoration: none;
+}
+
+.popover__title {
+  font-size: 20px;
+  line-height: 36px;
+  color: rgb(71, 69, 69);
+  text-align: center;
+  /*float: bottom;*/
+  /*padding: 170px 0px 0px 0px;*/
+  /*float: right;*/
+  margin-bottom: auto;
+  font-family: 'Avenir';
+}
+
+.popover__wrapper {
+   position: right; 
+  /* margin-top: 1.5rem; */
+  display: inline-block;
+  height: 2%;
+  width: 2%;
+}
+.popover__content::-webkit-scrollbar {
+  display: flex;
+  width: 0.5em;
+}
+
+.popover__content::-webkit-scrollbar-track-piece:start {
+  margin-top: 15%;
+}
+
+.specTable {
+  border-collapse: collapse;
+}
+
+.spec {
+  border-bottom: 1px dotted #b8b8b8;
+}
+
+.spec:last-child {
+  border-bottom: none;
+}
+
+.spec > td:first-child{
+  font-weight: bold;
+}
+ 
+.popover__content::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  width:20px;
+}
+
+.popover__content {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  /* left: 0px; */
+  /* transform: translate(0, 10px); */
+  background-color: whitesmoke;
+  font-family: 'Avenir';
+  padding: 0rem 0.5rem 0rem 1rem;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+   /*width: auto; */
+  width: 400px;
+  height: 64%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.popover__content:before {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  /*right: calc(50% - 10px);*/
+  top: -20%;
+  border-style: solid;
+  border-width: 0 10px 10px 10px;
+  border-color: transparent transparent #bfbfbf transparent;
+  /* transition-duration: 0.3s;
+  transition-property: transform; */
+}
+
+.popover__wrapper:hover .popover__content {
+  z-index: 10;
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-70%, -2%);
+  /* transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97); */
+}
+.popover__message {
+  /* text-align: center; */
+}
