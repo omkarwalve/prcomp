@@ -9,11 +9,11 @@ This project aims to solve this exact problem by enhancing on the problem of a s
 
 ## Progress Tracker
 
-- [ ] **Frontend**
-    - [ ] Design
-    - [ ] HTML/CSS Implementation
-    - [ ] ReactJS Framework
-- [ ] **Backend**
+- [x] **Frontend**
+    - [x] Design
+    - [x] HTML/CSS Implementation
+    - [x] ReactJS Framework
+- [x] **Backend**
     - [x] Scraper
         - [x] Configuration Model(*OREL*)
         - [x] Website Profiling
@@ -22,6 +22,6 @@ This project aims to solve this exact problem by enhancing on the problem of a s
         - [x] Stage One Scraping
         - [x] Stage Two Scraping
         - [x] JSON Output
-        - [x] Asynchronization/?Parallelism
-    - [ ] Server
-        - [ ] Actix/Rocket Implementation
+        - [x] Asynchronization+Multithreading
+    - [x] Server
+        - [x] Actix/Rocket Implementation
