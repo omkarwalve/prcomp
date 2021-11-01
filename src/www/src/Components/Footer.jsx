@@ -7,7 +7,7 @@ export default class Homefooter extends React.Component {
         return (
             <div className="footer">
                 <div className="logoSide">
-                    <img src="-kilowog-.svg" className="footLogo"/>
+                    <img src="_kilowog_.svg" className="footLogo"/>
                     <div className="regionOpts">
                         <a className="footText" href="#"><img src="/globe.svg" className="footIcon" /> IND</a>
                         <select className="langSelect">

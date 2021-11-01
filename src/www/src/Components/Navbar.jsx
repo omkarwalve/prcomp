@@ -46,7 +46,7 @@ function Navbar() {
             return (
             <div className="navBar">
                 <div className="logoName" onClick={() => history.push('/')}>
-                    <img className="logo" src="/-kilowog-.svg" alt=""/>
+                    <img className="logo" src="/_kilowog_.svg" alt=""/>
                 </div>
                 <div className="sBarGroup">
                     <select className="categoryDropdown" onChange={handleCategoryChange}>
