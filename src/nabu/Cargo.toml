@@ -12,7 +12,7 @@ select = "0.5.0"      # A library to extract useful data from HTML documents, su
 fastrand = "1.5.0"      # A simple and fast random number generator
 chrono = "0.4.19"                   # Date and time library for Rust
 futures = "0.3.17"                # An implementation of futures and streams featuring zero allocations, composability, and itera…
-reqwest = "0.11.4"                                # higher level HTTP client library
+reqwest = { version = "0.11.4" , default-features= false, features = [ "rustls-tls"] }                               # higher level HTTP client library
 tokio = { version = "1.11.0"  , features = [ "full" ] }                # An event-driven, non-blocking I/O platform for writing asynchronous I/O backed applications.…
 rocket = { version = "0.5.0-rc.1" , features = [ "json" ] }                # Web framework with a focus on usability, security, extensibility, and speed. 
 rocket_cors = "0.5.2"    # Cross-origin resource sharing (CORS) for Rocket.rs applications
