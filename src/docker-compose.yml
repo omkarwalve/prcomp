@@ -17,7 +17,7 @@ services:
       - ./:/www
   nabu:
     image: rustlang/rust:nightly-slim
-    command: sh -c "cd nabu && cargo run"
+    command: sh -c "cd nabu && CARGO_HOME=./Cargo.deps cargo run"
     container_name: nabu
     networks:
       - bNet
