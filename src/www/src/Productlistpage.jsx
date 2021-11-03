@@ -115,9 +115,10 @@ function Productlistpage() {
         const res =  await fetch(url);
         //console.log(res)
         const response = await res.json();
-        const amazon = response?.listings[0] ?? [];
-        const flipkart = response?.listings[1] ?? [];
-        const resFinal = [...amazon,...flipkart]
+        //const amazon = response?.listings[0] ?? [];
+        //const flipkart = response?.listings[1] ?? [];
+        //const resFinal = [...amazon,...flipkart]
+        const resFinal = response?.listings ?? [];
         //console.log(resFinal)
         setLoading(false);
         setProducts(resFinal);
