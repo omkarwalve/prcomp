@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-//import Listingcontainer from './Components/Listingcontainer';
-//import Listingnav from './Components/Listingnav';
 import Productdef from "./Components/Productdef";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 
@@ -128,7 +126,7 @@ function Productlistpage() {
       }
       useEffect(() => {
         const searchUrl = search.split(/\s+/).join('+');
-        const reqUrl = `http://127.0.0.1:8000/${cat}/${searchUrl}`;
+        const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
         //console.log(reqUrl,search);
         getProducts(reqUrl);
       },[cat,search])
