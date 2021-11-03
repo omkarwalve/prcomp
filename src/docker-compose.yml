@@ -2,26 +2,33 @@ version: "3.7"
 services:
   kilowog-react:
     image: node:lts-slim
-    command: sh -c "cd node-test && yarn && yarn start"
+    container_name: React
+    command: sh -c "cd www && yarn && yarn start"
+    depends_on:
+      nabu:
+        condition: service_started
     ports:
       - 6969:3000
     networks:
       - fNet
       - bNet
-    working_dir: /node-test
+    working_dir: /www
     volumes:
-      - ./:/node-test
+      - ./:/www
   nabu:
     image: rustlang/rust:nightly-slim
     command: sh -c "cd nabu && cargo run"
+    container_name: nabu
     networks:
       - bNet
-    #ports:
-      #- 8000:8000
+    #expose: 
+    #- 8000
+    ports:
+      - 8000:8000
     working_dir: /nabu
     volumes:
       - ./:/nabu
 
 networks:
-  fNet: {}
-  bNet: {}
+  fNet:
+  bNet:
