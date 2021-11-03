@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  kilowog-react:
+    image: node:lts-slim
+    command: sh -c "cd node-test && yarn && yarn start"
+    ports:
+      - 6969:3000
+    networks:
+      - fNet
+      - bNet
+    working_dir: /node-test
+    volumes:
+      - ./:/node-test
+  nabu:
+    image: rustlang/rust:nightly-slim
+    command: sh -c "cd nabu && cargo run"
+    networks:
+      - bNet
+    #ports:
+      #- 8000:8000
+    working_dir: /nabu
+    volumes:
+      - ./:/nabu
+
+networks:
+  fNet: {}
+  bNet: {}
