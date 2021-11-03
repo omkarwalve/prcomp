@@ -45,7 +45,7 @@ pub struct Listings<T> {
     pub query: T,
     pub category: T,
     pub date_time: T,
-    pub listings: Vec<Vec<Listing<T>>>,
+    pub listings: Vec<Listing<T>>,
 }
 
 #[derive(Default)]
@@ -99,9 +99,9 @@ impl Listings<String>{
     pub fn listings_to_json(&self) -> Vec<String> { 
         let mut product_json : Vec<String> = Vec::new();
         for listing in self.listings.iter() {
-            for product in listing.iter() { 
-                product_json.push(product.to_json())
-            }
+            //for product in listing.iter() { 
+                product_json.push(listing.to_json())
+            
         }
         product_json
     }

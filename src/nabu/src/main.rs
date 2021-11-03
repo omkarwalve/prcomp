@@ -43,23 +43,24 @@ fn fake_listings()  -> crate::types::Listings<String> {
     crate::types::Listings{ date_time: x.clone()
                           , query: x.clone()
                           , category: x.clone()
-                          , listings: vec![vec![crate::types::Listing{ name: x.clone()
+                          , listings: vec![crate::types::Listing{ name: x.clone()
                                                                      , store: x.clone()
                                                                      , return_replace: x.clone()
                                                                      , warranty: x.clone()
                                                                      , specs: x.clone()
                                                                      , price: x.clone()
                                                                      , img: x.clone()
-                                                                     , url: x.clone()}]]  }
+                                                                     , url: x.clone()}]  }
 }
 
 // Routes
 #[get("/")]
 fn root() -> &'static str {
-    "This is the root of the website. You shouldn't be here :)'"
+    "This is the root of the website. You shouldn't be here :)"
 }
 
-#[get("/elx/<ex_query>", format = "application/json")]
+//#[get("/elx/<ex_query>", format = "application/json")]
+#[get("/elx/<ex_query>")]
 fn elx(ex_query: &str) -> Json<crate::types::Listings<String>>  {
     println!("Started elx code");
     Json(match nabu_fetch("electronics".to_string(),ex_query.replace("+"," ")) {

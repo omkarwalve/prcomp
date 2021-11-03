@@ -26,7 +26,7 @@ use ansi_term::Color;
 
 //use serde_json;
 
-const WAIT_FOR_RESPONSE_TIMEOUT : u64 = 20;
+const WAIT_FOR_RESPONSE_TIMEOUT : u64 = 5;
 const USER_AGENT_POOL : [&'static str; 11] = [
                                               "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.3 Safari/605.1.15",
                                               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
@@ -92,7 +92,7 @@ pub fn make_request(url: &str) -> Result<String,ureq::Error>{
                                        .set("Upgrade-Insecure-Requests", "1")
                                        .call()?
                                        .into_string()?;
-    println!("Got Response!");
+    println!("{}", Color::Green.paint(format!("-- Got Response from {}", url)));
     Ok(http_response)
 }
 
@@ -102,6 +102,7 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
     println!("Parsing..");
     let html_document = Document::from(html_response);
     let mut plistings : Vec<types::Listing<String>> = Vec::new();
+    println!("making iterator..");
     let listing_iterator: Box<dyn Iterator<Item = select::node::Node>> 
         = match website_profile.listing_find_by.as_str() {
             "Class" =>  Box::new(html_document.find(Class(&website_profile.listing_identifier[..]))),
@@ -109,10 +110,11 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                                                          &website_profile.listing_ivalue[..]))),
             _ => panic!("{}",CONFIG_ERROR_MESSAGE),
         };
-
+    println!("successfully made iterator..");
     for lnode in listing_iterator {
             let mut plisting: types::Listing<String> = Default::default();
             //-- URL
+            println!("url..");
             plisting.url
                 = match website_profile.product_url_find_by.as_str() {
                     "Class" => format!("{}{}",&website_profile.root_uri
@@ -120,7 +122,7 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                                                         .next()
                                                         .expect(&format!("Failed to get URL from {}", Color::Red.paint(&website_profile.product_url_identifier)))
                                                         .attr("href")
-                                                        .unwrap()
+                                                        .expect("href attribute not found")
                                                         .to_string()),
                     "Attr" => format!("{}{}",&website_profile.root_uri
                                             ,lnode.find(Attr(&website_profile.product_url_identifier[..]
@@ -128,16 +130,18 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                                                        .next()
                                                        .expect("Failed to get URL")
                                                        .attr("href")
-                                                       .unwrap()
+                                                       .expect("href attribute not found")
                                                        .to_string()),
                         "self" => format!("{}{}",&website_profile.root_uri
                                                 ,lnode.attr("href").unwrap().to_string()),
                     _ => CONFIG_ERROR_MESSAGE.to_string()
                 };
             //-- IMAGE
+            println!("imageurl..");
             plisting.img = lnode.find(Class(&website_profile.image_identifier[..]))
                                 .next().unwrap().attr("src").unwrap().to_string();
             //-- PRODUCT NAME
+            println!("pname..");
             plisting.name
                 = match website_profile.product_name_find_by.as_str() {
                     "Class" => lnode.find(Class(&website_profile.product_name_identifier[..]))
@@ -148,6 +152,7 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                     _ => CONFIG_ERROR_MESSAGE.to_string(),
             };
             //-- PRICE
+            println!("price..");
             plisting.price
                 = match website_profile.product_price_find_by.as_str() {
                     "Class.d" => match lnode.find(Class(&website_profile.product_price_identifier[..])
@@ -167,7 +172,6 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                      plisting.url,
                      plisting.img,
                      plisting.price);
-
             plistings.push(plisting);
         }
         (plistings,website_profile)
@@ -193,7 +197,7 @@ async fn concurrent_requests(urls: Vec<String>) -> Result<Vec<select::document::
     let nclient = reqwest::Client::builder()
                   .user_agent(USER_AGENT_POOL[fastrand::usize(..USER_AGENT_POOL.len())])
                   .default_headers(headers)
-                  .timeout(Duration::from_secs(5))
+                  .timeout(Duration::from_secs(WAIT_FOR_RESPONSE_TIMEOUT))
                   .build().unwrap();
 
     let all_the_responses = stream::iter(urls)
