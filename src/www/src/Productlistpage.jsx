@@ -5,10 +5,9 @@ import { BsFillInfoCircleFill } from "react-icons/bs";
 
 
 import './Productlistpage.css';
-import {
-    useLocation
-  } from "react-router-dom";
-  import axios from 'axios';
+import './Components/spinner.css';
+import { useLocation } from "react-router-dom";
+//import axios from 'axios';
 
   function useQuery() {
       return new URLSearchParams(useLocation().search);
@@ -70,7 +69,6 @@ const ProductDiv = ({prod}) => {
             returnPolicy={prod.return_replace}
             //availibility="Availibility"
             rating={Math.floor(Math.random() * (2) ) + 3}
-
           />
 
           <div class="popover__wrapper">
@@ -132,9 +130,12 @@ function Productlistpage() {
       },[cat,search])
     
       if(loading){
+      //if(true){
         return (
-
-          <div className='loading'></div>
+          <div className='spinnerContainer'>
+            <div className='loader'></div>
+            <p className='loaderText'>Fetching..</p>
+          </div>
         )
       }
     return (
