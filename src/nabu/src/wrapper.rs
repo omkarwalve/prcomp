@@ -118,7 +118,7 @@ pub fn nabu_fetch(category: String, query: String) -> Option<crate::types::Listi
                                                         Ok(response) => response }
                                                      ,&site_profile));
                 tx_t.send(results).expect(&format!("{}"
-                                        ,Color::Red.paint(
+                                         ,Color::Red.paint(
                                             format!("-- ERROR::MPSC_SEND_FALIURE:T->{}:- Couldn't Send Acquired results across threads!",thread_name))));
                 println!("{}",Color::Green.paint(format!("Sent to MPSC channel from {}", thread_name )));
                 //listng.lock().expect("Error acquiring mutex lock").push(results);
@@ -136,14 +136,15 @@ pub fn nabu_fetch(category: String, query: String) -> Option<crate::types::Listi
 
     let mut temp: Vec<Listing<String>> = Default::default();
     for i in 0..sites_count {
-        if i == 0 {
-        temp = rx.recv_timeout(Duration::from_secs(5))
+        let temp_raw = rx.recv_timeout(Duration::from_secs(5))
                         .expect(&format!("{}",Color::Red.paint("-- ERROR::MPSC_RECIEVE_FALIURE:- Couldn't Receive acquired results on main thread!")));
-        }
-        else {
-        temp.extend(rx.recv_timeout(Duration::from_secs(5))
-                        .expect(&format!("{}",Color::Red.paint("-- ERROR::MPSC_RECIEVE_FALIURE:- Couldn't Receive acquired results on main thread!"))));
-
+        if temp_raw.is_some() {
+            if i == 0 {
+                temp = temp_raw.unwrap();
+            }
+            else {
+                temp.extend(temp_raw.unwrap());
+            }
         }
     }
 

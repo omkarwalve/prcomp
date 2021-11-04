@@ -26,6 +26,7 @@ use ansi_term::Color;
 
 //use serde_json;
 
+const ALT_CHAR: char = '|';
 const WAIT_FOR_RESPONSE_TIMEOUT : u64 = 5;
 const USER_AGENT_POOL : [&'static str; 11] = [
                                               "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.3 Safari/605.1.15",
@@ -96,63 +97,104 @@ pub fn make_request(url: &str) -> Result<String,ureq::Error>{
     Ok(http_response)
 }
 
-pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String>) -> (Vec<types::Listing<String>>,&'t orel::Orel<String>) {
+pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String>) -> Option<(Vec<types::Listing<String>>,&'t orel::Orel<String>)> {
     //println!("{:#?}",html_response); // VERBOSE
     //panic!("--BREAKPOINT--");
     println!("Parsing..");
     let html_document = Document::from(html_response);
     let mut plistings : Vec<types::Listing<String>> = Vec::new();
     println!("making iterator..");
-    let listing_iterator: Box<dyn Iterator<Item = select::node::Node>> 
+    let listing_iterator: Option<Box<dyn Iterator<Item = select::node::Node>>>
         = match website_profile.listing_find_by.as_str() {
-            "Class" =>  Box::new(html_document.find(Class(&website_profile.listing_identifier[..]))),
-            "Attr"  =>  Box::new(html_document.find(Attr(&website_profile.listing_identifier[..],
-                                                         &website_profile.listing_ivalue[..]))),
-            _ => panic!("{}",CONFIG_ERROR_MESSAGE),
+            "Class" =>  Some(Box::new(html_document.find(Class(&website_profile.listing_identifier[..])))),
+            "Class.alt" =>  Some(Box::new( 
+                             { let classes = &website_profile.listing_identifier.split_once(ALT_CHAR).expect("Inseperabale Class.alt.identifier");
+                               let mut find1 = html_document.find(Class(classes.0));
+                               if find1.next().is_some() {
+                                   find1
+                               }
+                               else {
+                                   let find2 = html_document.find(Class(classes.1));
+                                   find2
+                               }
+                             } )),
+            "Attr"  =>  Some(Box::new(html_document.find(Attr(&website_profile.listing_identifier[..],
+                                                         &website_profile.listing_ivalue[..])))),
+            _ => { println!("Failed to build iterator"); None },
         };
     println!("successfully made iterator..");
-    for lnode in listing_iterator {
+    if listing_iterator.is_some() {
+    for lnode in listing_iterator.unwrap() {
+        println!("Inside iterator for loop..");
             let mut plisting: types::Listing<String> = Default::default();
             //-- URL
-            println!("url..");
+            //println!("url..");
             plisting.url
                 = match website_profile.product_url_find_by.as_str() {
                     "Class" => format!("{}{}",&website_profile.root_uri
                                              ,lnode.find(Class(&website_profile.product_url_identifier[..]))
-                                                        .next()
-                                                        .expect(&format!("Failed to get URL from {}", Color::Red.paint(&website_profile.product_url_identifier)))
-                                                        .attr("href")
-                                                        .expect("href attribute not found")
-                                                        .to_string()),
+                                                   .next()
+                                                   .expect(&format!("Failed to get URL from {}", Color::Red.paint(&website_profile.product_url_identifier)))
+                                                   .attr("href")
+                                                   .expect("href attribute not found")
+                                                   .to_string()),
+                    "Class.alt" => 
+                        format!("{}{}",&website_profile.root_uri
+                                      ,{  let classes = &website_profile.product_url_identifier.split_once(ALT_CHAR).expect("Inseperabale Class.alt.URL.identifier");
+                                          let find1 = lnode.find(Class(classes.0)).next();
+                                          if find1.is_some() {
+                                           find1.expect(&format!("Failed to get URL from {}. Raw HTML", Color::Red.paint(classes.0)))
+                                                .attr("href")
+                                                .expect("href attribute not found")
+                                                .to_string()
+                                        } else {
+                                             lnode.find(Class(classes.1))
+                                                  .next()
+                                                  .expect(&format!("Failed to get URL from {}", Color::Red.paint(classes.1)))
+                                                  .attr("href")
+                                                  .expect("href attribute not found")
+                                                  .to_string()
+                                         }
+                                     }),
                     "Attr" => format!("{}{}",&website_profile.root_uri
                                             ,lnode.find(Attr(&website_profile.product_url_identifier[..]
                                                             ,&website_profile.product_url_ivalue[..]))
-                                                       .next()
-                                                       .expect("Failed to get URL")
-                                                       .attr("href")
-                                                       .expect("href attribute not found")
-                                                       .to_string()),
+                                                  .next()
+                                                  .expect("Failed to get URL")
+                                                  .attr("href")
+                                                  .expect("href attribute not found")
+                                                  .to_string()),
                         "self" => format!("{}{}",&website_profile.root_uri
                                                 ,lnode.attr("href").unwrap().to_string()),
                     _ => CONFIG_ERROR_MESSAGE.to_string()
                 };
             //-- IMAGE
-            println!("imageurl..");
+            //println!("imageurl..");
             plisting.img = lnode.find(Class(&website_profile.image_identifier[..]))
                                 .next().unwrap().attr("src").unwrap().to_string();
             //-- PRODUCT NAME
-            println!("pname..");
+            //println!("pname..");
             plisting.name
                 = match website_profile.product_name_find_by.as_str() {
                     "Class" => lnode.find(Class(&website_profile.product_name_identifier[..]))
                                      .next().unwrap().text().replace("\"","\\\""),
+                    "Class.alt" => { 
+                        let classes = &website_profile.product_name_identifier.split_once(ALT_CHAR).expect("Inseperable Class.alt.pnameident");
+                        let mut find1 = lnode.find(Class(classes.0)).next();
+                        if find1.is_some() {
+                             find1.unwrap().text().replace("\"","\\\"")
+                        }
+                        else {
+                            lnode.find(Class(classes.1)).next().unwrap().text().replace("\"","\\\"")
+                        }
+                    },
                     "Attr" => lnode.find(Attr(&website_profile.product_name_identifier[..],
                                                 &website_profile.product_name_ivalue[..]))
                                      .next().unwrap().text().replace("\"","\\\""),
                     _ => CONFIG_ERROR_MESSAGE.to_string(),
             };
             //-- PRICE
-            println!("price..");
+            //println!("price..");
             plisting.price
                 = match website_profile.product_price_find_by.as_str() {
                     "Class.d" => match lnode.find(Class(&website_profile.product_price_identifier[..])
@@ -174,7 +216,11 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                      plisting.price);
             plistings.push(plisting);
         }
-        (plistings,website_profile)
+        Some((plistings,website_profile))
+    }
+    else { println!("No listings element found in {}", &website_profile.name); 
+           None
+    }
 }
 
 //#[tokio::main]
@@ -225,7 +271,10 @@ async fn concurrent_requests(urls: Vec<String>) -> Result<Vec<select::document::
     Ok(output.to_vec())
 }
 
-pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, &orel::Orel<String>)) -> Vec<types::Listing<String>> {
+//pub fn stage_two(Some((mut listings,profile)) : Option<(Vec<types::Listing<String>>, &orel::Orel<String>)>) -> Vec<types::Listing<String>> {
+pub fn stage_two(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String>)>) -> Option<Vec<types::Listing<String>>> {
+  if tupie.is_some() {
+    let (mut listings, profile ) = tupie.unwrap();
     let urls: Vec<String> = listings.iter().map(|listing| listing.url.clone()).collect();
     //let mut urls: Vec<String> = Vec::new();
     //for listing in listings.iter() {
@@ -362,7 +411,9 @@ pub fn stage_two((mut listings,profile) : (Vec<types::Listing<String>>, &orel::O
         println!("Done with specs");
         count = count+1;
     }
-    listings
+  Some(listings)
+  }
+  else { None }
 }
 
 #[test]
