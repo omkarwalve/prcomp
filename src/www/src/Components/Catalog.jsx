@@ -1,5 +1,15 @@
 import React from 'react'
+
 import './Catalog.css'
+// All catalog logos
+import { ReactComponent as Electronics } from './catalog/elx.svg';
+import { ReactComponent as Furniture } from './catalog/fur.svg';
+import { ReactComponent as Fashion } from './catalog/fas.svg';
+import { ReactComponent as Grocery } from './catalog/gro.svg';
+import { ReactComponent as Stationary } from './catalog/sta.svg';
+import { ReactComponent as Garden } from './catalog/gar.svg';
+import { ReactComponent as Toys } from './catalog/toy.svg';
+import { ReactComponent as Books } from './catalog/bok.svg';
 
 export default class Section extends React.Component {
 
@@ -7,46 +17,47 @@ export default class Section extends React.Component {
                 //</div>
                 //<div className="containerRow2">
                 //</div>
+                        //<img src="/catalog/elx.svg" alt="error" />
     render() {
         return (
             <div className="content">
                     <div className="category-block">
-                        <img src="/electronic-category.jpg" alt="error" />
+                        <Electronics />
                         <div className="catName">Electronics</div>
                     </div>    
                     
                     <div className="category-block">
-                        <img src="/furniture-category.jpg" alt="error" />
+                        <Furniture />
                         <div className="catName">Furniture</div>                    
                     </div>
 
                     <div className="category-block">
-                        <img src="/fashion-category.jpg" alt="error" />
+                        <Fashion />
                         <div className="catName">Fashion</div>
                     </div>
 
                     <div className="category-block">
-                        <img src="/grocery-category.jfif" alt="error" />
+                        <Grocery />
                         <div className="catName">Grocery</div>
                     </div>
 
                     <div className="category-block">
-                        <img src="/stationary-category.jpg" alt="error" />
+                        <Stationary />
                         <div className="catName">Stationary</div>
                     </div>
                     
                     <div className="category-block">  
-                        <img src="/garden-category.jpg" alt="error" />
+                        <Garden />
                         <div className="catName">Garden</div>
                     </div>
                     
                     <div className="category-block">                    
-                        <img src="/toys-category.jpg" alt="error" />
+                        <Toys />
                         <div className="catName">Toys</div>
                     </div>
                     
                     <div className="category-block">
-                        <img src="/books-category.jpg" alt="error" />
+                        <Books />
                         <div className="catName">Books</div>
                     </div>
             </div>

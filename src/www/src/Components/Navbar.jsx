@@ -4,8 +4,8 @@ import './Navbar.css';
 import { FaSearch } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
-import axios from 'axios';
 import {useHistory} from 'react-router-dom'
+//import axios from 'axios';
 
 const websiteName = "kilowog";
 
@@ -32,12 +32,13 @@ function Navbar() {
             const {value} = e.target;
             console.log(categories.filter(elem => elem.url === value)[0]);
             setSelectedCategory(categories.filter(elem => elem.url === value)[0]);
-
         }
         const handleSearch = (e) => {
             const searchUrl = searchWord.split(/\s+/).join('+');
+            if (searchUrl.length !== 0) {
             const {url,name} = selectedCategory;
             history.push(`/results?cat=${url}&search=${searchUrl}`);
+            }
         }
     const handleKeyDown = (e) => {
         if (e.key === "Enter") { handleSearch() }

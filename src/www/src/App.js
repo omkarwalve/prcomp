@@ -1,7 +1,7 @@
 import './App.css';
-import Homepage from './Homepage';
+import Home from './Home';
 import Footer from './Components/Footer';
-import Productlistpage from './Productlistpage';
+import Listing from './Components/Listing';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import Navbar from './Components/Navbar';
 
@@ -13,10 +13,10 @@ function App() {
           <Navbar/>
         <Switch>
           <Route path='/' exact>
-            <Homepage/>
+            <Home/>
           </Route>
           <Route path='/results'>
-            <Productlistpage/>
+            <Listing/>
           </Route>
         </Switch>
         <Footer/>

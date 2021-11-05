@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import Productdef from "./Components/Productdef";
 import { BsFillInfoCircleFill } from "react-icons/bs";
+import { HiOutlineInformationCircle } from "react-icons/hi"
 
-
-
-import './Productlistpage.css';
-import './Components/spinner.css';
+import Productdef from "./Productdef";
+import './Listing.css';
+import './spinner.css';
 import { useLocation } from "react-router-dom";
 //import axios from 'axios';
 
@@ -51,6 +50,7 @@ const ProductDiv = ({prod}) => {
     name = `${name.slice(0,110)}...`
   }
 
+              //<h2 class="popover__title"><BsFillInfoCircleFill /></h2>
   return (
     <>
           <div className="leftdiv">
@@ -63,7 +63,7 @@ const ProductDiv = ({prod}) => {
           <Productdef
             name={name}
             price={prod.price}
-            store={prod.store + ".png"}
+            store={"./listing/" + prod.store + ".png"}
             url={prod.url}
             warranty={prod.warranty}
             returnPolicy={prod.return_replace}
@@ -73,7 +73,7 @@ const ProductDiv = ({prod}) => {
 
           <div class="popover__wrapper">
             
-              <h2 class="popover__title"><BsFillInfoCircleFill /></h2>
+              <h2 class="popover__title"><HiOutlineInformationCircle /></h2>
             
             <div class="popover__content">
               <p class="popover__message"><h3 className="specHead">Specifications</h3>
@@ -86,12 +86,13 @@ const ProductDiv = ({prod}) => {
         </>
   )
 }
-function Productlistpage() {
+function Listing() {
       let query = useQuery();
       const cat = query.get('cat');
       const search = query.get('search');
       const [products,setProducts] = useState([]);
       const [loading,setLoading] = useState(false);
+      document.title = "kilowog(" + cat + ") =>[" + search + "]";
       const getProducts = async(url) => {
         setLoading(true);
         try{
@@ -151,4 +152,4 @@ function Productlistpage() {
     )
 }
 
-export default Productlistpage;
+export default Listing;
