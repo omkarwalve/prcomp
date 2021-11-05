@@ -253,7 +253,7 @@ async fn concurrent_requests(urls: Vec<String>) -> Result<Vec<select::document::
                                              lc_nclient.get(url).send().await?.text().await
                                          }
                                        }
-                                ).buffer_unordered(concurrent_requests);
+                                ).buffered(concurrent_requests);
 
     let response_vec: Arc<Mutex<Vec<select::document::Document>>> = Arc::new(Mutex::new(Vec::new()));
 
