@@ -1,13 +1,12 @@
-
 import React, { useState } from 'react';
-import './Navbar.css';
 import { FaSearch } from "react-icons/fa";
-import { FaShoppingCart } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
-import {useHistory} from 'react-router-dom'
+import {useHistory} from 'react-router-dom';
+//import { FaShoppingCart } from "react-icons/fa";
 //import axios from 'axios';
 
-const websiteName = "kilowog";
+import './Navbar.css';
+import { ReactComponent as Cart } from "./nav/cart.svg";
 
 function Navbar() {
     const categories = [
@@ -36,7 +35,7 @@ function Navbar() {
         const handleSearch = (e) => {
             const searchUrl = searchWord.split(/\s+/).join('+');
             if (searchUrl.length !== 0) {
-            const {url,name} = selectedCategory;
+            const {name,url} = selectedCategory;
             history.push(`/results?cat=${url}&search=${searchUrl}`);
             }
         }
@@ -44,6 +43,8 @@ function Navbar() {
         if (e.key === "Enter") { handleSearch() }
     }
                     //<p className="siteName">{websiteName}</p>
+                    //<img  className="shopcart" src="/shopping_cart.svg" alt="error" />
+                    //<div className="userSigning" > </div>
             return (
             <div className="navBar">
                 <div className="logoName" onClick={() => history.push('/')}>
@@ -60,15 +61,23 @@ function Navbar() {
                             }
                     </select>
                    <input className="search_bar" type="text" size="55" placeholder="Search for..." value={searchWord} onChange={(e) => setSearchWord(e.target.value)} onKeyDown={handleKeyDown} />
-                    <button className="search_btn" onClick={handleSearch} > <FaSearch color="gray"/></button>
+                    <button className="search_btn" onClick={handleSearch} ><FaSearch/></button>
                 </div>
                  <div className="userOpts">
-                    <img  className="shopcart" src="/shopping_cart.svg" alt="error" />
-                    <div className="userSigning" ><FaUserCircle />  </div>
+                    <div className="tooltip">
+                        <Cart className="shopcart"/>
+                        <span className="tooltip_msg">Empty</span>
+                    </div>
+                     <div className="dropMenu">
+                     <FaUserCircle className="userIcon"/> 
+                         <div className="dropMenuContent">
+                             <a href="#">My Account</a>
+                             <a href="#">Orders</a>
+                             <a href="#">Wishlist</a>
+                         </div>
+                     </div>
                  </div>
-
         </div>
     )
 }
-
 export default Navbar;

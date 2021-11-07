@@ -1,3 +1,11 @@
+.Listings {
+    width:100%;
+    height:fit-content;
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly; gap: 1rem;
+}
+
 .product-container{
     width:100%;
     height:fit-content;

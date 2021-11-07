@@ -1,5 +1,4 @@
 import './App.css';
-import Navbar from './Components/Navbar';
 import Catalog from './Components/Catalog';
 
 

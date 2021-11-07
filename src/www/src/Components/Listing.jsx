@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { BsFillInfoCircleFill } from "react-icons/bs";
+import React, { useEffect, useState, useRef } from 'react';
+//import { BsFillInfoCircleFill } from "react-icons/bs";
 import { HiOutlineInformationCircle } from "react-icons/hi"
+import { ReactComponent as Filter } from "./list/filter.svg";
+import { ReactComponent as RArrow } from "./list/chevron_r.svg";
 
 import Productdef from "./Productdef";
 import './Listing.css';
+import './Filter.css';
 import './spinner.css';
 import { useLocation } from "react-router-dom";
 //import axios from 'axios';
@@ -52,14 +55,13 @@ const ProductDiv = ({prod}) => {
 
               //<h2 class="popover__title"><BsFillInfoCircleFill /></h2>
   return (
-    <>
+    <>    
           <div className="leftdiv">
           <div className="prod_img">
-          <a src={prod.url} target="_blank">
+          <a href={prod.url} target="_blank" rel="noreferrer">
             <img src={prod.img} alt="error"/>
           </a>
           </div>
-
           <Productdef
             name={name}
             price={prod.price}
@@ -70,7 +72,6 @@ const ProductDiv = ({prod}) => {
             //availibility="Availibility"
             rating={Math.floor(Math.random() * (2) ) + 3}
           />
-
           <div class="popover__wrapper">
             
               <h2 class="popover__title"><HiOutlineInformationCircle /></h2>
@@ -86,6 +87,57 @@ const ProductDiv = ({prod}) => {
         </>
   )
 }
+
+
+
+// Close the dropdown menu if the user clicks outside of it
+//window.onclick = function(event) {
+  //if (!event.target.matches('.filterButton')) {
+    //alert('Filter button pressed!');
+      //if (filterMenu.classList.contains('show')) {
+        //filterMenu.classList.remove('show');
+      //}
+    //}
+  //else {
+  //console.log("filter button not pressed");
+  //}
+//}
+
+const FiltersMenu = () => {
+  const dropdownAsRef = useRef(null);
+  const [isActive, setIsActive] = useState(false);
+  const onClick = () =>  setIsActive(!isActive);
+
+  useEffect(() => {
+    const pageClickEvent = (e) => {
+      if (dropdownAsRef.current !== null && !dropdownAsRef.current.contains(e.target)) {
+        setIsActive(!isActive);
+      }
+      console.log(e);
+    };
+
+    if (isActive) {
+      window.addEventListener('click',pageClickEvent);
+    }
+
+    return() => { window.removeEventListener('click',pageClickEvent)};
+
+  }, [isActive]);
+
+  return (
+       <div className="filterSection">
+         <button id="fButton" className="filterButton" onClick={onClick}>
+           <Filter />
+         </button>
+         <nav ref={dropdownAsRef} id="filters" className={`filterMenu ${isActive ? 'active' : 'inactive'}`}>
+           <p className="fHead">Filter by..</p>
+           <div className="fCriteria">Store </div>
+           <div className="fCriteria">Price </div>
+         </nav>
+       </div>
+  );
+};
+
 function Listing() {
       let query = useQuery();
       const cat = query.get('cat');
@@ -129,6 +181,13 @@ function Listing() {
         //console.log(reqUrl,search);
         getProducts(reqUrl);
       },[cat,search])
+
+    function toggleFilters() {
+      let filterMenu = document.querySelector('.filterMenu');
+      if (filterMenu.style.visibility === "hidden") {
+        filterMenu.style.visibilty = "visible";
+      }
+    }
     
       if(loading){
       //if(true){
@@ -140,15 +199,18 @@ function Listing() {
         )
       }
     return (
-      <div className='product-container'>
-        {
-          products.map(prod => {
-            return (
-              <ProductDiv prod={prod}/>
-            )
-          })
-        }
-        </div>
+     <div className="Listings">
+       <FiltersMenu />
+       <div className='product-container'>
+          {
+            products.map(prod => {
+              return (
+                <ProductDiv prod={prod}/>
+              )
+            })
+          }
+       </div>
+    </div>
     )
 }
 

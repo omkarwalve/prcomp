@@ -1,0 +1,146 @@
+.filterSection {
+  /*--radius: 3em;*/
+  --radius: fit-content;
+  /*--padding: 0.5em;*/
+  /*display: flex;*/
+  position: fixed;
+  bottom: 2%;
+  left: 1%;
+  width: var(--radius);
+  height: var(--radius);
+
+  justify-content: center;
+  object-fit: contain;
+  /*background-color: #424656;*/
+  /*border: 1px solid gray;*/
+  /*border-radius: 120%;*/
+  /*padding: var(--padding);*/
+}
+
+.filterButton {
+  --dimension: 4em;
+  --padding: 0.7em;
+  background: transparent;
+  justify-content: center;
+  background-color: #424656;
+  border: 1px solid gray;
+  border-radius: 120%;
+  outline: none;
+  height: fit-content;
+  width: fit-content;
+  max-height: var(--dimension);
+  max-width: var(--dimension);
+  padding: var(--padding);
+  margin: 0px 0px 0px 0px;
+  object-fit: contain;
+}
+.filterButton > svg {
+  --dimensions: 26px;
+  height: var(--dimensions);
+  width: var(--dimensions);
+  margin: 0px 0px 0px 0px;
+  fill: white;
+}
+
+.filterButton:hover {
+  background-color: #717999;
+  outline: none;
+  fill: gray;
+}
+
+.filterMenu {
+  --bg: whitesmoke;
+  --fg: #424656;
+  --pad: 0.4rem;
+  visibility: hidden;
+  z-index: 1;
+  display: block;
+
+  max-width: 10rem;
+  max-height: calc(100% - 8rem);
+  width: 100%;
+  height: fit-content;
+
+  position: fixed;
+  bottom: 11%;
+  left: 1%;
+  padding: var(--pad);
+  padding-right: 0;
+  padding-left: 0;
+
+  background-color: var(--bg);
+  border: 1px solid var(--fg);
+  border-radius: 2%;
+  color: var(--fg);
+
+  font-family: 'Avenir';
+  font-size: 20px;
+}
+.filterMenu::after {
+  --thickness: 0.1rem;
+  content: " ";
+  border: solid var(--fg);
+  border-width: 0 var(--thickness) var(--thickness) 0;
+  background-color: var(--bg);
+  display: inline-block;
+  position: absolute;
+  top: 95%;
+  left: 8%;
+  margin-left: var(--thickness);
+  padding: calc(var(--thickness) + 0.3rem);
+  transform: rotate(45deg);
+}
+.filterMenu.active {
+  visibility: visible;
+}
+
+/*.filterButton:hover + .filterMenu {*/
+  /*visibility: visible;*/
+/*}*/
+
+.fHead {
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+  margin-left: var(--pad);
+  margin-right: var(--pad);
+  font-weight: bold;
+  border-bottom: 0.1rem solid gray;
+}
+
+.fCriteria {
+  --crit-pad: 0.2rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: var(--crit-pad);
+  padding-left: var(--pad);
+  padding-right: calc(var(--pad) + 0.4rem);
+  padding-bottom: var(--crit-pad);
+  font-size: 15px;
+  object-fit: contain;
+}
+.fCriteria::after {
+  --aro-thick: 0.1rem;
+  content: "";
+  margin-top: 0.37rem;
+  border: solid  var(--fg);
+  float: right;
+  left: 10%;
+  border-width: 0 var(--aro-thick) var(--aro-thick) 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(-45deg);
+}
+
+/*.fCriteria > svg {*/
+  /*--aroDim: 1rem;*/
+  /*align-self: center;*/
+  /*position: relative;*/
+  /*float: right;*/
+  /*max-height: var(--aroDim);*/
+  /*max-width: var(--aroDim);*/
+  /*fill: var(--fg);*/
+/*}*/
+
+.fCriteria:hover {
+  background-color: lightgray;
+}

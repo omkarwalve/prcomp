@@ -11,12 +11,13 @@
 }
 
 .category-block {
+    --gap: 8rem;
     width: 9%;
     height: 10%;
     /* border:1px solid black; */
     /*margin: 1rem; */
-    margin-top: 7rem; 
-    margin-bottom: 7rem; 
+    margin-top: var(--gap); 
+    margin-bottom: var(--gap); 
     /*border-radius: 20px;*/
     background-color: transparent;
     position: relative;
@@ -38,9 +39,10 @@
 }
 
 .category-block:hover > svg > path, .category-block:hover > .catName {
+    --hover-color: #717999;
     cursor: pointer;
-    color: #717999;
-    fill: #717999;
+    color: var(--hover-color);
+    fill: var(--hover-color);
 }
 
 .category-block > a {

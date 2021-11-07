@@ -28,8 +28,11 @@
 }
 
 .storeIcon {
-    height: 19px;
-    width: 69px;
+    width:fit-content;
+    height: fit-content;
+    object-fit: contain;
+    max-height: 22px;
+    max-width: 75px;
 }
 
 .rating {
