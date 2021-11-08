@@ -64,6 +64,8 @@ function Navbar() {
                     <button className="search_btn" onClick={handleSearch} ><FaSearch/></button>
                 </div>
                  <div className="userOpts">
+                     <div>
+                     </div>
                     <div className="tooltip">
                         <Cart className="shopcart"/>
                         <span className="tooltip_msg">Empty</span>

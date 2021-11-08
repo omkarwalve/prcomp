@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Avenir';
+  src: url('./fonts/Avenir.ttc') format('ttc');
+}
+
 .filterSection {
   /*--radius: 3em;*/
   --radius: fit-content;
@@ -35,8 +40,7 @@
   object-fit: contain;
 }
 .filterButton > svg {
-  --dimensions: 26px;
-  height: var(--dimensions);
+  --dimensions: 26px; height: var(--dimensions);
   width: var(--dimensions);
   margin: 0px 0px 0px 0px;
   fill: white;
@@ -112,7 +116,12 @@
   margin-top: 0;
   margin-bottom: 0;
   padding-top: var(--crit-pad);
+  background-color: transparent;
+  border: none;
+  outline: none;
   padding-left: var(--pad);
+  text-align: left;
+  width: 100%;
   padding-right: calc(var(--pad) + 0.4rem);
   padding-bottom: var(--crit-pad);
   font-size: 15px;
@@ -143,4 +152,62 @@
 
 .fCriteria:hover {
   background-color: lightgray;
+}
+.fCriteria:active {
+  background-color: #f7f7f7;
+  color: #717999;
+}
+
+.subMenu {
+  visibility: hidden;
+  z-index: 2;
+  display: block;
+  text-align: left;
+
+  max-width: 10rem;
+  max-height: calc(100% - 8rem);
+  width: 100%;
+  height: fit-content;
+
+  position: fixed;
+  bottom: 18%;
+  left: 21%;
+  /*padding: var(--pad);*/
+  padding-right: 0;
+  padding-left: 0;
+
+  background-color: whitesmoke;
+  border: 1px solid var(--fg);
+  border-radius: 2%;
+  color: var(--fg);
+
+  font-family: 'Avenir';
+  font-size: 14px;
+}
+.subMenu.active {
+  visibility: visible;
+}
+
+.subMenu > label {
+  margin: 0.1rem;
+  width: 100%;
+  height: fit-content;
+  display: block;
+  padding: 0.4rem;
+}
+
+.subHead {
+  margin-top: 0.1rem;
+  margin-bottom: 0.2rem;
+  margin-left: var(--pad);
+  margin-right: var(--pad);
+  font-weight: bold;
+  font-size: 15px;
+  border-bottom: 0.1rem solid gray;
+}
+
+.filterChkbx {
+  padding: 0.2rem;
+  margin-right: 1rem;
+  border-radius: 0px;
 }

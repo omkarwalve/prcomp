@@ -1,13 +1,24 @@
+@font-face {
+  font-family: 'Avenir';
+  src: url('./fonts/Avenir.ttc') format('ttc');
+}
+
 .footer{
     font-family: 'Avenir';
     display:flex;
+    position:static;
+    clear: both;
+    bottom:0;
+    width:100%;
     justify-content:center;
     /*padding-left: 20px;*/
     /*padding-right: 20px;*/
     padding-top: 19px;
     padding-bottom: 19px;
+    margin-bottom: 0;
     /* border: 1px solid red; */
     height: fit-content;
+    min-height: 100px;
     background-color: #424656;
 }
 

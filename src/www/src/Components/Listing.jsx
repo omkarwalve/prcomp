@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { HiOutlineInformationCircle } from "react-icons/hi"
 import { ReactComponent as Filter } from "./list/filter.svg";
 import { ReactComponent as RArrow } from "./list/chevron_r.svg";
+import { ReactComponent as Scale } from './list/compare.svg';
 
 import Productdef from "./Productdef";
 import './Listing.css';
@@ -15,12 +16,13 @@ import { useLocation } from "react-router-dom";
       return new URLSearchParams(useLocation().search);
   }
 
+
 const Specifications = ({specifications}) => {
   let specs = specifications;
   try {
     specs = JSON.parse(specifications);
   }
-  catch(err) { return (<h5 className="unavail"> Unavailable </h5>) }
+  catch(err) { return (<p className="unavail"> Unavailable </p>) }
   //console.log(specs);
   return (
     <table className="specTable">
@@ -45,7 +47,7 @@ const Specifications = ({specifications}) => {
 const ProductDiv = ({prod}) => {
 
   let name = prod.name;
-  if (!isNaN(prod.price)) { 
+  if (prod.price == "Not Available") { 
     return null;
   }
 
@@ -53,86 +55,96 @@ const ProductDiv = ({prod}) => {
     name = `${name.slice(0,110)}...`
   }
 
-              //<h2 class="popover__title"><BsFillInfoCircleFill /></h2>
+              //<h2 class="specs__title"><BsFillInfoCircleFill /></h2>
   return (
     <>    
           <div className="leftdiv">
-          <div className="prod_img">
-          <a href={prod.url} target="_blank" rel="noreferrer">
-            <img src={prod.img} alt="error"/>
-          </a>
-          </div>
-          <Productdef
-            name={name}
-            price={prod.price}
-            store={"./listing/" + prod.store + ".png"}
-            url={prod.url}
-            warranty={prod.warranty}
-            returnPolicy={prod.return_replace}
-            //availibility="Availibility"
-            rating={Math.floor(Math.random() * (2) ) + 3}
-          />
-          <div class="popover__wrapper">
-            
-              <h2 class="popover__title"><HiOutlineInformationCircle /></h2>
-            
-            <div class="popover__content">
-              <p class="popover__message"><h3 className="specHead">Specifications</h3>
-                <Specifications specifications={(prod.specs)}/>
-              </p>
+            <div className="prod_img">
+              <a href={prod.url} target="_blank" rel="noreferrer">
+                <img src={prod.img} alt="error"/>
+              </a>
             </div>
-          </div>
+            <Productdef
+              name={name}
+              price={prod.price}
+              store={"./listing/" + prod.store + ".png"}
+              url={prod.url}
+              warranty={prod.warranty}
+              returnPolicy={prod.return_replace}
+              //availibility="Availibility"
+              rating={Math.floor(Math.random() * (2) ) + 3}
+            />
+            <div class="specs__wrapper">
+              <h2 class="specs__title"><HiOutlineInformationCircle /></h2>
+              <div class="specs__content">
+                <p class="specs__message"><h3 className="specHead">Specifications</h3>
+                  <Specifications specifications={(prod.specs)}/>
+                </p>
+              </div>
+            </div>
+            <button className="compareBtn">
+              <Scale/>
+            </button>
         </div>
-        
         </>
   )
 }
 
-
-
-// Close the dropdown menu if the user clicks outside of it
-//window.onclick = function(event) {
-  //if (!event.target.matches('.filterButton')) {
-    //alert('Filter button pressed!');
-      //if (filterMenu.classList.contains('show')) {
-        //filterMenu.classList.remove('show');
-      //}
-    //}
-  //else {
-  //console.log("filter button not pressed");
-  //}
-//}
-
-const FiltersMenu = () => {
+const FiltersMenu = ({storeSet}) => {
   const dropdownAsRef = useRef(null);
+  const submenuAsRef = useRef(null);
   const [isActive, setIsActive] = useState(false);
+  const [isSubActive, setSubActive] = useState(false);
   const onClick = () =>  setIsActive(!isActive);
+  const onClickSub = () =>  setIsActive(!isSubActive);
 
   useEffect(() => {
     const pageClickEvent = (e) => {
-      if (dropdownAsRef.current !== null && !dropdownAsRef.current.contains(e.target)) {
+      // Main dropdown
+      if (dropdownAsRef.current !== null && !dropdownAsRef.current.contains(e.target) ) {
         setIsActive(!isActive);
+        setSubActive(!isSubActive);
+      }
+      if (submenuAsRef.current !== null && !submenuAsRef.current.contains(e.target)) {
+        setSubActive(!isSubActive);
       }
       console.log(e);
     };
-
-    if (isActive) {
+    if (isActive || isSubActive) {
       window.addEventListener('click',pageClickEvent);
     }
 
     return() => { window.removeEventListener('click',pageClickEvent)};
 
   }, [isActive]);
+  const stores = Array.from(storeSet);
 
+           //<h5 className="fHead">Stores</h5>
+              //<form>
+              //</form>
+              //<p key={store}>{store}</p>
   return (
        <div className="filterSection">
-         <button id="fButton" className="filterButton" onClick={onClick}>
+         <button className="filterButton" onClick={onClick}>
            <Filter />
          </button>
-         <nav ref={dropdownAsRef} id="filters" className={`filterMenu ${isActive ? 'active' : 'inactive'}`}>
-           <p className="fHead">Filter by..</p>
-           <div className="fCriteria">Store </div>
-           <div className="fCriteria">Price </div>
+         <nav ref={dropdownAsRef} className={`filterMenu ${isActive ? 'active' : 'inactive'}`}>
+           <h5 className="fHead">Filter by..</h5>
+           <button className="fCriteria" onClick={onClickSub}>Store </button>
+           <nav ref={submenuAsRef} className={`subMenu ${isSubActive ? 'active' : 'inactive'}`}>
+             <h6 className="subHead">Stores</h6>
+           {
+               stores.map((store) => {
+               return (
+                 <label name="Store" className="filterChkLabel">
+                    <input type="checkbox" value={store} name="Store" className="filterChkbx"></input>
+                   {store}
+                 </label>
+               )
+           })
+           }
+           </nav>
+           <button className="fCriteria">Price </button>
          </nav>
        </div>
   );
@@ -173,8 +185,8 @@ function Listing() {
         setProducts(resFinal);
         }
         catch(err) { setLoading(false) }
-
       }
+
       useEffect(() => {
         const searchUrl = search.split(/\s+/).join('+');
         const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
@@ -182,13 +194,6 @@ function Listing() {
         getProducts(reqUrl);
       },[cat,search])
 
-    function toggleFilters() {
-      let filterMenu = document.querySelector('.filterMenu');
-      if (filterMenu.style.visibility === "hidden") {
-        filterMenu.style.visibilty = "visible";
-      }
-    }
-    
       if(loading){
       //if(true){
         return (
@@ -198,9 +203,13 @@ function Listing() {
           </div>
         )
       }
+      const stores = new Set();
+      products.forEach((prd) => {
+              stores.add(prd.store);
+      });
     return (
      <div className="Listings">
-       <FiltersMenu />
+       <FiltersMenu storeSet={stores}/>
        <div className='product-container'>
           {
             products.map(prod => {

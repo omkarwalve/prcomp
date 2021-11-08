@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Avenir';
+  src: url('./fonts/Avenir.ttc') format('ttc');
+}
+
 .Listings {
     width:100%;
     height:fit-content;
@@ -60,7 +65,7 @@
 }
 
   /* Popover styling */
-.popover__title {
+.specs__title {
   font-size: 25px;
   /*line-height: 36px;*/
   color: rgb(71, 69, 69);
@@ -76,29 +81,29 @@
   font-family: 'Avenir';
 }
 
-.popover__wrapper {
+.specs__wrapper {
   position: right; 
   margin-top: 1.1rem; 
   display: inline-block;
   height: fit-content;
   width: fit-content;
 }
-.popover__content::-webkit-scrollbar {
+.specs__content::-webkit-scrollbar {
   display: flex;
   width: 0.5em;
 }
 
-.popover__content::-webkit-scrollbar-track-piece:start {
+.specs__content::-webkit-scrollbar-track-piece:start {
   margin-top: 18%;
 }
 
  
-.popover__content::-webkit-scrollbar-thumb {
+.specs__content::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   width:20px;
 }
 
-.popover__content {
+.specs__content {
   opacity: 0;
   visibility: hidden;
   position: absolute;
@@ -116,7 +121,7 @@
   transform: translate(-90%, -2%);
 }
 
-.popover__content:before {
+.specs__content:before {
   position: absolute;
   z-index: -1;
   content: "";
@@ -129,14 +134,14 @@
   transition-property: transform; */
 }
 
-.popover__wrapper:hover .popover__content {
+.specs__wrapper:hover .specs__content {
   z-index: 10;
   opacity: 1;
   visibility: visible;
   /*margin: 0 0 20px 0;*/
   /* transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97); */
 }
-.popover__message {
+.specs__message {
   display: inline;
 }
 
@@ -176,4 +181,32 @@ a {
 .spec > td:first-child{
   font-weight: bold;
   color: #4f4f4f;
+}
+
+.compareBtn {
+    --btn-dim: fit-content;
+    object-fit: contain;
+    justify-content: space-between;
+    position: relative;
+    top: 35%;
+    /*right:0%;*/
+    outline: none;
+    border: 0.1px solid var(--bg);
+    border-radius: 5%;
+    /*background-color: var(--bg);*/
+    background-color: transparent;
+    height: var(--btn-dim);
+    width: var(--btn-dim);
+    cursor: pointer;
+}
+
+.compareBtn:hover {
+    background-color: #717999;
+}
+
+.compareBtn > svg {
+    --svg-dim: 2rem;
+    fill: black;
+    height: var(--svg-dim);
+    width: var(--svg-dim);
 }
