@@ -1,13 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
-//import { BsFillInfoCircleFill } from "react-icons/bs";
+import React, { useEffect, useState} from 'react';
 import { HiOutlineInformationCircle } from "react-icons/hi"
-import { ReactComponent as Filter } from "./list/filter.svg";
-import { ReactComponent as RArrow } from "./list/chevron_r.svg";
 import { ReactComponent as Scale } from './list/compare.svg';
 
 import Productdef from "./Productdef";
+import FiltersMenu from "./Filter";
+import Compare from "./Compare";
 import './Listing.css';
-import './Filter.css';
 import './spinner.css';
 import { useLocation } from "react-router-dom";
 //import axios from 'axios';
@@ -23,7 +21,6 @@ const Specifications = ({specifications}) => {
     specs = JSON.parse(specifications);
   }
   catch(err) { return (<p className="unavail"> Unavailable </p>) }
-  //console.log(specs);
   return (
     <table className="specTable">
       {
@@ -46,16 +43,15 @@ const Specifications = ({specifications}) => {
 }
 const ProductDiv = ({prod}) => {
 
-  let name = prod.name;
+  //let name = prod.name;
   if (prod.price == "Not Available") { 
     return null;
   }
 
-  if(name.length > 110) {
-    name = `${name.slice(0,110)}...`
-  }
+  //if(name.length > 110) {
+    //name = `${name.slice(0,110)}...`
+  //}
 
-              //<h2 class="specs__title"><BsFillInfoCircleFill /></h2>
   return (
     <>    
           <div className="leftdiv">
@@ -65,7 +61,7 @@ const ProductDiv = ({prod}) => {
               </a>
             </div>
             <Productdef
-              name={name}
+              name={prod.name}
               price={prod.price}
               store={"./listing/" + prod.store + ".png"}
               url={prod.url}
@@ -75,11 +71,10 @@ const ProductDiv = ({prod}) => {
               rating={Math.floor(Math.random() * (2) ) + 3}
             />
             <div class="specs__wrapper">
-              <h2 class="specs__title"><HiOutlineInformationCircle /></h2>
+              <h5 class="specs__title"><HiOutlineInformationCircle /></h5>
               <div class="specs__content">
-                <p class="specs__message"><h3 className="specHead">Specifications</h3>
+                <h3 className="specHead">Specifications</h3>
                   <Specifications specifications={(prod.specs)}/>
-                </p>
               </div>
             </div>
             <button className="compareBtn">
@@ -90,65 +85,6 @@ const ProductDiv = ({prod}) => {
   )
 }
 
-const FiltersMenu = ({storeSet}) => {
-  const dropdownAsRef = useRef(null);
-  const submenuAsRef = useRef(null);
-  const [isActive, setIsActive] = useState(false);
-  const [isSubActive, setSubActive] = useState(false);
-  const onClick = () =>  setIsActive(!isActive);
-  const onClickSub = () =>  setIsActive(!isSubActive);
-
-  useEffect(() => {
-    const pageClickEvent = (e) => {
-      // Main dropdown
-      if (dropdownAsRef.current !== null && !dropdownAsRef.current.contains(e.target) ) {
-        setIsActive(!isActive);
-        setSubActive(!isSubActive);
-      }
-      if (submenuAsRef.current !== null && !submenuAsRef.current.contains(e.target)) {
-        setSubActive(!isSubActive);
-      }
-      console.log(e);
-    };
-    if (isActive || isSubActive) {
-      window.addEventListener('click',pageClickEvent);
-    }
-
-    return() => { window.removeEventListener('click',pageClickEvent)};
-
-  }, [isActive]);
-  const stores = Array.from(storeSet);
-
-           //<h5 className="fHead">Stores</h5>
-              //<form>
-              //</form>
-              //<p key={store}>{store}</p>
-  return (
-       <div className="filterSection">
-         <button className="filterButton" onClick={onClick}>
-           <Filter />
-         </button>
-         <nav ref={dropdownAsRef} className={`filterMenu ${isActive ? 'active' : 'inactive'}`}>
-           <h5 className="fHead">Filter by..</h5>
-           <button className="fCriteria" onClick={onClickSub}>Store </button>
-           <nav ref={submenuAsRef} className={`subMenu ${isSubActive ? 'active' : 'inactive'}`}>
-             <h6 className="subHead">Stores</h6>
-           {
-               stores.map((store) => {
-               return (
-                 <label name="Store" className="filterChkLabel">
-                    <input type="checkbox" value={store} name="Store" className="filterChkbx"></input>
-                   {store}
-                 </label>
-               )
-           })
-           }
-           </nav>
-           <button className="fCriteria">Price </button>
-         </nav>
-       </div>
-  );
-};
 
 function Listing() {
       let query = useQuery();
@@ -187,6 +123,11 @@ function Listing() {
         catch(err) { setLoading(false) }
       }
 
+      let stores = new Set();
+        products.forEach((prd) => {
+                stores.add(prd.store);
+        });
+
       useEffect(() => {
         const searchUrl = search.split(/\s+/).join('+');
         const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
@@ -203,23 +144,23 @@ function Listing() {
           </div>
         )
       }
-      const stores = new Set();
-      products.forEach((prd) => {
-              stores.add(prd.store);
-      });
+
     return (
-     <div className="Listings">
-       <FiltersMenu storeSet={stores}/>
-       <div className='product-container'>
-          {
-            products.map(prod => {
-              return (
-                <ProductDiv prod={prod}/>
-              )
-            })
-          }
-       </div>
-    </div>
+      <>
+       <Compare />
+       <div className="Listings">
+         <FiltersMenu storeSet={stores}/>
+         <div className='product-container'>
+            {
+              products.map(prod => {
+                return (
+                  <ProductDiv prod={prod}/>
+                )
+              })
+            }
+         </div>
+      </div>
+    </>
     )
 }
 

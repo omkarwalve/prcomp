@@ -5,11 +5,26 @@ import { ReactComponent as Rating } from './list/rating.svg';
 import { ReactComponent as Replace } from './list/replace.svg';
 import { ReactComponent as Warranty } from './list/warranty.svg';
 
+const Name = ({name}) => {
+      if(name.length > 110) {
+         const pname = `${name.slice(0,100)}...`;
+         return (
+            <div className="tooltipName">
+               <h4 className="name">{pname}</h4>
+               <span className="tooltipN_whole">{name}</span>
+            </div>
+         )
+      }
+      else { return ( <h4 className="name">{name}</h4> )}
+};
+
 const Productdef = ({ name, price, store, rating, returnPolicy, warranty, url}) => {
+
+
     return (
         <div className="header_container">
          <a href={url} target="_blank" rel="noreferrer">
-            <h4 className="name">{name}</h4>
+            <Name name={name} />
             <p className="pricetag">{price}</p>
             <p><img className="storeIcon" src={store} alt="error"></img></p>
             <p className="rating">

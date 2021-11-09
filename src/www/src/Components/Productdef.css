@@ -1,7 +1,7 @@
 * { --bg: #424656; }
 
 .header_container{
-    width: 455px;
+    width: 30vw;
     height: fit-content;
 }
 
@@ -48,3 +48,38 @@
     height: 20px;
 }
 
+/* TOOLTIP */
+.tooltipName {
+    position: relative;
+    display: inline-block;
+    /*width: fit-content;*/
+    /*border: 2px solid #424656;*/
+}
+
+.tooltipName .tooltipN_whole {
+    visibility: hidden;
+    width: fit-content;
+    max-width: 30vw;
+    height: fit-content;
+    border: 1px solid #424656;
+    background-color: whitesmoke;
+    color: #424656;
+    text-align: center;
+    /*padding: 0px 3.1rem 0px 0.6rem;*/
+    padding: 0;
+    /*margin-left: -60px;*/
+    margin: 0;
+
+    font-family: 'Avenir';
+    font-size: 1vw;
+    font-style: italic;
+    
+    position: absolute;
+    z-index: 1;
+    top: 12vh;
+    left: 1vw;
+}
+
+.tooltipName:hover .tooltipN_whole {
+    visibility: visible;
+}

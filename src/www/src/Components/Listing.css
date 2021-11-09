@@ -14,6 +14,7 @@
 .product-container{
     width:100%;
     height:fit-content;
+    vertical-align: middle;
     display:flex;
     flex-wrap: wrap;
     justify-content: space-evenly; gap: 1rem;
@@ -23,11 +24,14 @@
 
 .leftdiv{
     height: fit-content;
+    max-height: 27vw;
     width: 50%;
     display: flex;
     padding: 1rem;
+    margin-bottom: 0.7rem;
     font-family: 'Avenir';
-}
+    font-size: 1.1vw;
+  }
 .leftdiv:hover{
     height: fit-content;
     width: 50%;
@@ -141,9 +145,9 @@
   /*margin: 0 0 20px 0;*/
   /* transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97); */
 }
-.specs__message {
-  display: inline;
-}
+/*.specs__message {*/
+  /*display: inline;*/
+/*}*/
 
 .specHead {
   font-family: 'Avenir';
@@ -188,25 +192,30 @@ a {
     object-fit: contain;
     justify-content: space-between;
     position: relative;
-    top: 35%;
+    top: 14%;
+    padding: 0.2rem 0.2rem 0.1rem 0.2rem ;
+    margin-left: -4.5%;
     /*right:0%;*/
     outline: none;
-    border: 0.1px solid var(--bg);
-    border-radius: 5%;
+    border: 0.1rem solid var(--bg);
+    border-radius: 50%;
     /*background-color: var(--bg);*/
     background-color: transparent;
     height: var(--btn-dim);
+    max-height: 2rem;
     width: var(--btn-dim);
+    max-width: 2rem;
     cursor: pointer;
 }
 
-.compareBtn:hover {
+.compareBtn:hover , .compareBtn:hover > svg > path {
     background-color: #717999;
+    fill: white;
 }
 
-.compareBtn > svg {
-    --svg-dim: 2rem;
-    fill: black;
+.compareBtn > svg , .compareBtn > svg > path {
+    --svg-dim: 1.5vw;
+    fill: var(--bg);
     height: var(--svg-dim);
     width: var(--svg-dim);
 }

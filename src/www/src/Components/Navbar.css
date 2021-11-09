@@ -58,8 +58,9 @@
 }
 .categoryDropdown {
     appearance: none;
-    color: white;
-    background:#465642;
+    color: #424656;
+    text-align: center;
+    background: whitesmoke;
     font-family: 'Avenir';
     font-size: 14px;
     display: inline-block;

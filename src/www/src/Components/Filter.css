@@ -66,7 +66,7 @@
   height: fit-content;
 
   position: fixed;
-  bottom: 11%;
+  bottom: 4.2rem;
   left: 1%;
   padding: var(--pad);
   padding-right: 0;
@@ -170,8 +170,8 @@
   height: fit-content;
 
   position: fixed;
-  bottom: 18%;
-  left: 21%;
+  bottom: 17.5vh;
+  left: 11.2rem;
   /*padding: var(--pad);*/
   padding-right: 0;
   padding-left: 0;
