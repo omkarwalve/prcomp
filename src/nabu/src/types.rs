@@ -38,6 +38,7 @@ pub struct Listing<T> {
     pub price: T,
     pub img: T,
     pub url: T,
+    pub id: T,
 }
 
 #[derive(Serialize)]

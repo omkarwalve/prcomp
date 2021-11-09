@@ -28,31 +28,31 @@ use ansi_term::Color;
 
 const ALT_CHAR: char = '|';
 const WAIT_FOR_RESPONSE_TIMEOUT : u64 = 5;
-const USER_AGENT_POOL : [&'static str; 11] = [
+const USER_AGENT_POOL : [&'static str; 7] = [
                                               "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.3 Safari/605.1.15",
                                               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
                                               "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
                                               "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
                                               "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
                                               "Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko",
-                                              "Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",
+                                              //"Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",
                                               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Edg/92.0.902.78",
-                                              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Vivaldi/4.1",
-                                              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Vivaldi/4.1",
-                                              "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Vivaldi/4.1",
+                                              //"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Vivaldi/4.1",
+                                              //"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Vivaldi/4.1",
+                                              //"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Vivaldi/4.1",
                                             ];
-const PROXY_POOL : [&'static str; 10 ] = [
-                                           "103.92.114.6:8080",
-                                           "202.62.67.209:53281",
-                                           "117.242.36.205:42252",
-                                           "182.72.150.242:8080",
-                                           "103.251.214.167:6666",
-                                           "103.216.82.20:6666",
-                                           "14.139.57.195:23500",
-                                           "43.241.141.27:35101",
-                                           "117.241.98.189:44643",
-                                           "103.216.82.18:6666",
-                                         ];
+//const PROXY_POOL : [&'static str; 10 ] = [
+                                           //"103.92.114.6:8080",
+                                           //"202.62.67.209:53281",
+                                           //"117.242.36.205:42252",
+                                           //"182.72.150.242:8080",
+                                           //"103.251.214.167:6666",
+                                           //"103.216.82.20:6666",
+                                           //"14.139.57.195:23500",
+                                           //"43.241.141.27:35101",
+                                           //"117.241.98.189:44643",
+                                           //"103.216.82.18:6666",
+                                         //];
 const NOT_FOUND_MESSAGE : &'static str = "❔";
 const CONFIG_ERROR_MESSAGE : &'static str = "❗CONFIGURATION-ERROR❗";
 const FAKE_RESPONSE : &'static str = "<h1>REQUEST FAILED</h1>";
@@ -123,6 +123,7 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
             _ => { println!("Failed to build iterator"); None },
         };
     println!("successfully made iterator..");
+    let mut id_counter: u8 = 0;
     if listing_iterator.is_some() {
     for lnode in listing_iterator.unwrap() {
         println!("Inside iterator for loop..");
@@ -209,6 +210,8 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
             };
             //-- STORE
             plisting.store = website_profile.name.clone();
+            plisting.id = format!("{}#{:#02X}",website_profile.name.clone()[0..2].to_string(),id_counter);
+            id_counter +=1;
             println!("==== Found ====\n=> PRODUCT: {}\n=> URL: {}\n=> IMG.SRC:- {}\n=> PRICE: {}",
                      plisting.name,
                      plisting.url,

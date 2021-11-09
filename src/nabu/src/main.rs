@@ -50,6 +50,7 @@ fn fake_listings()  -> crate::types::Listings<String> {
                                                                      , specs: x.clone()
                                                                      , price: x.clone()
                                                                      , img: x.clone()
+                                                                     , id: x.clone()
                                                                      , url: x.clone()}]  }
 }
 
