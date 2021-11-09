@@ -1,0 +1,74 @@
+* { --selected: #717999; }
+
+/*
+  --- COMPARE BUTTON ---
+*/
+
+.compareBtn {
+    --btn-dim: fit-content;
+    object-fit: contain;
+    justify-content: space-between;
+    position: relative;
+    top: 14%;
+    padding: 0.25rem 0.2rem 0.1rem 0.2rem ;
+    margin-left: -4.5%;
+    /*right:0%;*/
+    outline: none;
+    border: 0.1rem solid var(--bg);
+    border-radius: 50%;
+    /*background-color: var(--bg);*/
+    background-color: transparent;
+    height: var(--btn-dim);
+    max-height: 1.8rem;
+    width: var(--btn-dim);
+    max-width: 1.8rem;
+    cursor: pointer;
+}
+
+.compareBtn:hover , .compareBtn:hover > svg > path {
+    background-color: lightgray;
+    fill: black;
+}
+
+.compareBtn > svg , .compareBtn > svg > path {
+    --svg-dim: 1.4vw;
+    fill: var(--bg);
+    height: var(--svg-dim);
+    width: var(--svg-dim);
+}
+
+.compareBtn.check, .compareBtn.check > svg > path {
+    background-color: var(--selected);
+    fill: white;
+}
+
+/*
+  --- COMPARE WINDOW ---
+*/
+
+.compareWindow {
+    visibility: visible;
+    display: block;
+    position: sticky;
+    text-align: left;
+    margin: 0;
+    padding: 0.4vw 0vw 0.4vw 1vw;
+    top: 0%;
+    left: 0%;
+    background-image: linear-gradient(to right, lightgray, white);
+
+    width: 100%;
+    height: fit-content;
+}
+.compareWindow:after {
+    content: " ";
+    float: right;
+    top: 50%;
+    right: 2%;
+    width: 0.5vw;
+    vertical-align: middle;
+    height: 0.5vw;
+    border: 0 0 5px 5px;
+    border-color: solid black;
+    transform: rotate(45deg);
+}

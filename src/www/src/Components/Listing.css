@@ -51,6 +51,7 @@
     display: flex;
     vertical-align: middle;
     width: fit-content;
+    padding: 0.5vw;
     /*height: inherit;*/
     max-width: 100%;
     max-height: 100%;
@@ -187,35 +188,3 @@ a {
   color: #4f4f4f;
 }
 
-.compareBtn {
-    --btn-dim: fit-content;
-    object-fit: contain;
-    justify-content: space-between;
-    position: relative;
-    top: 14%;
-    padding: 0.2rem 0.2rem 0.1rem 0.2rem ;
-    margin-left: -4.5%;
-    /*right:0%;*/
-    outline: none;
-    border: 0.1rem solid var(--bg);
-    border-radius: 50%;
-    /*background-color: var(--bg);*/
-    background-color: transparent;
-    height: var(--btn-dim);
-    max-height: 2rem;
-    width: var(--btn-dim);
-    max-width: 2rem;
-    cursor: pointer;
-}
-
-.compareBtn:hover , .compareBtn:hover > svg > path {
-    background-color: #717999;
-    fill: white;
-}
-
-.compareBtn > svg , .compareBtn > svg > path {
-    --svg-dim: 1.5vw;
-    fill: var(--bg);
-    height: var(--svg-dim);
-    width: var(--svg-dim);
-}

@@ -1,10 +1,9 @@
 import React, { useEffect, useState} from 'react';
 import { HiOutlineInformationCircle } from "react-icons/hi"
-import { ReactComponent as Scale } from './list/compare.svg';
 
 import Productdef from "./Productdef";
 import FiltersMenu from "./Filter";
-import Compare from "./Compare";
+import { Compare, CompareCheck } from "./Compare";
 import './Listing.css';
 import './spinner.css';
 import { useLocation } from "react-router-dom";
@@ -44,7 +43,7 @@ const Specifications = ({specifications}) => {
 const ProductDiv = ({prod}) => {
 
   //let name = prod.name;
-  if (prod.price == "Not Available") { 
+  if (prod.price === "Not Available") { 
     return null;
   }
 
@@ -77,9 +76,7 @@ const ProductDiv = ({prod}) => {
                   <Specifications specifications={(prod.specs)}/>
               </div>
             </div>
-            <button className="compareBtn">
-              <Scale/>
-            </button>
+            <CompareCheck pid={prod.id}/>
         </div>
         </>
   )
@@ -125,6 +122,7 @@ function Listing() {
 
       let stores = new Set();
         products.forEach((prd) => {
+                //console.log(prd.id);
                 stores.add(prd.store);
         });
 
