@@ -10,8 +10,8 @@
     flex-wrap: wrap;
     justify-content: space-between;
     padding-top: 0px;
-    padding-left: 150px;
-    padding-right: 150px;
+    padding-left: 9.375rem;
+    padding-right: 9.375rem;
     padding-bottom: 0px;
 }
 
@@ -35,7 +35,7 @@
     /*border-radius: 10px;*/
     height: fit-content;
     width: fit-content;
-    max-height: 20%;
+    max-height: 30vh;
     max-width: 100%;
     object-fit: contain;
 }

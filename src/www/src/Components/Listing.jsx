@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState} from 'react';
 import { HiOutlineInformationCircle } from "react-icons/hi"
 
 import Productdef from "./Productdef";
@@ -10,8 +10,7 @@ import { useLocation } from "react-router-dom";
 //import axios from 'axios';
 
   function useQuery() {
-      return new URLSearchParams(useLocation().search);
-  }
+      return new URLSearchParams(useLocation().search); }
 
 
 const Specifications = ({specifications}) => {
@@ -40,7 +39,7 @@ const Specifications = ({specifications}) => {
     </table>
   )
 }
-const ProductDiv = ({prod}) => {
+const ProductDiv = ({prod,CSet,setCSet}) => {
 
   //let name = prod.name;
   if (prod.price === "Not Available") { 
@@ -76,7 +75,7 @@ const ProductDiv = ({prod}) => {
                   <Specifications specifications={(prod.specs)}/>
               </div>
             </div>
-            <CompareCheck pid={prod.id}/>
+            <CompareCheck pid={prod.id} CSet={CSet} setCSet={setCSet}/>
         </div>
         </>
   )
@@ -126,6 +125,11 @@ function Listing() {
                 stores.add(prd.store);
         });
 
+      const [compareSet, setCmpProducts] = useState(new Set());
+      //const [compareSet, setCmpProducts] = useState([]);
+      //const adder = useCallback((product) => setCmpProducts(plist=> plist.add(product)));
+      //const remover = useCallback((product) => setCmpProducts(plist=> plist.delete(product)));
+
       useEffect(() => {
         const searchUrl = search.split(/\s+/).join('+');
         const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
@@ -145,14 +149,14 @@ function Listing() {
 
     return (
       <>
-       <Compare />
+       <Compare products={products} CSet={compareSet}/>
        <div className="Listings">
          <FiltersMenu storeSet={stores}/>
          <div className='product-container'>
             {
               products.map(prod => {
                 return (
-                  <ProductDiv prod={prod}/>
+                  <ProductDiv prod={prod} CSet={compareSet} setCSet={setCmpProducts}/>
                 )
               })
             }
