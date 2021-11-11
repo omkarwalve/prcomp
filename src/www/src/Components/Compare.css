@@ -1,6 +1,9 @@
 * { --selected: #717999;
     --td-width: 20ch;
     --tborder: 1px solid #f0f0f0;
+    --spechd-fntsz: 0.8em;
+    --pname-fntsz: 0.8em;
+    --spec-fontsz: 0.9em;
   }
 
 /*
@@ -52,7 +55,7 @@
 .compareBar {
     visibility: hidden;
     display: block;
-    z-index: 2;
+    z-index: 3;
     position: relative;
     text-align: left;
     margin: 0;
@@ -94,6 +97,8 @@
 .compareWindow {
     visibility: hidden;
     width: 100%;
+    top: 9.6%;
+    left: 0%;
     height: 0;
     position: relative;
     z-index: 2;
@@ -103,13 +108,16 @@
     /*left:0%;*/
 
     border: none;
+    border-bottom: var(--tborder);
+    box-shadow: 0rem 0.09rem 0.4rem 0.4rem gray;
     background-color: white;
     font-family: 'Avenir';
 }
 .compareWindow.active {
     visibility: visible;
     position: sticky;
-    height: fit-content;
+    height: 70vh;
+    overflow-y: scroll;
 }
 
 /*
@@ -125,6 +133,7 @@
 }
 .cProdImg {
     display: block;
+    margin-top: 1rem;
     margin-left:auto;
     margin-right:auto;
     width: 7vw;
@@ -132,10 +141,19 @@
     max-width: inherit;
     max-height: inherit; 
 }
+.storeIC {
+    position: relative;
+    float: right;
+    right: 5%;
+    margin-bottom: 0.8rem;
+    width: 2.5rem;
+    height:auto;
+}
 .row_img {
     border: var(--tborder);
     gap: 1rem;
 }
+/*Top Left Blank Gap*/
 .row_img > th {
     width: 3vw;
     height: auto;
@@ -155,16 +173,33 @@
 .row_pname {
     border: var(--tborder);
     background-color: white;
-    font-size: 1em;
     font-weight: bold;
     width: 100%;
 }
+
 .cTH {
     color: gray;
+    font-size: var(--spechd-fntsz);
+    text-align: right;
+    padding-right: 0.5rem;
+    padding-left: 0;
 }
+ 
+/*Product Name cells*/
 .row_pname > td {
     text-align: center;
+    font-size: var(--pname-fntsz);
     padding-left: 2em;
     padding-right: 2em;
     width: var(--td-width);
+}
+
+.specCells {
+    border: var(--tborder);
+    width: var(--td-width);
+    margin-left: auto;
+    margin-right: auto;
+
+    text-align: center;
+    font-size: var(--spec-fontsz);
 }

@@ -27,25 +27,67 @@ const CompareCheck = ({pid,CSet,setCSet}) => {
 };
 
 const CompareTable = ({cProducts}) => {
+    const [specList, setSpecList ] = useState([]);
+    const [sKeys, setSKeys ] = useState(new Set());
+
+    const filterSpecs = (pList) => {
+        let _set = new Set();
+        let _arr = [];
+        pList.map(lItem => {
+            let parsedSpec = JSON.parse(lItem.specs);
+            _arr.push(parsedSpec);
+            Object.keys(parsedSpec).forEach(item => _set.add(item.trim())); 
+        });
+        return [_set, _arr];
+    };
+    
+
+    useEffect(() => {
+        let [uniqKeys, slist] = filterSpecs(cProducts);
+        setSKeys(new Set(Array.from(uniqKeys).sort()));
+        setSpecList(slist)
+        console.log(sKeys,specList);
+    },[cProducts]);
+
 
     return (
         <>
             <table className="compareTable">
                 <tr className="row_img">
-                    <th /> {/* Common specs*/}
+                    <th /> {/* Top Left Blank Gap*/}
                     {
                         cProducts.map(product => {
                             return (
-                                <td><img className="cProdImg" src={product.img} alt="error"/></td>
+                                <td>
+                                    <a href={product.url} target="_blank" rel="noreferer">
+                                    <img className="cProdImg" src={product.img} alt="error"/>
+                                    <img className="storeIC" src={'/listing/' + product.store + '.svg'}/>
+                                    </a>
+                                </td>
                         )})
                     }
                 </tr>
                 <tr className="row_pname">
-                    <th className="cTH">Name</th>
+                    <th className="cTH">Product:</th>
                     {
                         cProducts.map(product => { return( <td> {product.name} </td>)})
                     }
                 </tr>
+                {
+                    Array.from(sKeys).sort().map(key => {
+                        return(
+                            <tr>
+                                <th className="cTH">{key}</th>
+                                {
+                                    specList.map(specObj => {
+                                        let sVal = specObj[key];
+                                        return(<td className="specCells">{(sVal != null) ? sVal : "-"}</td>)
+                                    })
+                                }
+                            </tr>
+                        )
+                    })
+                }
             </table>
         </>
     )
