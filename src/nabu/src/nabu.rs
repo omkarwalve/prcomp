@@ -61,7 +61,7 @@ const FAKE_RESPONSE : &'static str = "<h1>REQUEST FAILED</h1>";
 
 macro_rules! mkvec {
     ($node: expr) => { $node.into_iter()
-                             .map(|node| node.text())
+                             .map(|node| node.text().trim().to_string())
                              .collect::<Vec<String>>()
     }
 }
