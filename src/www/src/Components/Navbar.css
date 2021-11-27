@@ -3,23 +3,35 @@
   src: url('./fonts/Avenir.ttc') format('ttc');
 }
 
-.navBar{
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+.navBar {
+    height: fit-content;
+    padding: auto;
+    margin: auto;
+    width: 100%;
+
+    /*position: fixed;*/
+    /*z-index: 1;*/
+
     /*margin-left: 0px;*/
     /*margin-right: 00px;*/
     /* border: 2px solid blue; */
-    height: 60px;
-    padding-left: 20px;
-    padding-right: 20px;
+    /*padding-left: 20px;*/
+    /*padding-right: 20px;*/
+    align-items: middle;
     background-color: #424656;
-    
 }
 
-.logoName {
+.nav-flex{
     display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: center;
+}
+
+.logo-section {
     cursor: pointer;
+    order: 1;
 }
 
 .logo{
@@ -37,11 +49,14 @@
     color: white;
 }
 
-.sBarGroup {
+.search-bar-group {
     display: flex;
+    flex-flow: row nowrap;
     align-items: center;
+    align-content: space-around;
     justify-content: space-evenly;
     width: fit-content;
+    order:2;
 }
 
 #triangle-bottomright {
@@ -52,11 +67,12 @@
   }
 
 
-.categoryDropdown::-ms-expand {
+.category-selector::-ms-expand {
     display: none;
     appearance: none;
 }
-.categoryDropdown {
+.category-selector {
+    order:1;
     appearance: none;
     color: #424656;
     text-align: center;
@@ -81,7 +97,7 @@
     grid-area: select;
 }
 
-.categoryDropdown::after {
+.category-selector::after {
     content: "";
     width: 0.8em;
     height: 0.5em;
@@ -94,7 +110,7 @@
     clip-path: polygon(100% 0%, 0 0%, 50% 100%);
 }
 
-.categoryDropdown > option:focus {
+.category-selector > option:focus {
     appearance: none;
     outline: none;
     color: #424656;
@@ -102,30 +118,31 @@
     padding: 0 10px;
 }
 
-.catOpts {
+.category-option {
     border-radius: 0px;
     background-color: white;
     appearance: none;
 }
 
-.search_bar {
-    font-size: 15px;
+.search-bar {
+    order: 2;
+    flex-grow: 10;
+    font-size: 0.9rem;
     font-family: 'Avenir';
+    min-width: 10%;
     border: 1px solid white;
-    margin-left: 0px;
-    margin-right: 0px;
-    padding: 10px;
-    margin-top: 12px;
-    margin-bottom: 12px;
+    padding: 2%;
+    margin-right: 0;
 }
 
-.search_bar:focus {
+.search-bar:focus {
     outline: none;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
 }
 
-.search_btn {
+.search-button {
     /*color:black; */
+    order: 3;
     background-color: white;
     border: 1px solid white;
     display: flex;
@@ -137,13 +154,13 @@
     font-size: 15px;
     margin-top:11px;
     margin-bottom: 12px;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: 0;
+    margin-right: 0;
 }
-.search_btn > svg {
+.search-button > svg {
     fill: #4f4f4f;
 }
-.search_btn:hover, .search_btn:hover > svg {
+.search-button:hover, .search-button:hover > svg {
     /*outline: #4f4f4f solid 1px;*/
     outline: none;
     fill: #717999;
@@ -217,11 +234,12 @@
 }
 .dropMenu:hover .dropMenuContent { display: block; }
 
-.userOpts {
+.user-options {
     display:flex;
     width: fit-content;
     align-items:center;
-    gap:2rem;
+    gap:1rem;
+    order: 3;
 }
 
 .shopcart {
@@ -235,7 +253,7 @@
     fill: #717999;
 }
 
-.userIcon {
+.user-icon {
     cursor:pointer;
     width: fit-content;
     height: fit-content;

@@ -6,21 +6,26 @@ export default class Homefooter extends React.Component {
     render() {
         return (
             <div className="footer">
-                <div className="logoSide">
-                    <img alt="error" src="_kilowog_.svg" className="footLogo"/>
-                    <div className="regionOpts">
-                        <a className="footText" href="#"><img alt="error" src="/globe.svg" className="footIcon" /> IND</a>
-                        <select className="langSelect">
-                            <option selected value="english">ENGLISH</option>
-                            <option value="hindi">हिंदी</option>
-                        </select>
+                <div className="footer-grid">
+                    <div className="banner-section">
+                        <img alt="error" src="_kilowog_.svg" className="website-logo"/>
+                        <div className="region-section">
+                            <a className="footer-link-normal" href="#">
+                                <img alt="error" src="/globe.svg" className="footer-icon" />
+                                    IND
+                            </a>
+                            <select className="language-selector">
+                                <option selected value="english">ENGLISH</option>
+                                <option value="hindi">हिंदी</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div className="serviceSide">
-                    <a className="footText" href="#">Customer Service</a>
-                    <a className="footText" href="#">About Us</a>
-                    <a className="footText" href="#">Help</a>
-                    <a className="footText" href="#">Terms and Conditions</a>
+                    <div className="service-section">
+                        <a className="footer-link-normal" href="#">Customer Service</a>
+                        <a className="footer-link-normal" href="#">About Us</a>
+                        <a className="footer-link-normal" href="#">Help</a>
+                        <a className="footer-link-normal" href="#">Terms and Conditions</a>
+                    </div>
                 </div>
             </div>
         )

@@ -5,6 +5,7 @@ import Productdef from "./Productdef";
 import FiltersMenu from "./Filter";
 import { Compare, CompareCheck } from "./Compare";
 import './Listing.css';
+
 import './spinner.css';
 import { useLocation } from "react-router-dom";
 //import axios from 'axios';
@@ -52,30 +53,32 @@ const ProductDiv = ({prod,CSet,setCSet}) => {
 
   return (
     <>    
-          <div className="leftdiv">
-            <div className="prod_img">
+          <div className="product-container">
               <a href={prod.url} target="_blank" rel="noreferrer">
-                <img src={prod.img} alt="error"/>
+                <div className="product-image">
+                    <img src={prod.img} alt="error"/>
+                </div>
+                <Productdef
+                  name={prod.name}
+                  price={prod.price}
+                  store={"./listing/" + prod.store + ".png"}
+                  url={prod.url}
+                  warranty={prod.warranty}
+                  returnPolicy={prod.return_replace}
+                  //availibility="Availibility"
+                  rating={Math.floor(Math.random() * (2) ) + 3}
+                />
               </a>
-            </div>
-            <Productdef
-              name={prod.name}
-              price={prod.price}
-              store={"./listing/" + prod.store + ".png"}
-              url={prod.url}
-              warranty={prod.warranty}
-              returnPolicy={prod.return_replace}
-              //availibility="Availibility"
-              rating={Math.floor(Math.random() * (2) ) + 3}
-            />
-            <div class="specs__wrapper">
-              <h5 class="specs__title"><HiOutlineInformationCircle /></h5>
-              <div class="specs__content">
-                <h3 className="specHead">Specifications</h3>
-                  <Specifications specifications={(prod.specs)}/>
+            <div className="product-opts">
+              <div class="specs-section">
+                <h5 class="specs-icon"><HiOutlineInformationCircle /></h5>
+                <div class="specs-float-section">
+                  <h3 className="spec-float-title">Specifications</h3>
+                    <Specifications specifications={(prod.specs)}/>
+                </div>
               </div>
+              <CompareCheck pid={prod.id} CSet={CSet} setCSet={setCSet}/>
             </div>
-            <CompareCheck pid={prod.id} CSet={CSet} setCSet={setCSet}/>
         </div>
         </>
   )
@@ -132,6 +135,7 @@ function Listing() {
 
       useEffect(() => {
         const searchUrl = search.split(/\s+/).join('+');
+        //const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
         const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
         //console.log(reqUrl,search);
         getProducts(reqUrl);
@@ -150,9 +154,9 @@ function Listing() {
     return (
       <>
        <Compare products={products} CSet={compareSet}/>
-       <div className="Listings">
+       <div className="listings-section">
          <FiltersMenu storeSet={stores}/>
-         <div className='product-container'>
+         <div className='products-section'>
             {
               products.map(prod => {
                 return (

@@ -20,46 +20,48 @@ export default class Section extends React.Component {
                         //<img src="/catalog/elx.svg" alt="error" />
     render() {
         return (
-            <div className="content">
-                    <div className="category-block">
-                        <Electronics />
-                        <div className="catName">Electronics</div>
-                    </div>    
-                    
-                    <div className="category-block">
-                        <Furniture />
-                        <div className="catName">Furniture</div>                    
-                    </div>
+            <div className="catalog">
+                <div className="category-grid">
+                        <div className="category-block">
+                            <Electronics />
+                            <div className="catName">Electronics</div>
+                        </div>    
+                        
+                        <div className="category-block">
+                            <Furniture />
+                            <div className="catName">Furniture</div>                    
+                        </div>
 
-                    <div className="category-block">
-                        <Fashion />
-                        <div className="catName">Fashion</div>
-                    </div>
+                        <div className="category-block">
+                            <Fashion />
+                            <div className="catName">Fashion</div>
+                        </div>
 
-                    <div className="category-block">
-                        <Grocery />
-                        <div className="catName">Grocery</div>
-                    </div>
+                        <div className="category-block">
+                            <Grocery />
+                            <div className="catName">Grocery</div>
+                        </div>
 
-                    <div className="category-block">
-                        <Stationary />
-                        <div className="catName">Stationary</div>
-                    </div>
-                    
-                    <div className="category-block">  
-                        <Garden />
-                        <div className="catName">Garden</div>
-                    </div>
-                    
-                    <div className="category-block">                    
-                        <Toys />
-                        <div className="catName">Toys</div>
-                    </div>
-                    
-                    <div className="category-block">
-                        <Books />
-                        <div className="catName">Books</div>
-                    </div>
+                        <div className="category-block">
+                            <Stationary />
+                            <div className="catName">Stationary</div>
+                        </div>
+                        
+                        <div className="category-block">  
+                            <Garden />
+                            <div className="catName">Garden</div>
+                        </div>
+                        
+                        <div className="category-block">                    
+                            <Toys />
+                            <div className="catName">Toys</div>
+                        </div>
+                        
+                        <div className="category-block">
+                            <Books />
+                            <div className="catName">Books</div>
+                        </div>
+                </div>
             </div>
         )
     }

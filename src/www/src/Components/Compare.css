@@ -10,40 +10,40 @@
   --- COMPARE BUTTON ---
 */
 
-.compareBtn {
-    --btn-dim: fit-content;
+.compare-button {
+    display: inline-block;
+    vertical-align: middle;
     object-fit: contain;
     justify-content: space-between;
     position: relative;
-    top: 3.2rem;
-    padding: 0.25rem 0.2rem 0.1rem 0.2rem ;
-    margin-left: -4.4%;
-    /*right:0%;*/
     outline: none;
+    padding: 0.2rem;
+    text-align: center;
     border: 0.1rem solid var(--bg);
     border-radius: 50%;
     /*background-color: var(--bg);*/
     background-color: transparent;
-    height: var(--btn-dim);
-    max-height: 1.8rem;
-    width: var(--btn-dim);
-    max-width: 1.8rem;
     cursor: pointer;
+    max-width: fit-content;
 }
 
-.compareBtn:hover , .compareBtn:hover > svg > path {
+.compare-button:hover , .compare-button:hover > svg > path {
     background-color: lightgray;
     fill: black;
 }
 
-.compareBtn > svg , .compareBtn > svg > path {
-    --svg-dim: 1.4vw;
-    fill: var(--bg);
+.compare-button > svg {
+    --svg-dim: 1.2rem;
+    display: inline-block;
+    vertical-align: middle;
     height: var(--svg-dim);
     width: var(--svg-dim);
 }
+.compare-button > svg > path {
+    fill: var(--bg);
+}
 
-.compareBtn.check, .compareBtn.check > svg > path {
+.compare-button.check, .compare-button.check > svg > path {
     background-color: var(--selected);
     fill: white;
 }
@@ -52,7 +52,7 @@
   --- COMPARE BAR ---
 */
 
-.compareBar {
+.compare-bar {
     visibility: hidden;
     display: block;
     z-index: 3;
@@ -68,10 +68,10 @@
     width: 100%;
     height: 0;
 }
-.compareBar:hover {
+.compare-bar:hover {
     background-color: #f4f4f4;
 }
-.compareBar:after {
+.compare-bar:after {
     content: " ";
     border: solid black;
     border-width: 0 0.1rem 0.1rem 0;
@@ -84,7 +84,7 @@
     height: 10px;
     transform: rotate(45deg);
 }
-.compareBar.active {
+.compare-bar.active {
     visibility: visible;
     position: sticky;
     height: fit-content;
@@ -94,7 +94,7 @@
   --- COMPARE WINDOW ---
 */
 
-.compareWindow {
+.compare-window {
     visibility: hidden;
     width: 100%;
     top: 9.6%;
@@ -113,7 +113,7 @@
     background-color: white;
     font-family: 'Avenir';
 }
-.compareWindow.active {
+.compare-window.active {
     visibility: visible;
     position: sticky;
     height: 70vh;
@@ -124,7 +124,7 @@
   --- COMPARE TABLE ---
 */
 
-.compareTable {
+.compare-table {
     border-collapse: collapse;
     margin-top: 0;
     padding-top: 0;
@@ -149,19 +149,19 @@
     width: 2.5rem;
     height:auto;
 }
-.row_img {
+.compare-row-image {
     border: var(--tborder);
     gap: 1rem;
 }
 /*Top Left Blank Gap*/
-.row_img > th {
+.compare-row-image > th {
     width: 3vw;
     height: auto;
     margin-left:0;
     background-color: transparent;
 }
 
-.row_img > td {
+.compare-row-image > td {
     justify-content: center;
     align-items: center;
     margin: 0;

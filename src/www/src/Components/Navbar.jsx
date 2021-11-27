@@ -47,38 +47,40 @@ function Navbar() {
                     //<div className="userSigning" > </div>
             return (
             <div className="navBar">
-                <div className="logoName" onClick={() => history.push('/')}>
-                    <img className="logo" src="/_kilowog_.svg" alt=""/>
-                </div>
-                <div className="sBarGroup">
-                    <select className="categoryDropdown" onChange={handleCategoryChange}>
-                        {
-                            categories.map(({name,url}) => {
-                                return (
-                                    <option className="catOpts" value={url} name={name}>{name}</option>
-                                    )
-                                })
-                            }
-                    </select>
-                   <input className="search_bar" type="text" size="55" placeholder="Search for..." value={searchWord} onChange={(e) => setSearchWord(e.target.value)} onKeyDown={handleKeyDown} />
-                    <button className="search_btn" onClick={handleSearch} ><FaSearch/></button>
-                </div>
-                 <div className="userOpts">
-                     <div>
-                     </div>
-                    <div className="tooltip">
-                        <Cart className="shopcart"/>
-                        <span className="tooltip_msg">Empty</span>
+                <div className="nav-flex">
+                    <div className="logo-section" onClick={() => history.push('/')}>
+                        <img className="logo" src="/_kilowog_.svg" alt=""/>
                     </div>
-                     <div className="dropMenu">
-                     <FaUserCircle className="userIcon"/> 
-                         <div className="dropMenuContent">
-                             <a href="#">My Account</a>
-                             <a href="#">Orders</a>
-                             <a href="#">Wishlist</a>
+                    <div className="search-bar-group">
+                        <select className="category-selector" onChange={handleCategoryChange}>
+                            {
+                                categories.map(({name,url}) => {
+                                    return (
+                                        <option className="category-option" value={url} name={name}>{name}</option>
+                                        )
+                                    })
+                                }
+                        </select>
+                       <input className="search-bar" type="text" size="55" placeholder="Search for..." value={searchWord} onChange={(e) => setSearchWord(e.target.value)} onKeyDown={handleKeyDown} />
+                        <button className="search-button" onClick={handleSearch} ><FaSearch/></button>
+                    </div>
+                     <div className="user-options">
+                         <div>
+                         </div>
+                        <div className="tooltip">
+                            <Cart className="shopcart"/>
+                            <span className="tooltip_msg">Empty</span>
+                        </div>
+                         <div className="dropMenu">
+                         <FaUserCircle className="user-icon"/> 
+                             <div className="dropMenuContent">
+                                 <a href="#">My Account</a>
+                                 <a href="#">Orders</a>
+                                 <a href="#">Wishlist</a>
+                             </div>
                          </div>
                      </div>
-                 </div>
+            </div>
         </div>
     )
 }

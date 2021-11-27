@@ -19,7 +19,7 @@ const CompareCheck = ({pid,CSet,setCSet}) => {
     },[isCmpActive]);
     return (
         <>
-            <div className={`compareBtn ${isCmpActive ? 'check': ''}`} onClick={onCbtnClick}>
+            <div className={`compare-button ${isCmpActive ? 'check': ''}`} onClick={onCbtnClick}>
               <Scale/>
             </div>
         </>
@@ -52,8 +52,8 @@ const CompareTable = ({cProducts}) => {
 
     return (
         <>
-            <table className="compareTable">
-                <tr className="row_img">
+            <table className="compare-table">
+                <tr className="compare-row-image">
                     <th /> {/* Top Left Blank Gap*/}
                     {
                         cProducts.map(product => {
@@ -111,10 +111,10 @@ const Compare = ({products,CSet}) => {
 
     return (
         <>
-            <div onClick={onCBarClick} className={`compareBar ${len > 1 ? 'active': 'inactive'}`}>
+            <div onClick={onCBarClick} className={`compare-bar ${len > 1 ? 'active': 'inactive'}`}>
                 <h6>{len} items to compare..</h6>
             </div>
-            <div className={`compareWindow ${isCWinActive ? 'active': ''}`}>
+            <div className={`compare-window ${isCWinActive ? 'active': ''}`}>
                 <CompareTable cProducts={prodData} />
             </div>
         </>

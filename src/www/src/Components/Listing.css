@@ -3,7 +3,7 @@
   src: url('./fonts/Avenir.ttc') format('ttc');
 }
 
-.Listings {
+.listings-section {
     width:100%;
     height:fit-content;
     display:flex;
@@ -11,66 +11,106 @@
     justify-content: space-evenly; gap: 1rem;
 }
 
-.product-container{
+.products-section{
     width:100%;
     height:fit-content;
     vertical-align: middle;
-    display:flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly; gap: 1rem;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
 }
 
 *{ box-sizing: border-box; }
 
-.leftdiv{
-    height: fit-content;
-    max-height: 27vw;
-    width: 50%;
+.product-container {
+    height: auto;
+    width: 100%;
+
     display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    /*vertical-align: middle;*/
+
+    /*padding: 1rem;*/
+    /*margin-bottom: 0.7rem;*/
+    margin-right: 0;
     padding: 1rem;
-    margin-bottom: 0.7rem;
     font-family: 'Avenir';
-    font-size: 1.1vw;
+    font-size: 80%;
   }
-.leftdiv:hover{
-    height: fit-content;
-    width: 50%;
-    display: flex;
-    padding: 1rem;
-    font-family: 'Avenir';
+.product-container:hover{
+    /*width: 50%;*/
     background-color: #f7f7f7;
 }
 
-.rightdiv{
-    display: flex;
-    height: 200px;
-    width:50%;
+.product-container > a {
+  order: 1;
+  display: flex;
+  padding: 0;
+  flex-flow: row nowrap;
+  gap: auto;
+  align-items: center;
+  align-content: center;
+  justify-content: space-evenly;
+
+  max-height: 20rem;
 }
 
-.prod_img > a > img {
-    display: flex;
-    vertical-align: middle;
-    width: fit-content;
-    padding: 0.5vw;
-    /*height: inherit;*/
-    max-width: 100%;
-    max-height: 100%;
+.product-container > a:link {
+    color: #4f4f4f;
+}
+
+.product-container > a:hover {
+    color: #000000;
+}
+
+.product-container > a:visited {
+    color: #bababa;
+}
+
+.product-container > a:visited:hover {
+    color: #000000;
+}
+
+.product-image > img {
+    padding: auto;
+    margin: auto;
+    /*max-width: min(5rem,60%);*/
+    /*max-width: min(10rem,55%);*/
+    max-width: inherit;
+    height: inherit;
     object-fit: contain;
 }
 
-.prod_img {
-    display: grid;
+.product-image {
+    order: 1;
+    padding: 0.4rem;
+
+    display: flex;
     align-items: center;
-    align-self: center;
-    justify-content:center;
-    margin-top: 5px;
-    height: fit-content;
-    width: 30%;
-    margin-right: 1.2rem;
+    justify-content: center;
+
+    /*margin-top: 5px;*/
+
+    height: 10rem;
+    max-width: 100%;
+    object-fit: cover;
+    /*margin-right: 1.2rem;*/
+}
+
+.product-opts {
+  order: 2;
+  display: inline-grid;
+  grid-column-gap: 0.2rem;
+  width: 10%;
+  height: 4%;
 }
 
   /* Popover styling */
-.specs__title {
+.specs-icon {
   font-size: 25px;
   /*line-height: 36px;*/
   color: rgb(71, 69, 69);
@@ -86,29 +126,30 @@
   font-family: 'Avenir';
 }
 
-.specs__wrapper {
+.specs-section {
   position: right; 
   margin-top: 1.1rem; 
   display: inline-block;
   height: fit-content;
   width: fit-content;
 }
-.specs__content::-webkit-scrollbar {
+.specs-float-section::-webkit-scrollbar {
   display: flex;
   width: 0.5em;
 }
 
-.specs__content::-webkit-scrollbar-track-piece:start {
+.specs-float-section::-webkit-scrollbar-track-piece:start {
   margin-top: 18%;
 }
 
  
-.specs__content::-webkit-scrollbar-thumb {
+.specs-float-section::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   width:20px;
 }
 
-.specs__content {
+.specs-float-section {
+  display: block;
   opacity: 0;
   visibility: hidden;
   position: absolute;
@@ -126,7 +167,7 @@
   transform: translate(-90%, -2%);
 }
 
-.specs__content:before {
+.specs-float-section:before {
   position: absolute;
   z-index: -1;
   content: "";
@@ -139,7 +180,7 @@
   transition-property: transform; */
 }
 
-.specs__wrapper:hover .specs__content {
+.specs-section:hover .specs-float-section {
   z-index: 10;
   opacity: 1;
   visibility: visible;
@@ -150,7 +191,7 @@
   /*display: inline;*/
 /*}*/
 
-.specHead {
+.spec-float-title {
   font-family: 'Avenir';
   font-weight: bold;
   border-bottom: 0.1px solid #424656;
