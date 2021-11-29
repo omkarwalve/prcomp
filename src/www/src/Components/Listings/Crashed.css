@@ -1,0 +1,38 @@
+
+.crashed-section {
+    --color:#5E5E5E; 
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 5rem;
+
+    width: 100%;
+    height: fit-content;
+
+    background: transparent;
+    color: var(--color);
+
+    font-family: 'Avenir';
+    font-size: 1rem;
+}
+
+.crashed-section > svg > path {
+    fill: var(--color);
+}
+
+.crashed-section > svg {
+    --crasdim : 8rem;
+    height: var(--crasdim);
+    width: var(--crasdim);
+    object-fit: contain;
+    transition: opacity 5s;
+    animation: fade 5s infinite linear;
+}
+
+@keyframes fade {
+    0% { opacity: 0.5 }
+    50% { opacity: 0.8 }
+    100% { opacity: 0.5 }
+}
