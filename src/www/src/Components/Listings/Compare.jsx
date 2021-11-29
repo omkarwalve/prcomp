@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 
-import { ReactComponent as Scale } from './list/compare.svg';
+import { ReactComponent as Scale } from './assets/cmp/compare.svg';
 
 import './Compare.css';
 

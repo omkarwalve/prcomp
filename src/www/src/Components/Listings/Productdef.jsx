@@ -1,9 +1,9 @@
 import React from 'react';
 
 import './Productdef.css';
-import { ReactComponent as Rating } from './list/rating.svg';
-import { ReactComponent as Replace } from './list/replace.svg';
-import { ReactComponent as Warranty } from './list/warranty.svg';
+import { ReactComponent as Rating } from './assets/container/rating.svg';
+import { ReactComponent as Replace } from './assets/container/replace.svg';
+import { ReactComponent as Warranty } from './assets/container/warranty.svg';
 
 const Name = ({name}) => {
       if(name.length > 105) {

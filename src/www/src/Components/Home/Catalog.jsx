@@ -2,14 +2,14 @@ import React from 'react'
 
 import './Catalog.css'
 // All catalog logos
-import { ReactComponent as Electronics } from './catalog/elx.svg';
-import { ReactComponent as Furniture } from './catalog/fur.svg';
-import { ReactComponent as Fashion } from './catalog/fas.svg';
-import { ReactComponent as Grocery } from './catalog/gro.svg';
-import { ReactComponent as Stationary } from './catalog/sta.svg';
-import { ReactComponent as Garden } from './catalog/gar.svg';
-import { ReactComponent as Toys } from './catalog/toy.svg';
-import { ReactComponent as Books } from './catalog/bok.svg';
+import { ReactComponent as Electronics } from './assets/elx.svg';
+import { ReactComponent as Furniture } from './assets/fur.svg';
+import { ReactComponent as Fashion } from './assets/fas.svg';
+import { ReactComponent as Grocery } from './assets/gro.svg';
+import { ReactComponent as Stationary } from './assets/sta.svg';
+import { ReactComponent as Garden } from './assets/gar.svg';
+import { ReactComponent as Toys } from './assets/toy.svg';
+import { ReactComponent as Books } from './assets/bok.svg';
 
 export default class Section extends React.Component {
 

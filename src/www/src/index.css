@@ -21,3 +21,8 @@ code {
   flex-direction: column;
   margin-top: auto;
 }
+
+@font-face {
+  font-family: 'Avenir';
+  src: url('./fonts/Avenir.ttc') format('ttc');
+}

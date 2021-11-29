@@ -1,9 +1,9 @@
 import './App.css';
-import Home from './Home';
-import Footer from './Components/Footer';
-import Listing from './Components/Listing';
+import Home from './Components/Home/Home';
+import Footer from './Components/Footer/Footer';
+import Listing from './Components/Listings/Listing';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
-import Navbar from './Components/Navbar';
+import Navbar from './Components/Navbar/Navbar';
 
 
 function App() {

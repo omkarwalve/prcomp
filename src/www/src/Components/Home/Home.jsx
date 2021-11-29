@@ -1,5 +1,4 @@
-import './App.css';
-import Catalog from './Components/Catalog';
+import Catalog from './Catalog';
 
 
 function Homepage() {

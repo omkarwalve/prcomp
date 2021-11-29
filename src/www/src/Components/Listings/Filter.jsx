@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import './Filter.css';
 
-import { ReactComponent as FilterI } from "./list/filter.svg";
+import { ReactComponent as FilterI } from "./assets/filtermenu/filter.svg";
 //import { ReactComponent as RArrow } from "./list/chevron_r.svg";
 
 const FiltersMenu = ({storeSet}) => {

@@ -6,21 +6,21 @@ import {useHistory} from 'react-router-dom';
 //import axios from 'axios';
 
 import './Navbar.css';
-import { ReactComponent as Cart } from "./nav/cart.svg";
+import { ReactComponent as Cart } from "./assets/cart.svg";
 
 function Navbar() {
     const categories = [
         {
             name:'Electronics',
-            url:'elx'
+            code:'elx'
         },
         {
             name:'Clothing',
-            url:'clo'
+            code:'clo'
         },
         {
             name:'Furniture',
-            url:'fur'
+            code:'fur'
         }
     ]
     const history = useHistory();
@@ -29,14 +29,14 @@ function Navbar() {
         const handleCategoryChange = (e) => {
             e.preventDefault();
             const {value} = e.target;
-            console.log(categories.filter(elem => elem.url === value)[0]);
-            setSelectedCategory(categories.filter(elem => elem.url === value)[0]);
+            console.log(categories.filter(elem => elem.code === value)[0]);
+            setSelectedCategory(categories.filter(elem => elem.code === value)[0]);
         }
-        const handleSearch = (e) => {
+        const handleSearch = () => {
             const searchUrl = searchWord.split(/\s+/).join('+');
             if (searchUrl.length !== 0) {
-            const {name,url} = selectedCategory;
-            history.push(`/results?cat=${url}&search=${searchUrl}`);
+            const { _ ,code} = selectedCategory;
+            history.push(`/results?cat=${code}&search=${searchUrl}`);
             }
         }
     const handleKeyDown = (e) => {
@@ -52,15 +52,17 @@ function Navbar() {
                         <img className="logo" src="/_kilowog_.svg" alt=""/>
                     </div>
                     <div className="search-bar-group">
-                        <select className="category-selector" onChange={handleCategoryChange}>
-                            {
-                                categories.map(({name,url}) => {
-                                    return (
-                                        <option className="category-option" value={url} name={name}>{name}</option>
-                                        )
-                                    })
-                                }
-                        </select>
+                        <div className="category-selection">
+                            <select className="category-selector" onChange={handleCategoryChange}>
+                                {
+                                    categories.map(({name,url}) => {
+                                        return (
+                                            <option className="category-option" value={url} name={name}>{name}</option>
+                                            )
+                                        })
+                                    }
+                            </select>
+                        </div>
                        <input className="search-bar" type="text" size="55" placeholder="Search for..." value={searchWord} onChange={(e) => setSearchWord(e.target.value)} onKeyDown={handleKeyDown} />
                         <button className="search-button" onClick={handleSearch} ><FaSearch/></button>
                     </div>
