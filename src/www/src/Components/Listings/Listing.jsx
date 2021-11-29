@@ -3,15 +3,31 @@ import { HiOutlineInformationCircle } from "react-icons/hi"
 
 import Productdef from "./Productdef";
 import FiltersMenu from "./Filter";
+import Loading from "./Loading";
+import Crashed from "./Crashed";
 import { Compare, CompareCheck } from "./Compare";
 import './Listing.css';
 
-import './spinner.css';
 import { useLocation } from "react-router-dom";
 //import axios from 'axios';
 
-  function useQuery() {
-      return new URLSearchParams(useLocation().search); }
+function useQuery() {
+    return new URLSearchParams(useLocation().search); 
+}
+
+class QuReCache {
+  constructor(query, result) {
+    this.query = query;
+    this.result = result;
+  }
+  is(search_query) {
+    if (this.query === search_query.trim().toLowerCase()) {
+      return true;
+    }
+  }
+}
+
+const cached_qure = new Array();
 
 
 const Specifications = ({specifications}) => {
@@ -86,70 +102,85 @@ const ProductDiv = ({prod,CSet,setCSet}) => {
 
 
 function Listing() {
-      let query = useQuery();
-      const cat = query.get('cat');
-      const search = query.get('search');
-      const [products,setProducts] = useState([]);
-      const [loading,setLoading] = useState(false);
-      document.title = "kilowog(" + cat + ") =>[" + search + "]";
-      const getProducts = async(url) => {
-        setLoading(true);
-        try{
-        // ------------AXIOS -----------------
-        // const res = await axios.get(url);
-        // let jsonRes = res.data;
-        // try{
-        //   jsonRes = JSON.parse(res.data);
-        // }
-        // catch(err){
-        //   console.log(err)
-        // }
-        // const result = jsonRes?.RESULTS ?? [];
-        // console.log(res);
-        
-        // --------------FETCH---------------
-        const res =  await fetch(url);
-        //console.log(res)
-        const response = await res.json();
-        //const amazon = response?.listings[0] ?? [];
-        //const flipkart = response?.listings[1] ?? [];
-        //const resFinal = [...amazon,...flipkart]
-        const resFinal = response?.listings ?? [];
-        //console.log(resFinal)
-        setLoading(false);
-        setProducts(resFinal);
-        }
-        catch(err) { setLoading(false) }
-      }
+     let query = useQuery();
+     const cat = query.get('cat');
+     const search = query.get('search');
+     const cacher_matches = cached_qure.filter(cacher => cacher.is(search));
+     console.log("Cacher:- ",cached_qure, "Filtered:- ", cacher_matches);
+     const [products,setProducts] = useState([]);
+     const [loading,setLoading] = useState(false);
+     const [crashed,setCrashed] = useState(false);
+     document.title = "kilowog(" + cat + ") =>[" + search + "]";
+     const getProducts = async(url) => {
+                 setLoading(true);
+                 try {
+                     // Cacher check
 
-      let stores = new Set();
-        products.forEach((prd) => {
-                //console.log(prd.id);
-                stores.add(prd.store);
-        });
+                     if (cached_qure.length == 0 || cacher_matches.length == 0) {
+                         console.log(search, "not found in cacher");
+                         console.log("Making request...");
+                         const res =  await fetch(url);
+                         //console.log(res)
+                         const response = await res.json();
+                         const resFinal = response?.listings ?? [];
+                         //console.log(resFinal)
+                         setLoading(false);
+                         setProducts(resFinal);
+                     }
+                     else {
+                       console.log("Already searched for.. Fetching from cache...")
+                       console.log(cacher_matches[0].result);
+                       setLoading(false);
+                       setProducts(cacher_matches[0].result);
+                     }
+                 }
+                 catch(err) { setLoading(false); setCrashed(true); }
+     }
 
-      const [compareSet, setCmpProducts] = useState(new Set());
-      //const [compareSet, setCmpProducts] = useState([]);
-      //const adder = useCallback((product) => setCmpProducts(plist=> plist.add(product)));
-      //const remover = useCallback((product) => setCmpProducts(plist=> plist.delete(product)));
+     useEffect(() => {
+         console.log("Products are:",products);
+       if (products.length != 0 && cacher_matches.length == 0 ) {
+           cached_qure.push(new QuReCache(search,products));
+         }
+         else {
+           //console.error("Cacher Failure!: Incorrect cacher table generation iminent");
+           console.warn("Caching skipped");
+         }
+     },[products]);
 
-      useEffect(() => {
-        const searchUrl = search.split(/\s+/).join('+');
-        //const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
-        const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
-        //console.log(reqUrl,search);
-        getProducts(reqUrl);
-      },[cat,search])
+     let stores = new Set();
+       products.forEach((prd) => {
+               //console.log(prd.id);
+               stores.add(prd.store);
+       });
 
-      if(loading){
-      //if(true){
-        return (
-          <div className='spinnerContainer'>
-            <div className='loader'></div>
-            <p className='loaderText'>Fetching..</p>
-          </div>
-        )
-      }
+     const [compareSet, setCmpProducts] = useState(new Set());
+
+     useEffect(() => {
+             //if (cached_qure.length == 0 || cacher_item == null) {
+               const searchUrl = search.split(/\s+/).join('+');
+               //const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
+               const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
+               //console.log(reqUrl,search);
+               getProducts(reqUrl);
+             //}
+             //else {
+               //console.log("Already searched for.. Fetching from cache...")
+               //setProducts(cacher_item.result);
+             //}
+     },[cat,search])
+
+     if(loading){
+       return (
+         <Loading />
+       )
+     }
+
+     if(crashed) {
+       return (
+         <Crashed />
+       )
+     }
 
     return (
       <>

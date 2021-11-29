@@ -46,7 +46,7 @@ const CompareTable = ({cProducts}) => {
         let [uniqKeys, slist] = filterSpecs(cProducts);
         setSKeys(new Set(Array.from(uniqKeys).sort()));
         setSpecList(slist)
-        console.log(sKeys,specList);
+        //console.log(sKeys,specList);
     },[cProducts]);
 
 
@@ -106,7 +106,7 @@ const Compare = ({products,CSet}) => {
         //setProdData(products.filter(product => CSet.has(product.id)));
         setLen(CSet.size);
         setProdData(filterProducts(products,CSet));
-        console.log(CSet,prodData);
+        //console.log(CSet,prodData);
     },[CSet]);
 
     return (
