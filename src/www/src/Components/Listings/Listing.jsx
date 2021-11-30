@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState} from 'react';
-import { HiOutlineInformationCircle } from "react-icons/hi"
 
-import Productdef from "./Productdef";
 import FiltersMenu from "./Filter";
 import Loading from "./Loading";
 import Crashed from "./Crashed";
-import { Compare, CompareCheck } from "./Compare";
+import Container from "./Container";
+import { Compare } from "./Compare";
 import './Listing.css';
 
 import { useLocation } from "react-router-dom";
@@ -14,6 +13,8 @@ import { useLocation } from "react-router-dom";
 function useQuery() {
     return new URLSearchParams(useLocation().search); 
 }
+
+const STORAGE_KEY = "products-cache";
 
 class QuReCache {
   constructor(query, result) {
@@ -25,101 +26,87 @@ class QuReCache {
       return true;
     }
   }
+  stringify() {
+    return "{ query: " + this.query + ", results: [" + this.result + "] }" ;
+  }
 }
 
-const cached_qure = new Array();
-
-
-const Specifications = ({specifications}) => {
-  let specs = specifications;
-  try {
-    specs = JSON.parse(specifications);
-  }
-  catch(err) { return (<p className="unavail"> Unavailable </p>) }
-  return (
-    <table className="specTable">
-      {
-        Object.keys(specs).map(key => {
-          const value = specs[key];
-          return (
-            <tr className='spec'>
-              <td>
-                {key}
-              </td>
-              <td style={{wordWrap:'normal'}}>
-                {value}
-              </td>
-            </tr>
-          )
-        })
-      }
-    </table>
-  )
-}
-const ProductDiv = ({prod,CSet,setCSet}) => {
-
-  //let name = prod.name;
-  if (prod.price === "Not Available") { 
-    return null;
-  }
-
-  //if(name.length > 110) {
-    //name = `${name.slice(0,110)}...`
+//class Cacher {
+  //constructor(object_arr) {
+    //let cache_arr = new Array();
+    //Array(object_arr).forEach(cacheobj => cache_arr.push(new QuReCache(cacheobj.query, cacheobj.result)));
+    //this.productCache = cache_arr;
   //}
+//}
 
-  return (
-    <>    
-          <div className="product-container">
-              <a href={prod.url} target="_blank" rel="noreferrer">
-                <div className="product-image">
-                    <img src={prod.img} alt="error"/>
-                </div>
-                <Productdef
-                  name={prod.name}
-                  price={prod.price}
-                  store={"./listing/" + prod.store + ".png"}
-                  url={prod.url}
-                  warranty={prod.warranty}
-                  returnPolicy={prod.return_replace}
-                  //availibility="Availibility"
-                  rating={Math.floor(Math.random() * (2) ) + 3}
-                />
-              </a>
-            <div className="product-opts">
-              <div class="specs-section">
-                <h5 class="specs-icon"><HiOutlineInformationCircle /></h5>
-                <div class="specs-float-section">
-                  <h3 className="spec-float-title">Specifications</h3>
-                    <Specifications specifications={(prod.specs)}/>
-                </div>
-              </div>
-              <CompareCheck pid={prod.id} CSet={CSet} setCSet={setCSet}/>
-            </div>
-        </div>
-        </>
-  )
+
+
+
+function storageToCacheArr() {
+  let object_arr = JSON.parse(sessionStorage.getItem(STORAGE_KEY));
+  if (object_arr != null && Array(object_arr).length != 0) {
+    console.info("Populating runtime cacher with Session Storage cache...");
+    return Array(object_arr).filter(object =>
+      object != null && object.query != null && object.result != null
+      ? true
+      : false
+      //console.log("Found null in object_arr")
+    ).map(cached => 
+      new QuReCache(cached.query, cached.result));
+  }
+  else { console.error("Empty Cacher obtained"); return []; }
+}
+
+function findCache(cacher,query) {
+   return cacher.filter(cache =>
+    (cache != null && cache != [] && cache.length != 0)
+     ? cache.is(query)
+     : false
+  );
 }
 
 
 function Listing() {
+     // # Query
      let query = useQuery();
      const cat = query.get('cat');
      const search = query.get('search');
-     const cacher_matches = cached_qure.filter(cacher => cacher.is(search));
-     console.log("Cacher:- ",cached_qure, "Filtered:- ", cacher_matches);
+     document.title = "kilowog(" + cat + ") =>[" + search + "]";
+     // # Cache
+     const [cache, setCache] = useState([]);
+     //console.log("Cache var creation:- ", cache);
+     //const [cacher_matches, setCacherMatches] = useState([]);
+     const cacher_matches = findCache(cache,search);
+     console.log("Cacher:- ",cache, "Filtered:- ", cacher_matches);
+     // useState initializations
      const [products,setProducts] = useState([]);
      const [loading,setLoading] = useState(false);
      const [crashed,setCrashed] = useState(false);
-     document.title = "kilowog(" + cat + ") =>[" + search + "]";
+     // # Stores for filter menu
+     let stores = new Set();
+       products.forEach((prd) => {
+               stores.add(prd.store);
+       });
+     // # Compare window product set
+     const [compareSet, setCmpProducts] = useState(new Set());
+     
+     // # Timeout for JS Fetch API
+     const Timeout = (time) => {
+          let controller = new AbortController();
+          setTimeout(() => controller.abort(), time * 1000)
+          return controller;
+     }
+     // # Async GET to query backend
      const getProducts = async(url) => {
                  setLoading(true);
                  try {
-                     // Cacher check
-
-                     if (cached_qure.length == 0 || cacher_matches.length == 0) {
+                     // Request only if query is not in cache
+                     if (cache.length == 0 || cacher_matches.length == 0) {
                          console.log(search, "not found in cacher");
                          console.log("Making request...");
-                         const res =  await fetch(url);
+                         const res =  await fetch(url, { 
+                           signal: Timeout(15).signal
+                         });
                          //console.log(res)
                          const response = await res.json();
                          const resFinal = response?.listings ?? [];
@@ -128,47 +115,66 @@ function Listing() {
                          setProducts(resFinal);
                      }
                      else {
-                       console.log("Already searched for.. Fetching from cache...")
-                       console.log(cacher_matches[0].result);
+                       console.log("Fetching from cache...",cacher_matches[0].result);
                        setLoading(false);
                        setProducts(cacher_matches[0].result);
                      }
                  }
-                 catch(err) { setLoading(false); setCrashed(true); }
+                 catch(err) { setLoading(false); console.error(err); setCrashed(true); }
      }
 
+     // # On page load useEffect -- to populate cache
      useEffect(() => {
-         console.log("Products are:",products);
+          let object_arr = JSON.parse(sessionStorage.getItem(STORAGE_KEY));
+          //if (object_arr != null && Array(object_arr).length != 0) {
+          if (object_arr) {
+            console.info("Populating runtime cacher with Session Storage cache...");
+            setCache(Array(object_arr).filter(object =>
+                object != null && object.query != null && object.result != null
+                ? true
+                : false
+                //console.log("Found null in object_arr")
+              ).map(cached => 
+                new QuReCache(cached.query, cached.result))
+            );
+          }
+          else { console.warn("Empty Cacher obtained...\nInitializing cacher");
+                 setCache([]); }
+     }, []);
+
+     // ===================== Update listings if category or search query changes in url ===============
+     useEffect(() => {
+               const searchUrl = search.split(/\s+/).join('+');
+               const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
+               //console.log(reqUrl,search);
+               getProducts(reqUrl);
+              //setCacherMatches(cache.filter(cached => 
+                //(cached != null && cached != [] && cached.length != 0)
+                  //? cached.is(search) 
+                  //: false
+              //));
+     },[cat,search])
+     // ===================== Update cache when products var is updated ===================
+     useEffect(() => {
        if (products.length != 0 && cacher_matches.length == 0 ) {
-           cached_qure.push(new QuReCache(search,products));
+             setCache(c => [...c,new QuReCache(search,products)]);
          }
          else {
-           //console.error("Cacher Failure!: Incorrect cacher table generation iminent");
            console.warn("Caching skipped");
          }
      },[products]);
 
-     let stores = new Set();
-       products.forEach((prd) => {
-               //console.log(prd.id);
-               stores.add(prd.store);
-       });
-
-     const [compareSet, setCmpProducts] = useState(new Set());
-
+     // ===================== Updating Session storage with product-cache ====================
      useEffect(() => {
-             //if (cached_qure.length == 0 || cacher_item == null) {
-               const searchUrl = search.split(/\s+/).join('+');
-               //const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
-               const reqUrl = `http://localhost:8000/${cat}/${searchUrl}`;
-               //console.log(reqUrl,search);
-               getProducts(reqUrl);
-             //}
-             //else {
-               //console.log("Already searched for.. Fetching from cache...")
-               //setProducts(cacher_item.result);
-             //}
-     },[cat,search])
+        if (cache.length != 0) {
+           console.info("Caching to sessionStorage", cache);
+           sessionStorage.setItem(STORAGE_KEY,JSON.stringify(cache));
+        } else { console.warn("Cannot cache an empty cacher"); }
+     },[cache]);
+
+     //useEffect(()=> {
+     //},[cache,search,cat])
+
 
      if(loading){
        return (
@@ -191,7 +197,7 @@ function Listing() {
             {
               products.map(prod => {
                 return (
-                  <ProductDiv prod={prod} CSet={compareSet} setCSet={setCmpProducts}/>
+                  <Container prod={prod} CSet={compareSet} setCSet={setCmpProducts}/>
                 )
               })
             }
