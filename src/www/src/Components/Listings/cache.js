@@ -7,20 +7,21 @@
 //   \____||__|__| \____||__|__||_____|
 //                                     
 
-// Cache Key for cache r/w from storage
-//const STORAGE_KEY = "products-cache";
-
 class ResultsCache {
   constructor(query, result) {
     this.query = query;
     this.result = result;
   }
 
-  static STORAGE_KEY = "products-cache";
-  static fetch() {
-    let object_arr = JSON.parse(sessionStorage.getItem(ResultsCache.STORAGE_KEY));
+  static #STORAGE_KEY = "products-cache";
+  /**
+   * Retrieves [ResultsCache] from the browser storage
+   * @return {[ResultsCache]} All the cache from storage
+   */
+  static retrieve() {
+    let object_arr = JSON.parse(sessionStorage.getItem(ResultsCache.#STORAGE_KEY));
     if (object_arr != null && Array(object_arr).length != 0) {
-      console.info("Populating runtime cacher with Session Storage cache...");
+      console.info("Obtaining cache from storage...");
       return Array(object_arr).filter(object =>
         object != null && object.query != null && object.result != null
         ? true
@@ -28,7 +29,13 @@ class ResultsCache {
       ).map(cached => 
         new ResultsCache(cached.query, cached.result));
     }
-    else { console.error("Empty Cacher obtained"); return []; }
+    else { console.error("No cache found in storage"); return []; }
+  }
+
+  static store(runtime_cache) {
+    runtime_cache.length 
+      ? sessionStorage.setItem(ResultsCache.#STORAGE_KEY,JSON.stringify(runtime_cache))
+      : console.error("Runtime cache empty :(");
   }
 
   static filter(cacher, query) {
