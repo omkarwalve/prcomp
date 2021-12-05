@@ -1,0 +1,57 @@
+/*                        
+//   _____                
+//  |     | ___  ___  _ _ 
+//  | | | || -_||   || | |
+//  |_|_|_||___||_|_||___|
+*/                        
+
+.menu-container {
+    visibility: hidden;
+    position: absolute;
+    top: 80%;
+    right: 20%;
+
+    background-color: var(--menu-background-color);
+    display: block;
+    padding: 0.8rem;
+    max-height: 0;
+    opacity: 0;
+    width: fit-content;
+    text-align: right;
+    white-space: nowrap;
+    user-select: none;
+
+    font-size: var(--menu-font-size);
+    font-weight: 500;
+
+    transition: all var(--duration) var(--timing),
+}
+
+.menu-container.active{
+    visibility: visible;
+    max-height: 350%;
+    opacity: 1;
+}
+
+
+.menu-list {
+    --pad-top-bottom: 0.2rem;
+    --pad-left: 1rem;
+    padding: var(--pad-top-bottom) 0 var(--pad-top-bottom) var(--pad-left);
+    width: fit-content;
+}
+
+.menu-option {
+    display: block;
+    width: 100%;
+    padding: var(--menu-item-gap) 0 var(--menu-item-gap) 0;
+}
+
+.menu-option:hover a {
+    font-weight: 600;
+}
+
+.menu-option a {
+    text-decoration: none;
+    color: var(--menu-items-color);
+}

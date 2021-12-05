@@ -1,0 +1,85 @@
+/*    ___       _           _   
+//   / __| ___ | | ___  __ | |_ 
+//   \__ \/ -_)| |/ -_)/ _||  _|
+//   |___/\___||_|\___|\__| \__|
+*/                              
+
+.selector-container {
+    font-family: 'Avenir';
+    width: fit-content;
+    height: 100%;
+    user-select: none;
+    cursor: pointer;
+    position: relative;
+    border: 0.05rem solid black;
+}
+
+.selector-container.top > .select-options {
+    bottom:100%;
+}
+
+.selected-option {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-evenly;
+    column-gap: 0.4rem;
+
+    padding: 0.32rem;
+    height: 100%;
+    width: fit-content;
+
+    background-color: var(--select-background);
+}
+
+.selected-option::after {
+    content: "";
+    /*height: 100%;*/
+    /*width: 1rem;*/
+    height: 0.5em;
+    width: 0.5em;
+    background-color: var(--select-arrow-color, black);
+    /*clip-path: polygon(51% 69%, 29% 46%, 72% 45%);*/
+    clip-path: polygon(50% 100%, 0 25%, 100% 25%);
+}
+
+.select-options {
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    margin: 0;
+    width: fit-content;
+    max-height: 0;
+    padding-left:0;
+    display: block;
+    border: 1px solid black;
+    transition: all var(--duration) var(--timing);
+    overflow-y: scroll;
+}
+
+
+.select-options.active {
+    visibility: visible;
+    max-height: 350%;
+}
+
+.select-option {
+    opacity: 0;
+    width: 100%;
+    display: block;
+    padding: 0.5rem;
+    background-color: white;
+    transition-property: opacity;
+    transition-duration: var(--duration);
+    transition-delay: calc( var(--duration) / 5);
+    transition-timing-function: var(--timing);
+}
+.select-option.active {
+    opacity: 1;
+}
+
+.select-option:hover {
+    background-color: black;
+    color: white;
+    font-weight: 500 ;
+}

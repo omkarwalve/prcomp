@@ -1,70 +1,83 @@
+/*    ___   __  ____  __   __     __    ___ 
+     / __) / _\(_  _)/ _\ (  )   /  \  / __)
+    ( (__ /    \ )( /    \/ (_/\(  O )( (_ \
+     \___)\_/\_/(__)\_/\_/\____/ \__/  \___/
+*/
 
-.catalog {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: center;
-    background-color: whitesmoke;
-    height: 150vh;
+.catalog-container {
+    --catalog-color: black;
+    --image-dimension: 5rem;
+    --expand: calc(var(--image-dimension) + 0.1rem);
+    --catalog-animation: all 0.2s ease-in-out;
+    background: white;
+    display: grid;
+    place-items: center;
+
+    padding: 5rem;
     width: 100%;
-    margin: auto;
+    height: 100%;
+
+    user-select: none;
 }
 
-.category-grid{
+.category-grid-list {
     display: grid;
     grid-template-columns: repeat(4,1fr);
-    justify-content: center;
-    /*grid-auto-columns: 1fr;*/
-    gap: 10%;
-    width: fit-content;
-    height: fit-content;
-    margin: auto;
+    grid-gap: 2rem;
+    padding: 0;
+    list-style-type: none;
 }
 
-.category-block {
+/* Turn everthing gray upon entering category-grid */
+.category-grid-list:hover > * ,
+.category-grid-list:hover > * > * ,
+.category-grid-list:hover > * > *  > * {
+    fill: #4f4f4f;
+    color: #4f4f4f;
+    /*font-weight: 700;*/
+}
+
+.category-label {
     display: block;
-    height: fit-content;
-    width: fit-content;
-    background-color: transparent;
+    font-weight: 400;
+
+    transition: var(--catalog-animation);
+}
+
+/* Stock category block */
+.category-box {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
     justify-content: center;
-    text-align: center;
-    position: relative;
-    object-fit: contain;
-}
-
-.category-block > svg {
-    --maxdim: 8rem;
-    padding: 1rem;
-    height: fit-content;
-    width: fit-content;
-    max-height: var(--maxdim);
-    max-width: var(--maxdim);
-}
-
-.category-block > svg > path {
-    fill: #424656;
-}
-
-.category-block:hover > svg > path, .category-block:hover > .catName {
-    --hover-color: #717999;
+    gap: 0.5rem;
     cursor: pointer;
-    color: var(--hover-color);
-    fill: var(--hover-color);
+
+    text-align: center;
 }
 
-.category-block > a {
-    text-decoration: none;
+.category-box svg {
+    max-width: var(--image-dimension);
+    max-height: var(--image-dimension);
+    transition: var(--catalog-animation)
 }
 
-.catName {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 0.9rem;
-    font-size: 2vw;
-    color: #424656;
-    object-fit: contain;
-    position: relative;
-    width: fit-content;
-    font-family: 'Futura', cursive;
+.category-box svg > path {
+    fill: var(--catalog-color);
+    transition: var(--catalog-animation)
+}
+
+/* On Hover Category Block */
+
+.category-box:hover > .category-label {
+    color: var(--catalog-color);
+    font-weight: 600;
+}
+
+.category-box:hover > svg {
+    max-width : var(--expand);
+    max-height: var(--expand);
+}
+.category-box:hover > svg > path {
+    fill: black;
 }

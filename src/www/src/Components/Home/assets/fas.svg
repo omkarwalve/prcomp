@@ -6,7 +6,7 @@
      width="135.45mm" height="135.45mm"
      viewBox="0 0 512 512">
   <path id="fas"
-        fill="#424656" stroke="black" stroke-width="1"
+        fill="none" stroke="black" stroke-width="1"
         d="M 111.00,11.00
            C 111.00,11.00 41.00,11.00 41.00,11.00
              22.60,11.03 11.03,22.60 11.00,41.00

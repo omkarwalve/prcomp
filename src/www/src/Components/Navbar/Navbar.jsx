@@ -1,89 +1,110 @@
-import React, { useState } from 'react';
-import { FaSearch } from "react-icons/fa";
-import { FaUserCircle } from "react-icons/fa";
-import {useHistory} from 'react-router-dom';
-//import { FaShoppingCart } from "react-icons/fa";
-//import axios from 'axios';
 
-import './Navbar.css';
+//   __ _   __   _  _  ____   __   ____       __  ____ 
+//  (  ( \ / _\ / )( \(  _ \ / _\ (  _ \    _(  )/ ___)
+//  /    //    \\ \/ / ) _ (/    \ )   / _ / \) \\___ \
+//  \_)__)\_/\_/ \__/ (____/\_/\_/(__\_)(_)\____/(____/
+  
+// Library Imports
+import React, { useEffect, useRef, useState } from 'react';
+import {useHistory} from 'react-router-dom';
+
+// File Imports
+import Select from 'Components/Assets/Select/Select';
+import Search from 'Components/Assets/Search/Search';
+import Tooltip from 'Components/Assets/Tooltip/Tooltip';
+import Menu from 'Components/Assets/Menu/Menu';
+import './navbar.css';
+// Icon Imports
+import { ReactComponent as Kilowog } from "assets/kilowog.svg";
+import { ReactComponent as Analytics } from "./assets/analytics.svg";
 import { ReactComponent as Cart } from "./assets/cart.svg";
+import { ReactComponent as User } from "./assets/user.svg";
+
 
 function Navbar() {
+    // Search Bar Group
     const categories = [
         {
-            name:'Electronics',
-            code:'elx'
+            key:'Electronics',
+            value:'elx'
         },
         {
-            name:'Clothing',
-            code:'clo'
+            key:'Clothing',
+            value:'clo'
         },
         {
-            name:'Furniture',
-            code:'fur'
+            key:'Furniture',
+            value:'fur'
         }
     ]
     const history = useHistory();
-    const [selectedCategory,setSelectedCategory] = useState(categories[0]);
+    const [selectedCategory,setSelectedCategory] = useState(null);
     const [searchWord,setSearchWord] = useState('');
-        const handleCategoryChange = (e) => {
-            e.preventDefault();
-            const {value} = e.target;
-            console.log(categories.filter(elem => elem.code === value)[0]);
-            setSelectedCategory(categories.filter(elem => elem.code === value)[0]);
+    useEffect(() => {
+        const searchUrl = searchWord.split(/\s+/).join('+');
+        if (searchUrl.length !== 0) {
+        const { _ , value } = selectedCategory;
+        history.push(`/results?cat=${value}&search=${searchUrl}`);
         }
-        const handleSearch = () => {
-            const searchUrl = searchWord.split(/\s+/).join('+');
-            if (searchUrl.length !== 0) {
-            const { _ ,code} = selectedCategory;
-            history.push(`/results?cat=${code}&search=${searchUrl}`);
+    },[searchWord]);
+    useEffect(()=> {console.log(selectedCategory);},[selectedCategory]);
+
+
+    // User Menu
+    const menu = [
+        {
+            text: 'My Account',
+            uri : '#'
+        },
+        {
+            text: 'Browse History',
+            uri : '#'
+        },
+        {
+            text: 'Watchlist Analytics',
+            uri : '#'
+        },
+    ]
+    const menuRef = useRef(null);
+    const [isMenuActive,setMenuActive] = useState(false);
+    const onMenuClick = () => setMenuActive(!isMenuActive);
+    
+    // on Mount useEffect for Menu event listener
+    useEffect(()=>{
+        const pageClickEvent = (e) => {
+            if (menuRef.current != null && !menuRef.current.contains(e.target) ) {
+                setMenuActive(!isMenuActive);
             }
         }
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") { handleSearch() }
-    }
-                    //<p className="siteName">{websiteName}</p>
-                    //<img  className="shopcart" src="/shopping_cart.svg" alt="error" />
-                    //<div className="userSigning" > </div>
-            return (
-            <div className="navBar">
-                <div className="nav-flex">
-                    <div className="logo-section" onClick={() => history.push('/')}>
-                        <img className="logo" src="/_kilowog_.svg" alt=""/>
-                    </div>
-                    <div className="search-bar-group">
-                        <div className="category-selection">
-                            <select className="category-selector" onChange={handleCategoryChange}>
-                                {
-                                    categories.map(({name,url}) => {
-                                        return (
-                                            <option className="category-option" value={url} name={name}>{name}</option>
-                                            )
-                                        })
-                                    }
-                            </select>
-                        </div>
-                       <input className="search-bar" type="text" size="55" placeholder="Search for..." value={searchWord} onChange={(e) => setSearchWord(e.target.value)} onKeyDown={handleKeyDown} />
-                        <button className="search-button" onClick={handleSearch} ><FaSearch/></button>
-                    </div>
-                     <div className="user-options">
-                         <div>
-                         </div>
-                        <div className="tooltip">
-                            <Cart className="shopcart"/>
-                            <span className="tooltip_msg">Empty</span>
-                        </div>
-                         <div className="dropMenu">
-                         <FaUserCircle className="user-icon"/> 
-                             <div className="dropMenuContent">
-                                 <a href="#">My Account</a>
-                                 <a href="#">Orders</a>
-                                 <a href="#">Wishlist</a>
-                             </div>
-                         </div>
-                     </div>
+        if (isMenuActive) {
+            document.addEventListener('click',pageClickEvent);
+        }
+        return () => {
+            document.removeEventListener('click', pageClickEvent);
+        }
+    },[]);
+    return (
+        <div className="navbar">
+            <div className="nav-flex">
+                <Kilowog className="website-logo" onClick={() => history.push('/')} />
+                <div className="search-bar-group">
+                    <Select items={categories} optionHolder={setSelectedCategory} />
+                    <Search queryHolder={setSearchWord} />
+                </div>
+                <ul className="user-options" type="none">
+                    <li className="user-option"><Analytics /> <Tooltip text="Analytics Coming Soon!" /></li>
+                    <li className="user-option"><Cart      /> <Tooltip text="0 items in cart" /></li>
+                    <li ref={menuRef}
+                        onClick={onMenuClick}
+                        className="user-option"><User      />
+                            <Menu items={menu} menuSwitch={isMenuActive}>
+                                <h1>hello</h1>
+                            </Menu>
+                        </li>
+                </ul>
             </div>
         </div>
     )
 }
-export default Navbar;
+
+export default Navbar

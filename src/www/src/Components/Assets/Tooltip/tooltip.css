@@ -1,0 +1,26 @@
+/*   .---.  .----.  .----. .-.  .---. .-..----. 
+    {_   _}/  {}  \/  {}  \| | {_   _}| || {}  }
+      | |  \      /\      /| `--.| |  | || .--' 
+      `-'   `----'  `----' `----'`-'  `-'`-'    
+*/
+
+.tooltip {
+    visibility: hidden;
+    position: absolute;
+    top: 90%;
+    display: block;
+    white-space: nowrap;
+    height: fit-content;
+    width: fit-content;
+
+    text-align: center;
+    vertical-align: middle;
+
+    padding: 0.4rem;
+    /*padding: 0.4rem 0.4rem 0 0.4rem;*/
+
+    background-color: var(--tooltip-background);
+    color: var(--tooltip-text-color);
+    font-size: var(--tooltip-font-size);
+    font-weight: 500;
+}

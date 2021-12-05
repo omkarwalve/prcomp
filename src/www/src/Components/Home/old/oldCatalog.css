@@ -1,0 +1,70 @@
+
+.catalog {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    background-color: whitesmoke;
+    height: 150vh;
+    width: 100%;
+    margin: auto;
+}
+
+.category-grid{
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    justify-content: center;
+    /*grid-auto-columns: 1fr;*/
+    gap: 10%;
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+}
+
+.category-block {
+    display: block;
+    height: fit-content;
+    width: fit-content;
+    background-color: transparent;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    object-fit: contain;
+}
+
+.category-block > svg {
+    --maxdim: 8rem;
+    padding: 1rem;
+    height: fit-content;
+    width: fit-content;
+    max-height: var(--maxdim);
+    max-width: var(--maxdim);
+}
+
+.category-block > svg > path {
+    fill: #424656;
+}
+
+.category-block:hover > svg > path, .category-block:hover > .catName {
+    --hover-color: #717999;
+    cursor: pointer;
+    color: var(--hover-color);
+    fill: var(--hover-color);
+}
+
+.category-block > a {
+    text-decoration: none;
+}
+
+.catName {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0.9rem;
+    font-size: 2vw;
+    color: #424656;
+    object-fit: contain;
+    position: relative;
+    width: fit-content;
+    font-family: 'Futura', cursive;
+}

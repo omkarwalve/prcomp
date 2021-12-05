@@ -1,33 +1,121 @@
-import React from 'react';
-import './Footer.css';
+//   _______  _______  _______  _______  _______  ______   
+//  |       ||       ||       ||       ||       ||    _ |  
+//  |    ___||   _   ||   _   ||_     _||    ___||   | ||  
+//  |   |___ |  | |  ||  | |  |  |   |  |   |___ |   |_||_ 
+//  |    ___||  |_|  ||  |_|  |  |   |  |    ___||    __  |
+//  |   |    |       ||       |  |   |  |   |___ |   |  | |
+//  |___|    |_______||_______|  |___|  |_______||___|  |_|
 
-export default class Homefooter extends React.Component {
+// Library Imports
+import React,{ useState } from 'react';
 
-    render() {
-        return (
-            <div className="footer">
-                <div className="footer-grid">
-                    <div className="banner-section">
-                        <img alt="error" src="_kilowog_.svg" className="website-logo"/>
-                        <div className="region-section">
-                            <a className="footer-link-normal" href="#">
-                                <img alt="error" src="/globe.svg" className="footer-icon" />
-                                    IND
-                            </a>
-                            <select className="language-selector">
-                                <option selected value="english">ENGLISH</option>
-                                <option value="hindi">हिंदी</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="service-section">
-                        <a className="footer-link-normal" href="#">Customer Service</a>
-                        <a className="footer-link-normal" href="#">About Us</a>
-                        <a className="footer-link-normal" href="#">Help</a>
-                        <a className="footer-link-normal" href="#">Terms and Conditions</a>
-                    </div>
-                </div>
-            </div>
-        )
-    }
+// File Imports
+import Select from 'Components/Assets/Select/Select';
+import { ReactComponent as Kilowog } from 'assets/kilowog.svg';
+import { ReactComponent as Globe } from './assets/globe.svg';
+
+// CSS
+import './footer.css';
+
+const Block = ({items}) => {
+    return(
+        <ul className="service-block">
+            {
+                items.map( item => {
+                    var liObj = Object.values(item);
+                    return (
+                        <li className="service-item">
+                            <a href={liObj[1]}>{liObj[0]}</a>
+                        </li>
+                )})
+            }
+        </ul>
+    )
 }
+
+const Footer = () => {
+
+    const customerOptions = [
+        {
+            label: 'Contact Us',
+            href : '#'
+        },
+        {
+            label: 'Help',
+            href : '#'
+        },
+        {
+            label: 'Feedback',
+            href : '#'
+        },
+        {
+            label: 'Contact Us',
+            href : '#'
+        },
+    ];
+    const businessOptions = [
+        {
+            label: 'Setup Your Store',
+            href : '#'
+        },
+        {
+            label: 'Affiliate Plans',
+            href : '#'
+        },
+        {
+            label: 'Using our API',
+            href : '#'
+        },
+        {
+            label: 'Have an issue?',
+            href : '#'
+        },
+    ];
+    const languages = [
+        {
+            label: 'English',
+            langcode: 'en'
+        },
+        {
+            label: 'हिंदी',
+            langcode: 'hi'
+        },
+    ];
+    const regions = [
+        {
+            label: 'India',
+            regioncode: 'in'
+        },
+        {
+            label: 'United Kingdom',
+            regioncode: 'uk'
+        },
+        {
+            label: 'USA',
+            regioncode: 'us'
+        },
+        {
+            label: 'Germany',
+            regioncode: 'gr'
+        },
+    ];
+    const [activeRegion, setRegion] = useState(null);
+    const [activeLang, setLang] = useState(null);
+
+    return (
+        <footer className="footer-section">
+            <div className="footer-content">
+                <Kilowog />
+                <span className="region-selection">
+                    <Globe />
+                    <Select items={regions} optionHolder={setRegion} position="top" />
+                </span>
+                <Select items={languages} optionHolder={setLang} position="top" />
+                <Block items={customerOptions}/>
+                <Block items={businessOptions}/>
+            </div>
+        </footer>
+    )
+}
+
+export default Footer

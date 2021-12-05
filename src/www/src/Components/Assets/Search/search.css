@@ -1,0 +1,69 @@
+/*   __  ___     __  __      
+    /__`|__  /\ |__)/  `|__| 
+    .__/|___/~~\|  \\__,|  | .css
+*/                           
+
+.search-container {
+    display:grid;
+    place-items: center;
+    grid-gap: 0rem;
+    grid-template-columns: 8fr 1fr;
+
+    height: fit-content;
+    width: fit-content;
+
+    font-family: 'Avenir';
+    font-weight: 400;
+}
+
+.search-input {
+    height: 100%;
+    width: 100%;
+
+    padding: 0.5rem;
+
+    outline: none;
+    border: 0.1rem solid black;
+    border-right: none;
+    background-color: var(--search-bg,transparent);
+    color: black;
+}
+
+.search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  height: 1.2em;
+  width: 1.2em;
+  background-color: black;
+  background: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20height%3D%2248px%22%20viewBox%3D%220%200%2024%2024%22%20width%3D%2248px%22%20fill%3D%22%23000000%22%3E%3Cpath%20d%3D%22M0%200h24v24H0V0z%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M22%203H7c-.69%200-1.23.35-1.59.88L0%2012l5.41%208.11c.36.53.9.89%201.59.89h15c1.1%200%202-.9%202-2V5c0-1.1-.9-2-2-2zm0%2016H7.07L2.4%2012l4.66-7H22v14zm-11.59-2L14%2013.41%2017.59%2017%2019%2015.59%2015.41%2012%2019%208.41%2017.59%207%2014%2010.59%2010.41%207%209%208.41%2012.59%2012%209%2015.59z%22%2F%3E%3C%2Fsvg%3E);
+  background-size: contain;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.search-input:focus::-webkit-search-cancel-button {
+  /*opacity: .3;*/
+  opacity: 1;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.search-button {
+    display: grid;
+    place-items: center;
+    padding: 0.3rem;
+    height: 100%;
+    width: 100%;
+
+    outline: none;
+    border: 0.1rem solid black;
+    border-left: none;
+    background-color: var(--search-bg,transparent);
+}
+
+.search-button svg {
+    object-fit: contain;
+}
+
+.search-button:hover > svg > path {
+    fill: gray;
+}
