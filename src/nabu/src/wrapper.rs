@@ -17,6 +17,7 @@ use crate::nabu;
 use crate::types::{ Listing , Listings, JSONize };
 use ansi_term::Color;
 use chrono::offset::Local as time;
+use rocket::serde::json::Json;
 
 #[macro_export]
 macro_rules! debug {
@@ -149,6 +150,7 @@ pub fn nabu_fetch(category: String, query: String) -> Option<crate::types::Listi
     }
 
     //write_json(category.to_string(),(&search_query).to_string(),listings.lock().unwrap().to_vec());
+    //write_json(category.to_string(),(&search_query).to_string(),temp.clone());
  
     println!("Ready to pass json");
     //let all_listings =  &listings.lock().expect("Failed to acquire lock on listings mutex");
@@ -156,15 +158,19 @@ pub fn nabu_fetch(category: String, query: String) -> Option<crate::types::Listi
                    category: category.to_string(),
                    query: (&search_query).to_string(),
                    listings: temp
-                   })
+                 })
 }
 
 fn write_json(cat: String, query: String, lst: Vec<Listing<String>> ) -> () {
-    std::fs::File::create("output.json").unwrap().write_all(Listings{ date_time: format!("{}", time::now()),
-                                                                             category: cat,
-                                                                             query: query,
-                                                                             listings: lst
-                                                                           }.to_json().as_bytes()).unwrap();
+    std::fs::File::create(format!("{}.json", query.replace(" ","_")))
+                  .unwrap()
+                  .write_all(
+                      format!("{:#?}",
+                          Json(Listings{ date_time: format!("{}", time::now()),
+                                         category: cat,
+                                         query,
+                                         listings: lst
+                                       })).as_bytes()).unwrap();
 }
 
 #[test]

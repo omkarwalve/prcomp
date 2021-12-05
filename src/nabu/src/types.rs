@@ -41,7 +41,7 @@ pub struct Listing<T> {
     pub id: T,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize,Debug)]
 pub struct Listings<T> {
     pub query: T,
     pub category: T,
