@@ -20,7 +20,7 @@ class ResultsCache {
    */
   static retrieve() {
     let object_arr = JSON.parse(sessionStorage.getItem(ResultsCache.#STORAGE_KEY));
-    if (object_arr != null && Array(object_arr).length != 0) {
+    if (object_arr && Array(object_arr).length) {
       console.info("Obtaining cache from storage...");
       return Array(object_arr).filter(object =>
         object != null && object.query != null && object.result != null
@@ -33,17 +33,21 @@ class ResultsCache {
   }
 
   static store(runtime_cache) {
-    runtime_cache.length 
+    runtime_cache && runtime_cache.length 
       ? sessionStorage.setItem(ResultsCache.#STORAGE_KEY,JSON.stringify(runtime_cache))
-      : console.error("Runtime cache empty :(");
+      //: console.error("Runtime cache empty :(");
+      : console.error("Skipped caching of runtime cache :(");
   }
 
   static filter(cacher, query) {
-    return cacher.filter(cache =>
-      (cache != null && cache != [] && cache.length != 0)
+    const match = Array(cacher).filter(cache =>
+      (cache && cache != [] && cache.length)
        ? cache.is(query)
        : false
     );
+    return (match.length 
+            ? match
+            : null)
   }
 
   is(search_query) {

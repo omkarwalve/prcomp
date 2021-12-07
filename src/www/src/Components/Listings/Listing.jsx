@@ -11,6 +11,7 @@ import { useLocation } from "react-router-dom";
 
 // File Imports
 import ResultsCache from './cache';
+import Fetch from './fetch';
 
 // Custom Hook
 function useQuery() {
@@ -23,6 +24,33 @@ const Listing = () => {
   const category = query.get('cat');
   const search = query.get('search');
   document.title = "kilowog(" + category + ") =>[" + search + "]";
+
+  const [cache,setCache] = useState(ResultsCache.retrieve());
+  const [products,setProducts] = useState([]);
+  const [loading,setLoading] = useState(false);
+  const [crashed,setCrashed] = useState(false);
+
+  useEffect(()=> {
+    Fetch.cGET(
+      category,
+      search,
+      {
+        cache: cache,
+        crashed: setCrashed,
+        loading: setLoading,
+        products: setProducts,
+        setCache: setCache,
+      }
+    )
+  }, [category,search]);
+
+  useEffect(()=> {
+    ResultsCache.store(cache);
+  },[cache]);
+
+  useEffect(()=> {
+    console.log(products);
+  },[products]);
 
   return (
     <div className="product-section">
