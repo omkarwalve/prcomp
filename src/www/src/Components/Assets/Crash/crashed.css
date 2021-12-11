@@ -1,0 +1,96 @@
+/*     ______                    __  
+      / ____/_____ ____ _ _____ / /_ 
+     / /    / ___// __ `// ___// __ \
+    / /___ / /   / /_/ /(__  )/ / / /
+    \____//_/    \__,_//____//_/ /_/ 
+*/                                   
+
+.crash-container {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    width: 100%;
+    /*height: 100%;*/
+    flex-grow: 2;
+    padding: 2rem;
+    background-color: whitesmoke;
+    color: gray;
+
+    font-size: 1rem;
+    font-style: italic;
+}
+
+.crash-container > svg {
+    --dim: 10%;
+    max-width: var(--dim);
+    height: var(--dim);
+}
+.crash-container > svg > path {
+    animation: embarresed 3s linear infinite;
+}
+
+@keyframes embarresed {
+    0% {
+        stroke: gray;
+        fill: gray;
+    }
+    /*25%{*/
+        /*stroke: lightgray;*/
+        /*fill: lightgray;*/
+    /*}*/
+    50%{
+        stroke: #C9C9C9;
+        fill: #C9C9C9;
+    }
+    /*75%{*/
+        /*stroke: lightgray;*/
+        /*fill: lightgray;*/
+    /*}*/
+    100%{
+        stroke: gray;
+        fill: gray;
+    }
+}
+
+.crash-container > button {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+
+    font-weight: 700;
+    font-size: 1.5rem;
+
+    padding: 0.4rem;
+    width: fit-content;
+    height: fit-content;
+
+    background-color: gray;
+    border: 0.1rem solid gray;
+    border-radius: 50%;
+    color: white;
+
+    transition: all 0.2s ease-in-out;
+    animation: rotato-reverse 0.5s linear;
+}
+
+.crash-container > button:hover {
+    background-color: transparent;
+    color: gray;
+    animation: rotato 0.5s linear;
+}
+
+@keyframes rotato {
+    0%{ transform: rotate(0deg); }
+    100%{ transform: rotate(180deg); }
+}
+@keyframes rotato-reverse {
+    0%{ transform: rotate(0deg); }
+    100%{ transform: rotate(-180deg); }
+}
+
