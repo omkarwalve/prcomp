@@ -6,7 +6,7 @@
      width="1.70667in" height="1.70667in"
      viewBox="0 0 512 512">
   <path id="compare"
-        fill="#424656" stroke="black" stroke-width="1"
+        fill="none" stroke="black" stroke-width="1"
         d="M 235.00,358.00
            C 235.00,358.00 235.00,165.00 235.00,165.00
              235.00,162.72 235.22,159.35 233.98,157.39

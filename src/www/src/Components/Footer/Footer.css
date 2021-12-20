@@ -21,6 +21,8 @@
     place-items: end normal;
     justify-content: end;
 
+    /*margin-top: auto;*/
+
     padding: 2rem;
     /*overflow-y: hidden;*/
 }

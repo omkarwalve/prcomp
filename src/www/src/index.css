@@ -2,6 +2,10 @@
   font-family: 'Avenir';
   src: url('./fonts/Avenir.ttc') format('ttc');
 }
+@font-face {
+  font-family: 'Nunito Sans';
+  src: url('https://fonts.googleapis.com/css?family=Nunito+Sans');
+}
 
 html {
   scroll-behavior: smooth;
@@ -27,10 +31,10 @@ code {
 #root {
   background-color: white;
   min-height: 100vh;
-  /*display: flex;*/
-  /*flex-direction: column;*/
-  /*align-items: center;*/
-  /*justify-content: space-between;*/
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  width: 100%;
   margin-top: auto;
 }
-

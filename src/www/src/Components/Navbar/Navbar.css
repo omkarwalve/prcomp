@@ -92,7 +92,8 @@
     visibility: visible;
 }
 
-.user-option > svg {
+.user-option > svg ,
+.user-option > span {
     height: 80%;
     fill: var(--option-icon-color);
     object-fit: contain;

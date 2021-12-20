@@ -1,0 +1,40 @@
+/***
+ *     __  __      __     __  ___ 
+ *    /  `/  \|\/||__)/\ |__)|__  
+ *    \__,\__/|  ||  /~~\|  \|___ 
+ */
+
+.compare-button {
+    --cmp-fallback-anim: all 0.4s ease-in-out;
+    align-self: center;
+    display: inline-grid;
+    place-items: center;
+    height: auto;
+    width: 2.2em;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    transition: var(--card-anim , --cmp-fallback-anim);
+    border: 0px dotted white;
+    background-color: transparent;
+    border-radius: 100%;
+}
+
+.compare-button > svg {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    transition: var(--card-anim , --cmp-fallback-anim);
+}
+
+.compare-button > svg > path {
+    fill: var(--card-fill);
+}
+
+.compare-button.check ,
+.compare-button.check > svg > path {
+    --checked-color: #26AB31;
+    border: 1px dotted var(--checked-color);
+    background-color: rgba(126, 191, 132, 0.24);
+    fill: var(--checked-color) !important;
+}

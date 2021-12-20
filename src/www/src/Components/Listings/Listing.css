@@ -1,0 +1,21 @@
+/*  .____     .__           __   .__                     __                  
+    |    |    |__|  _______/  |_ |__|  ____    ____    _/  |_  _________  ___
+    |    |    |  | /  ___/\   __\|  | /    \  / ___\   \   __\/  ___/\  \/  /
+    |    |___ |  | \___ \  |  |  |  ||   |  \/ /_/  >   |  |  \___ \  >    < 
+    |_______ \|__|/____  > |__|  |__||___|  /\___  / /\ |__| /____  >/__/\_ \
+          \/         \/                 \//_____/  \/           \/       \/
+*/
+
+
+.product-section {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    width: 100%;
+    /*padding: 0.8rem 1rem 2rem 1rem;*/
+    padding-top: 0.8rem;
+    padding-bottom: 1rem;
+    margin-bottom: auto;
+}

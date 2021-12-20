@@ -1,8 +1,8 @@
 
-//   __ _   __   _  _  ____   __   ____       __  ____ 
-//  (  ( \ / _\ / )( \(  _ \ / _\ (  _ \    _(  )/ ___)
-//  /    //    \\ \/ / ) _ (/    \ )   / _ / \) \\___ \
-//  \_)__)\_/\_/ \__/ (____/\_/\_/(__\_)(_)\____/(____/
+//   __ _   __   _  _  ____   __   ____ 
+//  (  ( \ / _\ / )( \(  _ \ / _\ (  _ \
+//  /    //    \\ \/ / ) _ (/    \ )   /
+//  \_)__)\_/\_/ \__/ (____/\_/\_/(__\_)
   
 // Library Imports
 import React, { useEffect, useRef, useState } from 'react';
@@ -13,15 +13,16 @@ import Select from 'Components/Assets/Select/Select';
 import Search from 'Components/Assets/Search/Search';
 import Tooltip from 'Components/Assets/Tooltip/Tooltip';
 import Menu from 'Components/Assets/Menu/Menu';
+import Cart from 'Components/Assets/Cart/Cart';
 import './navbar.css';
 // Icon Imports
 import { ReactComponent as Kilowog } from "assets/kilowog.svg";
 import { ReactComponent as Analytics } from "./assets/analytics.svg";
-import { ReactComponent as Cart } from "./assets/cart.svg";
+//import { ReactComponent as Cart } from "./assets/cart.svg";
 import { ReactComponent as User } from "./assets/user.svg";
 
 
-function Navbar() {
+function Navbar({cartItems}) {
     // Search Bar Group
     const categories = [
         {
@@ -72,7 +73,7 @@ function Navbar() {
     // on Mount useEffect for Menu event listener
     useEffect(()=>{
         const pageClickEvent = (e) => {
-            if (menuRef.current != null && !menuRef.current.contains(e.target) ) {
+            if (menuRef.current && !menuRef.current.contains(e.target) ) {
                 setMenuActive(!isMenuActive);
             }
         }
@@ -93,7 +94,8 @@ function Navbar() {
                 </div>
                 <ul className="user-options" type="none">
                     <li className="user-option"><Analytics /> <Tooltip text="Analytics Coming Soon!" /></li>
-                    <li className="user-option"><Cart      /> <Tooltip text="0 items in cart" /></li>
+                    {/*<li className="user-option"><Cart      /> <Tooltip text="0 items in cart" /></li>*/}
+                    <li className="user-option"><Cart cart={cartItems}/></li>
                     <li ref={menuRef}
                         onClick={onMenuClick}
                         className="user-option"><User      />
