@@ -8,14 +8,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {useHistory} from 'react-router-dom';
 
-// File Imports
+// Component Imports
 import Select from 'Components/Assets/Select/Select';
 import Search from 'Components/Assets/Search/Search';
 import Tooltip from 'Components/Assets/Tooltip/Tooltip';
 import Menu from 'Components/Assets/Menu/Menu';
 import Cart from 'Components/Assets/Cart/Cart';
 import './navbar.css';
-// Icon Imports
+// SVG Imports
 import { ReactComponent as Kilowog } from "assets/kilowog.svg";
 import { ReactComponent as Analytics } from "./assets/analytics.svg";
 //import { ReactComponent as Cart } from "./assets/cart.svg";
@@ -71,19 +71,18 @@ function Navbar({cartItems}) {
     const onMenuClick = () => setMenuActive(!isMenuActive);
     
     // on Mount useEffect for Menu event listener
+    const pageClickEvent = (e) => {
+        if (menuRef.current && !menuRef.current.contains(e.target) ) {
+            setMenuActive(!isMenuActive);
+        }
+    }
     useEffect(()=>{
-        const pageClickEvent = (e) => {
-            if (menuRef.current && !menuRef.current.contains(e.target) ) {
-                setMenuActive(!isMenuActive);
-            }
-        }
-        if (isMenuActive) {
-            document.addEventListener('click',pageClickEvent);
-        }
-        return () => {
-            document.removeEventListener('click', pageClickEvent);
-        }
-    },[]);
+        //if (isMenuActive) { document.addEventListener('click',pageClickEvent); }
+        //return () => { document.removeEventListener('click', pageClickEvent); }
+        (isMenuActive) 
+            ? document.addEventListener('click',pageClickEvent)
+            : document.removeEventListener('click', pageClickEvent)
+    },[isMenuActive]);
     return (
         <div className="navbar">
             <div className="nav-flex">

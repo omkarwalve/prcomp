@@ -34,20 +34,23 @@ const Select = ({items,optionHolder,position}) => {
         setSelectActive(false);
     }
 
+    const pageClickEvent = (e) => {
+        if (selectRef.current != null && !selectRef.current.contains(e.target) ) {
+            setSelectActive(!isSelectActive);
+        }
+    }
     // Component Mount
     useEffect(()=>{
-        const pageClickEvent = (e) => {
-            if (selectRef.current != null && !selectRef.current.contains(e.target) ) {
-                setSelectActive(!isSelectActive);
-            }
-        }
-        if (isSelectActive) {
-            document.addEventListener('click',pageClickEvent);
-        }
-        return () => {
-            document.removeEventListener('click', pageClickEvent);
-        }
-    },[]);
+        //if (isSelectActive) {
+            //document.addEventListener('click',pageClickEvent);
+        //}
+        //return () => {
+            //document.removeEventListener('click', pageClickEvent);
+        //}
+        (isSelectActive)
+            ?  document.addEventListener('click',pageClickEvent)
+            :  document.removeEventListener('click', pageClickEvent)
+    },[isSelectActive]);
 
     useEffect(()=> { optionHolder(option) },[option]);
 

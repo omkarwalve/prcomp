@@ -1,14 +1,15 @@
-/***
- *     __  __      __     __  ___ 
+/*     __  __      __     __  ___ 
  *    /  `/  \|\/||__)/\ |__)|__  
- *    \__,\__/|  ||  /~~\|  \|___ 
- */
+ *    \__,\__/|  ||  /~~\|  \|___   */
 
 .compare-button {
+    grid-area: pcmp;
     --cmp-fallback-anim: all 0.4s ease-in-out;
     align-self: center;
     display: inline-grid;
     place-items: center;
+    margin-left: auto;
+    margin-right: auto;
     height: auto;
     width: 2.2em;
     padding: 0;
@@ -38,3 +39,77 @@
     background-color: rgba(126, 191, 132, 0.24);
     fill: var(--checked-color) !important;
 }
+
+.compare-trigger.active {
+    visibility: visible;
+}
+.compare-trigger {
+    --badge-size: 0.7;
+    --badge-color: black;
+    --badgeXY: 13%;
+    visibility: hidden;
+    position: fixed;
+    bottom: 2%;
+    left: 7%;
+    z-index: 2;
+
+    width: 5em;
+    height: auto;
+    padding: 1em;
+    object-fit: contain;
+
+    display: inline-grid;
+    place-items: center;
+
+    border: 0.1rem solid black;
+    border-radius: 100%;
+    background: white;
+}
+.compare-trigger > svg {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+.compare-trigger > svg > path {
+    fill: black;
+}
+
+.compare-close {
+    position: sticky;
+    cursor: pointer;
+    top: 1%;
+    left: 97%;
+    border: none;
+    background-color: transparent;
+    width: 1rem;
+    height: 1rem;
+    object-fit: contain;
+}
+.compare-close:hover > svg { fill: gray; }
+.compare-close > svg {
+    width: 1rem;
+    height: auto;
+}
+
+.compare-window {
+    visibility: hidden;
+    opacity: 0;
+    transition: all 1s ease-in-out;
+    position: fixed;
+    top: 0; left: 0;
+    transform: translate(calc(50vw - 50%), calc(50vh - 55%));
+    width: 90%;
+    height: 80%;
+    padding-left: 1em;
+    /*padding-right: 1em;*/
+
+    overflow-x: scroll;
+    background: white;
+    z-index: 2;
+}
+.compare-window.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+@import './table.css';

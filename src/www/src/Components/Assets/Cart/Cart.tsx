@@ -25,9 +25,9 @@ export interface cartActions {
 function cartReducer(state: Set<ShortProduct | unknown>, action: cartActions): Set<ShortProduct|unknown> {
     switch (action.do) {
         case 'add':
-            return state.add(action.product);
+            return new Set([...state,action.product]);
         case 'delete':
-            return state.delete(action.product) && state || state;
+            return new Set([...state].filter(set_item => set_item!= action.product))
         default:
             return state
     }
@@ -46,6 +46,8 @@ const Add = ({product,setCart}: AddProps) => {
         (isAdded) 
             ? setCart({do: 'add'   , product: product})
             : setCart({do: 'delete', product: product})
+        //if (isAdded) { setCart({do: 'add'   , product: product}); console.log("Adding to cart.."); }
+                //else { setCart({do: 'delete', product: product}); console.log("Removing to cart..");}
     },[isAdded]);
     return (
         <button className={`cart-add-button ${isAdded ? 'checked' : '' }`} onClick={onAddClick}>

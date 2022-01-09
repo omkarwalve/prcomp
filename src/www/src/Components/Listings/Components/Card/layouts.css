@@ -1,0 +1,141 @@
+/***   __                 
+ *    /   _  _  _  _  _|_ 
+ *    \__(_)||||_)(_|(_|_ 
+ *             |          */
+
+.product-card.compact{
+    text-align: center;
+    height: max-content;
+    /*max-height: 20rem;*/
+
+    box-shadow: 0rem 0.2rem .4rem rgba(0, 0, 0, 0.3);
+    border: 0.01rem dotted rgba(0,0,0,0.3);
+    padding: .5rem;
+
+    grid-gap: 0.5em;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    grid-template-areas:
+    "pimg   pimg   pimg   pimg   pimg  pimg"
+    "pname  pname  pname  pname  pname pname"
+    "pretpl pretpl pwarpl pwarpl pstore pstore"
+    "pspecs pcmp   pcart  ...... pprice pprice"
+}
+.product-card.compact:hover {
+    box-shadow: 0rem 1rem 2rem rgba(0, 0, 0, 0.3);
+}
+.product-card.compact > .product-name, 
+.product-card.compact >.product-name-sized {
+    text-align: center;
+    width: 28ch;
+    line-height: 1.3em;
+    max-height: 2.6em;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+/*     __       
+ *    |_ | _     
+ *    |  |(_)\/\/ */
+.product-card.flow {
+    text-align: center;
+    width: 45%;
+    height: max-content;
+    /*max-height: 20rem;*/
+
+    /*box-shadow: 0rem 0.2rem .4rem rgba(0, 0, 0, 0.3);*/
+    box-shadow: none;
+    border: 0.01rem dotted rgba(0,0,0,1);
+    padding: .9rem;
+
+    grid-gap: 0.5em;
+    align-items: center;
+    align-content: center;
+    justify-content: space-evenly;
+    grid-template-areas:
+    "pimg pimg .. pname  pname  pname  pspecs"
+    "pimg pimg .. pname  pname  pname  pcmp  "
+    "pimg pimg .. pstore .....  .....  pcart"
+    "pimg pimg .. pretpl pretpl pprice pprice"
+    "pimg pimg .. pwarpl pwarpl pprice pprice"
+}
+.product-card.flow:hover { box-shadow: 0rem 1rem 2rem rgba(0, 0, 0, 0.3); }
+
+.product-card.flow > .product-name,
+.product-card.flow > .product-name-sized {
+    text-align: left;
+    width: 37ch;
+}
+.product-card.flow > .product-retpolicy ,
+.product-card.flow > .product-warpolicy { justify-self: left; }
+
+/*   ______  __        
+ *  |   __ \|__|.-----.
+ *  |   __ <|  ||  _  |
+ *  |______/|__||___  |
+ *              |_____|  */
+
+.product-card.big {
+    text-align: center;
+    width: 95%;
+    height: max-content;
+    /*max-height: 20rem;*/
+
+    /*box-shadow: 0rem 0.2rem .4rem rgba(0, 0, 0, 0.3);*/
+    box-shadow: none;
+    border: 0.01rem dotted rgba(0,0,0,1);
+    padding: .9rem;
+
+    grid-gap: 0.5em;
+    align-items: center;
+    align-content: center;
+    justify-content: space-evenly;
+    grid-template-areas:
+    "pimg pimg .. pname  pname  pname  pname  pname pname pname"
+    "pimg pimg .. pname  pname  pname  pname  pname pname pname"
+    "pimg pimg .. pretpl pretpl pretpl pretpl ..... .... ....."
+    "pimg pimg .. pwarpl pwarpl pwarpl pwarpl ..... pprice pprice"
+    "pimg pimg .. pstore ...... pspecs pcmp   pcart pprice pprice"
+}
+
+.product-card.big:hover { box-shadow: 0rem 1rem 2rem rgba(0, 0, 0, 0.3); }
+
+.product-card.big > .product-name,
+.product-card.big > .product-name-sized {
+    text-align: left;
+    max-width: 77ch;
+}
+.product-card.big > .product-retpolicy ,
+.product-card.big > .product-warpolicy { justify-self: left; }
+
+/* ============ MEDIA QUERIES ===============*/
+
+/* Desktop */
+@media screen and (min-width: 992px) {
+    .product-card.compact{
+        width: 21%;
+        /*background-color: orange;*/
+    }
+}
+
+/* Mobile */
+@media screen and (max-width: 992px) {
+    .product-card.compact{ 
+        width: 81%;
+        /*background-color: cyan;*/
+    }
+    .product-card.flow {
+        font-size:  0.6rem;
+        text-align: center;
+        width: 85%;
+        height: max-content;
+    }
+    .product-card.big {
+        font-size:  0.6rem;
+        text-align: center;
+        width: 95%;
+        height: max-content;
+    }
+}

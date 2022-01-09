@@ -18,6 +18,7 @@
 }
 
 .cart-add-button {
+    grid-area: pcart;
     --cart-fallback-anim: all 0.4s ease-in-out;
     align-self: center;
     display: inline-grid;

@@ -1,0 +1,53 @@
+.filter-panel {
+    list-style-type: none;
+    padding: .5em .8em;
+}
+
+.filter-panel-option {
+    height: auto;
+    position: relative;
+}
+
+.filter-panel-option-header {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    border-bottom: 0.1rem solid darkgray;
+}
+.filter-panel-option-header::after {
+    content: "";
+    width : .5em;
+    height: .5em;
+    position: absolute;
+    top: .25em;
+    right: .5em;
+    transform: rotate(-45deg);
+    border-left: .1em solid black;
+    border-bottom: .1em solid black;
+    transition: all .4s ease-in-out;
+}
+.filter-panel-option-header.active::after {
+    top: .5em;
+    transform: rotate(135deg);
+}
+
+.filter-panel-option-content {
+    --list-length: 15em;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: .2em;
+    visibility: hidden;
+    height: auto;
+    opacity: 0;
+    width: max-content;
+    max-height: 0;
+    /* position: absolute; */
+    transition: all .4s ease-in-out;
+}
+.filter-panel-option-content.active {
+    visibility: visible;
+    padding-top: .6em;
+    max-height: 15rem;
+    opacity: 1;
+}

@@ -31,7 +31,7 @@ const Menu = ({menuSwitch,items}) => {
         //console.log("After:- ", isMenuActive,"Parent got clicked");
     //}
 
-    useEffect(() => {
+    //useEffect(() => {
         // Set parent's onClick function
         //parentRef.current.onclick = onParentClick;
         //console.log("ParentRef",parentRef);
@@ -49,7 +49,7 @@ const Menu = ({menuSwitch,items}) => {
         //return () => {
             //document.removeEventListener('click', pageClickEvent);
         //}
-    }, []);
+    //}, []);
 
     //useEffect(() => {
         //console.log("Menu", isMenuActive);

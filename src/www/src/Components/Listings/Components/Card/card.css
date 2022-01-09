@@ -10,34 +10,21 @@
     --card-anim: all 0.4s ease-in-out;
     cursor: pointer;
     display: grid;
-    /*justify-content: start;*/
-    /*place-items: left;*/
+    transition: var(--card-anim);
+    min-width : min-content;
+    min-height: min-content;
 }
 
-.product-card.compact{
-    text-align: center;
-    width: 21%;
-    height: max-content;
-    /*max-height: 20rem;*/
+.product-card:hover { border-style: dashed none none; }
 
-    box-shadow: 0rem 0.2rem .4rem rgba(0, 0, 0, 0.3);
-    padding: .5rem;
-
-    grid-gap: 0.5em;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    grid-template-areas:
-    "pimg   pimg   pimg   pimg   pimg  pimg"
-    "pname  pname  pname  pname  pname pname"
-    "pretpl pretpl pwarpl pwarpl pstore pstore"
-    "pspecs .....  .....  ...... pprice pprice"
-}
+@import 'layouts.css';
 
 .product-image {
     --pimg-dim: 91%;
     padding: 1rem;
-    width: var(--pimg-dim);
+    max-width: var(--pimg-dim);
+    margin-left: auto;
+    margin-right: auto;
     /*max-height: clamp(5vw, 8vw + 5rem, calc(var(--pimg-dim) + 10rem));*/
     max-height: 10rem;
     height: auto;
@@ -49,14 +36,7 @@
 .product-name,
 .product-name-sized {
     grid-area: pname;
-    text-align: center;
     position: relative;
-    width: 28ch;
-    line-height: 1.3em;
-    max-height: 2.6em;
-    text-overflow: ellipsis;
-    word-wrap: break-word;
-    word-break: break-all;
 
     display: flex;
     flex-flow: row nowrap;
@@ -78,6 +58,7 @@
     top:100%;
     z-index: 1;
     font-weight: normal;
+    transition: var(--card-anim);
 }
 .product-name-sized:hover > span { visibility: visible; opacity: 1; }
 
@@ -105,9 +86,11 @@
     display: inline-grid;
     place-items: center;
     grid-area: pstore;
+    cursor: alias;
 }
 .product-store > svg { 
-    width: clamp(1rem, 1vw + 3.5rem, 4rem);
+    /*width: clamp(1rem, 1vw + 3.5rem, 4rem);*/
+    width: 4em;
     height: auto;
     object-fit: contain;
 }
@@ -119,7 +102,7 @@
 .product-price {
     grid-area: pprice;
     /*font-size: clamp(0.5rem, 1vw + 1.5rem, 3rem);*/
-    font-size: 2rem;
+    font-size: 2em;
 }
 
 .card-icon {
@@ -144,16 +127,17 @@
 }
 
 .product-specs-floaty:before {
+    --pspec-arrow-dim: 0.5em;
     content: "";
-    width : 0.5em;
-    height: 0.5em;
-    border: 0.1rem solid black;
-    border-bottom: none;
-    border-right: none;
+    width : var(--pspec-arrow-dim);
+    height: var(--pspec-arrow-dim);
+    border-top: 0.1rem solid black;
+    border-left: 0.1rem solid black;
     background-color: whitesmoke;
     position: absolute;
     transform: rotate(45deg);
-    bottom: 99.3%;
+    top: calc(var(--pspec-arrow-dim) * -1 / 1.2) ;
+    left: calc(var(--pspec-arrow-dim) / 0.8) ;
     float: top;
     z-index: 2;
 }
@@ -214,3 +198,11 @@
 .product-specs-table > tr > td:first-child { font-weight: bold; 
                                              opacity: 0.8; }
 .product-specs-table > tr > td:nth-child(2) { padding-left: .5rem; word-wrap: break-word; }
+
+.unavailable {
+    height: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: gray;
+}

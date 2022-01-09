@@ -1,0 +1,22 @@
+.badge-circle {
+    background-color: var(--badge-color, #EB3D3D);
+    color: var(--badge-text-color, white);
+    border: none;
+    border-radius: 100%;
+
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+
+    width : calc(var(--badge-size,1em) * 1rem);
+    height: calc(var(--badge-size,auto) * 1rem);
+    font-size: calc(var(--badge-size) * 1em);
+    /*padding: calc( var(--badge-size,1em) / 5);*/
+    padding: 4%;
+
+    position: absolute;
+    bottom:var(--badgeXY,3%);
+    right: var(--badgeXY,3%);
+
+    font-weight: bold;
+}

@@ -14,11 +14,7 @@ import Product, { ShortProduct } from 'Components/Listings/cogs/product';
 import periodParser from './parser';
 import { Checkbox, cmpActions } from '../Compare/Compare';
 import { Add, cartActions } from 'Components/Assets/Cart/Cart';
-
-// SVG Components
-import { ReactComponent as Amazon } from 'Components/Listings/assets/store_icons/Amazon.svg';
-import { ReactComponent as Flipkart } from 'Components/Listings/assets/store_icons/Flipkart.svg';
-import { ReactComponent as Urbanladder } from 'Components/Listings/assets/store_icons/Urbanladder.svg';
+import STORE$icon from 'Components/Assets/Stores/Stores';
 
 import { ReactComponent as Specs } from './assets/specs.svg';
 //import { ReactComponent as Rating } from './assets/rating.svg';
@@ -40,7 +36,7 @@ const Name = ({name,layout}: {name: string,layout: string}) => {
       : (layout == "flow" || layout == "versus") 
         ? maxchar = 105 
         : (layout == "big") 
-          ? maxchar = 105 
+          ? maxchar = 208 
           : maxchar = 0
   
       if(name.length > maxchar) {
@@ -92,15 +88,15 @@ interface CardProps {
   setCartItems: React.Dispatch<cartActions>;
 }
 const Card = ({product,layout,setCmp,setCartItems}: CardProps) => {
-  if (product.price === "Not Available") {
+  if (product.price.display === "Not Available" || product.cloaked) {
     return null;
   }
   else {
-    const stores: Map<string, JSX.Element> = new Map([
-      ["Amazon"      , <Amazon      />     ],
-      ["Flipkart"    , <Flipkart    />    ],
-      ["Urbanladder" , <Urbanladder /> ],
-    ]);
+    //const stores: Map<string, JSX.Element> = new Map([
+      //["Amazon"      , <Amazon      />],
+      //["Flipkart"    , <Flipkart    />],
+      //["Urbanladder" , <Urbanladder />],
+    //]);
 
     const cardClick = (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
@@ -118,13 +114,13 @@ const Card = ({product,layout,setCmp,setCartItems}: CardProps) => {
 
   {/*IMAGE*/}  <img className="product-image" src={product.img} alt="error" />
   {/*PNAME*/}  <Name name={product.name} layout={layout} />
-  {/*RETPL*/}  <span className="product-retpolicy"><Replace  className="card-icon" />{periodParser(product.return_replace)}</span>
-  {/*WARPL*/}  <span className="product-warpolicy"><Warranty className="card-icon" />{periodParser(product.warranty)}      </span>
-  {/*STORE*/}  <span className="product-store" onClick={storeClick}>{stores.get(product.store)}</span>
+  {/*RETPL*/}  <span className="product-retpolicy"><Replace  className="card-icon" />{(layout == "compact") ? periodParser(product.return_replace) : product.return_replace ?? '-'}</span>
+  {/*WARPL*/}  <span className="product-warpolicy"><Warranty className="card-icon" />{(layout == "compact") ? periodParser(product.warranty) : product.warranty ?? '-' }            </span>
+        {/*STORE*/}  <span className="product-store" onClick={storeClick}><STORE$icon store={product.store}/></span>
   {/*SPECS*/}  <Specifications specs={product.specs} />
   {/* CMP */}  <Checkbox pid={product.id} setCompare={setCmp}/>
   {/*CART */}  <Add product={product.shorten()} setCart={setCartItems} />
-  {/*PRICE*/}  <span className="product-price">{product.price}</span>
+  {/*PRICE*/}  <span className="product-price">{product.price.display}</span>
 
       </div>
     )

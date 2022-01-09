@@ -5,10 +5,17 @@
 
 // Library Imports
 import React, { useState, useEffect } from "react";
+// Hooks
+import useToggle from 'hooks/toggle';
 
 // File Imports
 import { ReactComponent as Scale } from './assets/compare.svg';
+import { ReactComponent as Close } from 'assets/close.svg';
+import { ReactComponent as ThinScale } from './assets/scale.svg';
 import Product from 'Components/Listings/cogs/product';
+import Badge from 'Components/Assets/Badge/Badge';
+import STORE$icon from 'Components/Assets/Stores/Stores';
+import Veil from 'Components/Assets/Veil/Veil';
 
 // CSS
 import './compare.css';
@@ -20,9 +27,9 @@ export interface cmpActions {
 function cmpReducer(state: Set<string|unknown> , action: cmpActions): Set<string|unknown> {
     switch (action.do) {
         case 'add': 
-            return state.add(action.pid);
+            return new Set([...state,action.pid]);
         case 'delete': 
-            return state.delete(action.pid) && state || state;
+            return new Set([...state].filter(item => item!= action.pid));
         default:
             return state;
     }
@@ -83,16 +90,16 @@ const Table = ({cProducts}:{cProducts: Product[]}) => {
                         cProducts.map(product => {
                             return (
                                 <td>
+                                    <img className="compare-pimage" src={product.img} alt="error"/>
                                     <a href={product.url} target="_blank" rel="noreferer">
-                                    <img className="cProdImg" src={product.img} alt="error"/>
-                                    <img className="storeIC" src={'/listing/' + product.store + '.svg'}/>
+                                        <STORE$icon store={product.store}/>
                                     </a>
                                 </td>
                         )})
                     }
                 </tr>
-                <tr className="row_pname">
-                    <th className="cTH">Product:</th>
+                <tr className="row-pname">
+                    <th className="compare-header">Product:</th>
                     {
                         cProducts.map(product => { return( <td> {product.name} </td>)})
                     }
@@ -101,7 +108,7 @@ const Table = ({cProducts}:{cProducts: Product[]}) => {
                     Array.from(sKeys).sort().map(key => {
                         return(
                             <tr>
-                                <th className="cTH">{key}</th>
+                                <th className="compare-header">{key}</th>
                                 {
                                     specList.map(specObj => {
                                         let sVal = specObj[key as keyof typeof specObj];
@@ -123,9 +130,11 @@ const Compare = ({products,compareSet}: {products: Product[], compareSet: Set<st
     const filterProducts = (c1: Product[],c2: Set<string|unknown>) => { return c1.filter(elem => c2.has(elem.id))}
     const [prodData, setProdData] = useState<Product[]>([]); 
 
-    const [isCWinActive, toggleCWin] = useState(false);
-    const onCBarClick = () => toggleCWin(!isCWinActive);
+    const [cloak,toggleCloak] = useToggle(false);
+    const [isCWinActive, toggleCWin] = useToggle(false);
+    const onCButtonClick = () => {  toggleCWin();  }
 
+    //useEffect(() => { setCloak(isCWinActive); }, [isCWinActive]);
     useEffect(()=> {
         //setProdData(products.filter(product => compareSet.has(product.id)));
         setLen(compareSet.size);
@@ -133,12 +142,16 @@ const Compare = ({products,compareSet}: {products: Product[], compareSet: Set<st
         //console.log(compareSet,prodData);
     },[compareSet]);
 
+                //<h6>{len} items to compare..</h6>
     return (
         <>
-            <div onClick={onCBarClick} className={`compare-bar ${len > 1 ? 'active': 'inactive'}`}>
-                <h6>{len} items to compare..</h6>
-            </div>
+            <Veil cloak={isCWinActive} toggler={toggleCWin} />
+            <button onClick={onCButtonClick} className={`compare-trigger ${len > 1 ? 'active': ''}`}>
+                <ThinScale/>
+                <Badge data={len}/>
+            </button>
             <div className={`compare-window ${isCWinActive ? 'active': ''}`}>
+                <button className="compare-close" onClick={onCButtonClick}><Close /></button>
                 <Table cProducts={prodData} />
             </div>
         </>

@@ -1,0 +1,102 @@
+
+/* Checkedbox highlight class  */
+.list-item.check {
+    border: 0.12em solid #7d7d7d;
+    border-radius: 5px;
+    padding: 
+    calc(var(--check-padding-base) * 1rem) 
+    calc(calc(var(--check-padding-base) + .5) * 1rem ) 
+    calc(var(--check-padding-base) * 1rem)
+    calc(calc(var(--check-padding-base) + .2) * 1rem );
+    position: relative;
+    font-weight: bold;
+    color: black !important;
+    /* animation: wiggle .1s ease-in-out infinite; */
+}
+.list-item.check:after {
+    --checkmark-size: .4em;
+    content: "";
+    position: absolute;
+    bottom: calc(var(--checkmark-size) / 1.3);
+    right : calc(var(--checkmark-size) / 2);
+    width: var(--checkmark-size);
+    height: calc( var(--checkmark-size) / 2);
+    border-left  : calc( var(--checkmark-size) / 2.5) solid var(--checked-color);
+    border-bottom: calc( var(--checkmark-size) / 2.5) solid var(--checked-color);
+    transform: rotate(-45deg);
+}
+
+/* List root elements */
+.field-list {
+    display: flex;
+    flex-flow: column wrap;
+    row-gap: .5em;
+    max-width: 20rem;
+    width: var(--list-length, 14em);
+}
+.list-items {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    align-content: center;
+    justify-content: flex-start;;
+    column-gap: 1em;
+    row-gap: .2em;
+    user-select: none;
+}
+
+.list-item {
+    --checked-color: #7d7d7d;
+    --check-padding-base: 0.3;
+    transition: all .1s ease-in-out;
+    color: rgb(39, 39, 39);
+    display: flex;
+    flex-flow: row nowrap;
+    column-gap: .5em;
+    align-items: center;
+}
+
+/* Checkbox List */
+.list-field {
+    border: none;
+    border-bottom: 0.1rem solid black;
+}
+.list-field:focus-visible { outline: none; }
+
+/* Entry List */
+.entry-remove-button::before,
+.entry-remove-button::after { 
+    content: "";
+    height: .5em;
+    background-color: var(--entrem-color);
+    position: absolute;
+    margin-top: .1em;
+    border: calc(var(--checkmark-size,0.4em) / 4) solid var(--entrem-color);
+}
+.entry-remove-button::before {transform: rotate(45deg) translateY(0); }
+.entry-remove-button::after  {transform: rotate(-45deg);}
+
+.entry-remove-button {
+    --entrem-color: var(--checked-color);
+    display: inline-grid;
+    place-items: center;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    position: relative;
+    width: 1em;
+    height: 1em;
+}
+
+.entry-remove-button:hover { cursor: pointer;}
+.entry-remove-button:hover > .entry-remove-button::before,
+.entry-remove-button:hover > .entry-remove-button::after {
+    background-color: gray;
+    border-color: red !important;
+}
+
+@keyframes wiggle {
+    0% { transform: translateX(.5px)   rotate( .5deg);}
+    50% { transform: translateX(-.5px) rotate(-.5deg);}
+    100% { transform: translateX(.5px) rotate( .5deg);}
+}

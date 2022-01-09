@@ -5,6 +5,17 @@
 //  |_|_|_||___||_|_||___|
 */                        
 
+.menu-container:before {
+    --menu-arrow-dim: 0.6em;
+    position: absolute;
+    content: "";
+    width : var(--menu-arrow-dim);
+    height: var(--menu-arrow-dim);
+    top: calc(var(--menu-arrow-dim) * -1 / 2);
+    right: calc( var(--menu-arrow-dim) / 0.8 );
+    background-color: var(--menu-background-color);
+    transform: rotate(-45deg);
+}
 .menu-container {
     visibility: hidden;
     position: absolute;

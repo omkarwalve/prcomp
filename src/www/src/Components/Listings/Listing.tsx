@@ -8,14 +8,16 @@
 // Library Imports
 import React, { useEffect, useState, useReducer } from 'react';
 import { useLocation } from 'react-router-dom';
-import { cmpReducer } from './Components/Compare/Compare';
+import Compare, { cmpReducer } from './Components/Compare/Compare';
 
-// File Imports
+// Cogs Imports
 import ResultsCache from './cogs/cache';
 import Fetch from './cogs/fetch';
 import Product, { ShortProduct } from './cogs/product';
 import { cartActions } from 'Components/Assets/Cart/Cart';
+// Component Imports
 import Card from './Components/Card/Card';
+import Filter from './Components/Filter/Menu';
 import Crash from 'Components/Assets/Crash/Crash';
 import Loading from 'Components/Assets/Loading/Loading';
 
@@ -42,8 +44,8 @@ const Listing = ({setCart}: {setCart: React.Dispatch<cartActions>}) => {
 
   const [layout, setLayout] = useState<string>("compact");
 
-
   const [compareSet,setCompare] = useReducer(cmpReducer,new Set());
+
 
   //# On `category`/ `search` update do...
   useEffect(()=> {
@@ -66,6 +68,10 @@ const Listing = ({setCart}: {setCart: React.Dispatch<cartActions>}) => {
     ResultsCache.store(cache);
   },[cache]);
 
+    useEffect(()=> {
+        console.log("Detected change in compareSet");
+    },[compareSet]);
+
   //# On `products` update..
   useEffect(()=> {
     //# Update Stores
@@ -76,21 +82,36 @@ const Listing = ({setCart}: {setCart: React.Dispatch<cartActions>}) => {
       });
       setStores(_stores);
     }
+    console.log(products);
   },[products]);
 
-  if (loading) { return ( <Loading /> ) }
-  if (crashed) { return ( <Crash /> ) }
-  return (
-    <div className="product-section">
-      {
-        products && products.map(product => {
-          return (
-            <Card product={product} layout={layout} setCmp={setCompare} setCartItems={setCart} />
-          )
-        })
-      }
-    </div>
-  )
+  switch(true) {
+    case (loading):   return ( <Loading /> ) 
+    case (crashed):   return ( <Crash /> ) 
+    default: 
+      return (
+          <>
+          { 
+            (products) 
+              ? (<>
+                   <Filter pdx={products} setPDX={setProducts} lyt={layout} setLYT={setLayout} />
+                   <Compare products={products} compareSet={compareSet} />
+                 </>
+                )
+            : <> </>
+          }
+          <div className="product-section">
+            {
+              products && products.map(product => {
+                return (
+                  <Card product={product} layout={layout} setCmp={setCompare} setCartItems={setCart} />
+                )
+              })
+            }
+          </div>
+          </>
+        )
+  }
 }
 
 export default Listing
