@@ -13,10 +13,12 @@
 .filter-hamburger-trigger {
     display: inline-grid;
     place-items: center;
-    position: fixed;
-    z-index: 2;
-    bottom: 2%;
-    left: 1%;
+    position: relative;
+    z-index: inherit;
+    /* position: fixed;
+    /* bottom: 2%;
+    left: 1%; */
+    /* inset: auto 0 1em 1em; */
 
     background: white;
     border: 0.1rem solid black;
@@ -69,14 +71,15 @@
     --fm-tail: 0.8em;
     width : var(--fm-tail);
     height: var(--fm-tail);
-    background-color: white;
+    background-color:white;
     border-bottom: calc(var(--fm-tail) / 10) solid black;
     border-right: calc(var(--fm-tail) / 10) solid black;
     transform: rotate(45deg);
 
     position: absolute;
-    bottom: calc( var(--fm-tail) * -1 / 1.5);
-    left: 1.25em;
+    /* bottom: calc( var(--fm-tail) * -1 / 1.5);
+    left: 1.25em; */
+    inset: auto 0 calc( var(--fm-tail) * -1 / 1.6) 1em;
 }
 
 .filter-menu.active {

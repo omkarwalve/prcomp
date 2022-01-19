@@ -1,7 +1,7 @@
 
 /* Checkedbox highlight class  */
 .list-item.check {
-    border: 0.12em solid #7d7d7d;
+    border: .12em solid var(--checked-color,#7d7d7d);
     border-radius: 5px;
     padding: 
     calc(var(--check-padding-base) * 1rem) 
@@ -13,7 +13,26 @@
     color: black !important;
     /* animation: wiggle .1s ease-in-out infinite; */
 }
-.list-item.check:after {
+.list-item.check:hover {
+    border: 0.12em dashed var(--remove-color);
+    padding: 
+    calc(var(--check-padding-base) * 1rem) 
+    calc(calc(var(--check-padding-base) + .5) * 1rem ) 
+    calc(var(--check-padding-base) * 1rem)
+    calc(calc(var(--check-padding-base) + .2) * 1rem );
+}
+.list-item.check::before {
+    --checkmark-size: .4em;
+    content: "";
+    position: absolute;
+    bottom: calc(var(--checkmark-size) / 1.3);
+    right : calc(var(--checkmark-size) / 2);
+    width: 0;
+    height: 0;
+    border: none;
+    transition: var(--list-transition);
+}
+.list-item.check::after {
     --checkmark-size: .4em;
     content: "";
     position: absolute;
@@ -24,6 +43,22 @@
     border-left  : calc( var(--checkmark-size) / 2.5) solid var(--checked-color);
     border-bottom: calc( var(--checkmark-size) / 2.5) solid var(--checked-color);
     transform: rotate(-45deg);
+    transition: var(--list-transition);
+}
+.list-item.check:hover::after ,
+.list-item.check:hover::before {
+    border: .01em solid var(--remove-color);
+    background-color: var(--remove-color);
+    width : calc(var(--checkmark-size,.4em) / 5 );
+    height: calc(var(--checkmark-size,.4em) / .8);
+    bottom: calc(var(--checkmark-size) / 1.8);
+    right : calc(var(--checkmark-size) / 1.2);
+}
+.list-item.check:hover::before {
+    transform: rotate(-45deg);
+}
+.list-item.check:hover::after {
+    transform: rotate(45deg);
 }
 
 /* List root elements */
@@ -36,6 +71,8 @@
 }
 .list-items {
     display: flex;
+    list-style-type: none;
+    padding: 0;
     flex-flow: row wrap;
     align-items: center;
     align-content: center;
@@ -47,13 +84,24 @@
 
 .list-item {
     --checked-color: #7d7d7d;
+    --remove-color: darkred ;
     --check-padding-base: 0.3;
-    transition: all .1s ease-in-out;
+    --list-transition: all .1s ease-in-out;
+    transition: var(--list-transition);
     color: rgb(39, 39, 39);
     display: flex;
     flex-flow: row nowrap;
     column-gap: .5em;
     align-items: center;
+    cursor: pointer;
+    border: .0rem solid transparent;
+    border-radius: .2em;
+    padding: .1em;
+}
+.list-item:hover {
+    border: .1rem dashed lightgray;
+    border-radius: .2em;
+    /* padding: .2em; */
 }
 
 /* Checkbox List */

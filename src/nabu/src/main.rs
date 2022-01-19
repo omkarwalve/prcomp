@@ -8,11 +8,14 @@
 
 mod orel;
 mod nabu;
+mod log;
 mod types;
 mod wrapper;
-use rocket::http::Header;
+use rocket::http::{Header,Method};
 use rocket::{Request, Response};
+// use rocket_cors::{CorsOptions, AllowedHeaders, AllowedOrigins};
 use rocket::fairing::{Fairing, Info, Kind};
+// use std::str::FromStr;
 //use rocket::response::content::Json;
 use rocket::serde::json::Json;
 use wrapper::nabu_fetch;
@@ -60,14 +63,18 @@ fn root() -> &'static str {
     "This is the root of the website. You shouldn't be here :)"
 }
 
-//#[get("/elx/<ex_query>", format = "application/json")]
-#[get("/elx/<ex_query>")]
+#[get("/elx/<ex_query>", format = "application/json")]
+// #[get("/elx/<ex_query>")]
 fn elx(ex_query: &str) -> Json<crate::types::Listings<String>>  {
     println!("Started elx code");
     Json(match nabu_fetch("electronics".to_string(),ex_query.replace("+"," ")) {
         Some(listings) => listings,
         None => fake_listings()
     })
+}
+#[options("/elx/<ex_query>", format = "application/json")]
+fn elx_preflight(ex_query: &str) -> rocket::response::status::NoContent {
+    rocket::response::status::NoContent
 }
 
 #[get("/fur/<furn_query>")]
@@ -87,9 +94,23 @@ fn clo(cloth_query: &str) -> Json<crate::types::Listings<String>>  {
 }
 #[rocket::main]
 async fn main() {
-                rocket::build()
-                       .mount("/",routes![root,elx,fur,clo])
-                       .attach(CORS)
-                       .launch()
-                       .await.unwrap();
+    // let corsOpts = CorsOptions::default().to_cors().expect("Failed to convert CorsOptions to Cors");
+    // let allowed_method = vec![Method::Get].into_iter().map(From::from).collect();
+    // let allowed_method = vec!["Get"].into_iter().map(|s| FromStr::from_str(s).unwrap()).collect();
+    // // You can also deserialize this
+    // let cors = rocket_cors::CorsOptions {
+    //     allowed_origins: AllowedOrigins::All,
+    //     allowed_methods: allowed_method,
+    //     allowed_headers: AllowedHeaders::All,
+    //     allow_credentials: true,
+    //     ..Default::default() }
+    // .to_cors()
+    // .expect("Failed to convert CorsOptions to Cors");
+
+    rocket::build()
+           .mount("/",routes![root,elx,elx_preflight,fur,clo])
+           .attach(CORS)
+        //    .attach(cors)
+           .launch()
+           .await.unwrap();
 }

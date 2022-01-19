@@ -13,6 +13,7 @@
 
 use crate::orel;
 use crate::types::{ self, JSONize};
+use crate::log;
 use std::time::Duration;
 use std::sync::{ Arc, Mutex};
 use fastrand;
@@ -71,8 +72,8 @@ macro_rules! clean {
     ($text: expr, "rep") => { $text.replace("?","") }
 }
 
-pub fn make_request(url: &str) -> Result<String,ureq::Error>{
-    println!("Making Request to {}",url);
+pub fn make_request(url: &str) -> Result<String,Error>{
+    log!("c",format!("Making Request to {}",url));
     let n_agent: Agent = AgentBuilder::new()
                               .timeout(Duration::from_secs(WAIT_FOR_RESPONSE_TIMEOUT))
                               .user_agent(USER_AGENT_POOL[fastrand::usize(..USER_AGENT_POOL.len())])
@@ -93,17 +94,18 @@ pub fn make_request(url: &str) -> Result<String,ureq::Error>{
                                        .set("Upgrade-Insecure-Requests", "1")
                                        .call()?
                                        .into_string()?;
-    println!("{}", Color::Green.paint(format!("-- Got Response from {}", url)));
+    log!("g",format!("Got Response from {}",url));
     Ok(http_response)
 }
 
 pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String>) -> Option<(Vec<types::Listing<String>>,&'t orel::Orel<String>)> {
     //println!("{:#?}",html_response); // VERBOSE
     //panic!("--BREAKPOINT--");
-    println!("Parsing..");
+    // print!("[◔] Parsing.. | ");
     let html_document = Document::from(html_response);
     let mut plistings : Vec<types::Listing<String>> = Vec::new();
-    println!("making iterator..");
+    // print!("[◔] Finding root node in DOM.. | ");
+    log!("c","Finding nodelist in DOM..");
     let listing_iterator: Option<Box<dyn Iterator<Item = select::node::Node>>>
         = match website_profile.listing_find_by.as_str() {
             "Class" =>  Some(Box::new(html_document.find(Class(&website_profile.listing_identifier[..])))),
@@ -120,16 +122,16 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                              } )),
             "Attr"  =>  Some(Box::new(html_document.find(Attr(&website_profile.listing_identifier[..],
                                                          &website_profile.listing_ivalue[..])))),
-            _ => { println!("Failed to build iterator"); None },
+            _ => { print!("Failed to build iterator |"); None },
         };
-    println!("successfully made iterator..");
+    // print!("root node found.. |");
     let mut id_counter: u8 = 0;
     if listing_iterator.is_some() {
-    for lnode in listing_iterator.unwrap() {
-        println!("Inside iterator for loop..");
+        // println!("{}",Color::Yellow.paint("[◔] Iterating through root nodes in document.."));
+        log!("c","Iterating through matched nodelist..");
+        for lnode in listing_iterator.unwrap() {
             let mut plisting: types::Listing<String> = Default::default();
             //-- URL
-            //println!("url..");
             plisting.url
                 = match website_profile.product_url_find_by.as_str() {
                     "Class" => format!("{}{}",&website_profile.root_uri
@@ -181,7 +183,7 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                                      .next().unwrap().text().replace("\"","\\\""),
                     "Class.alt" => { 
                         let classes = &website_profile.product_name_identifier.split_once(ALT_CHAR).expect("Inseperable Class.alt.pnameident");
-                        let mut find1 = lnode.find(Class(classes.0)).next();
+                        let find1 = lnode.find(Class(classes.0)).next();
                         if find1.is_some() {
                              find1.unwrap().text().replace("\"","\\\"")
                         }
@@ -212,23 +214,27 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
             plisting.store = website_profile.name.clone();
             plisting.id = format!("{}#{:#02X}",website_profile.name.clone()[0..2].to_string(),id_counter);
             id_counter +=1;
-            println!("==== Found ====\n=> PRODUCT: {}\n=> URL: {}\n=> IMG.SRC:- {}\n=> PRICE: {}",
-                     plisting.name,
-                     plisting.url,
-                     plisting.img,
+            println!("━━━━{}━━━━\n  {}... [{}...]  [{}...] {}",
+                     plisting.store,
+                     &plisting.name[..20],
+                     &plisting.url[..25],
+                     &plisting.img[..25],
                      plisting.price);
             plistings.push(plisting);
         }
+        println!("━━━━━━━━━━");
         Some((plistings,website_profile))
     }
-    else { println!("No listings element found in {}", &website_profile.name); 
+    else { 
+        // println!("No listings element found in {}", &website_profile.name); 
+        log!("r",format!("No root node ↣ {}", &website_profile.name)); 
            None
     }
 }
 
 //#[tokio::main]
 async fn concurrent_requests(urls: Vec<String>) -> Result<Vec<select::document::Document>, Box<dyn std::error::Error>> {
-    let concurrent_requests: usize = urls.len();
+    let concurrent_requests: usize = urls.len() / 2;
     let mut headers = reqwest::header::HeaderMap::new();
           headers.insert("Accept", reqwest::header::HeaderValue::from_static("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
           headers.insert("Accept-Language", reqwest::header::HeaderValue::from_static("en-us"));
@@ -256,7 +262,8 @@ async fn concurrent_requests(urls: Vec<String>) -> Result<Vec<select::document::
                                              lc_nclient.get(url).send().await?.text().await
                                          }
                                        }
-                                ).buffered(concurrent_requests);
+                                )
+                            .buffered(concurrent_requests);
 
     let response_vec: Arc<Mutex<Vec<select::document::Document>>> = Arc::new(Mutex::new(Vec::new()));
 
@@ -264,8 +271,10 @@ async fn concurrent_requests(urls: Vec<String>) -> Result<Vec<select::document::
         .for_each(|resp| async {
             match resp {
                 Ok(res) => response_vec.lock().unwrap().push(Document::from(res.as_str())),
-                Err(e) => { println!("{}",Color::Red.bold().paint(format!("Async Request failed\tReason: {}",e)));
-                            response_vec.lock().unwrap().push(Document::from(FAKE_RESPONSE))
+                Err(e) => { 
+                    // println!("{}",Color::Red.bold().paint(format!("Async Request failed\tReason: {}",e)));
+                    log!("r",format!("ASYNC-REQUEST-FAILURE::{}",e));
+                    response_vec.lock().unwrap().push(Document::from(FAKE_RESPONSE))
                 },
             }
         }).await;
@@ -292,7 +301,7 @@ pub fn stage_two(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String
         //let product_page = &product_pages[count];
         //println!("The following page is for the first product::\n-----------------\n{:#?}",product_page);
         //panic!("------BREAKPOINT-------");
-        println!("Parsing product info for {} from {}", &listing.name, &listing.store);
+        println!("S2 ↣ {} ↣ {}...", &listing.store, &listing.name[..15]);
         // RETURN POLICY
         listing.return_replace 
             = match profile.product_return_policy_find_by.as_str() {
@@ -314,7 +323,8 @@ pub fn stage_two(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
                 _ => CONFIG_ERROR_MESSAGE.to_string()
         };
-        println!("Done with replace");
+        // println!("Done with replace");
+        log!("g","REPL");
         // WARRANTY
         listing.warranty
             = match profile.product_warranty_find_by.as_str() {
@@ -336,7 +346,8 @@ pub fn stage_two(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
                 _ => CONFIG_ERROR_MESSAGE.to_string()
         };
-        println!("Done with warranty");
+        // println!("Done with warranty");
+        log!("g","WRT");
         // SPECS
         listing.specs
             = match profile.product_specs_find_by.as_str() {
@@ -411,7 +422,8 @@ pub fn stage_two(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
                 _ => CONFIG_ERROR_MESSAGE.to_string()
         };
-        println!("Done with specs");
+        // println!("Done with specs");
+        log!("g","SPEC");
         count = count+1;
     }
   Some(listings)

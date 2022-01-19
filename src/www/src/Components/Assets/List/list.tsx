@@ -1,18 +1,43 @@
-import STORE$icon from 'Components/Assets/Stores/Stores';
+import Store from 'Components/Assets/Stores/Stores';
+import Icon from 'Components/Assets/Stores/Stores';
 
-/** `CBLItem` - A checkbox list item format for passing into CBL */
+/** ### `Item`
+ *  A list item format for passing into different lists */
 export interface Item {
-    key: string;
-    value: JSX.Element | string;
+    readonly key: string;
+    readonly value: JSX.Element | string;
     conceal: boolean;
+    checked?: boolean;
 }
+export function checkedSort(itemA: Item, itemB: Item,checklist: Item['key'][]): number {
+    var order: number = 0;
+    switch(true) {
+        case (itemA.checked && itemB.checked) :
+            order = checklist.indexOf(itemA.key) - checklist.indexOf(itemB.key);
+            // # For default alphabetic dictionary sort :
+                // order = itemA.key.toLowerCase().localeCompare(itemB.key.toLowerCase(),'en'); 
+            break;
+        case (itemA.checked):  
+            order = -1;
+            break;
+        case (itemB.checked) : 
+            order = 1;
+            break;
+        default:
+            order = itemA.key.toLowerCase().localeCompare(itemB.key.toLowerCase(),'en');
+            break;
+    }
+    return order;
+}
+
+export const blankItem: Item = {key: '', value: '',conceal: true }
 
 /** ### Mock Stores List
  * A dummy store list for testing purposes. */
 export const mock$STORES: Item[] = [
-    { key: "amazon"     , value: <STORE$icon store='amazon'      vectored={false} />, conceal: false },
-    { key: "flipkart"   , value: <STORE$icon store='flipkart'    vectored={false} />, conceal: false },
-    { key: "urbanladder", value: <STORE$icon store='urbanladder' vectored={false} />, conceal: false },
+    Store.Item("amazon"),
+    Store.Item("flipkart"),
+    Store.Item("urbanladder"),
 ];
 /** ### Mock Brands List
  * A dummy brands list for testing purposes. */

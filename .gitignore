@@ -24,3 +24,6 @@ yarn-error.log*
 
 # rust target/ ignore
 **/**target**
+
+# obisidian
+**obsidian**

@@ -14,11 +14,12 @@ import { ReactComponent as Close } from 'assets/close.svg';
 import { ReactComponent as ThinScale } from './assets/scale.svg';
 import Product from 'Components/Listings/cogs/product';
 import Badge from 'Components/Assets/Badge/Badge';
-import STORE$icon from 'Components/Assets/Stores/Stores';
+import Icon from 'Components/Assets/Stores/Stores';
 import Veil from 'Components/Assets/Veil/Veil';
 
 // CSS
 import './compare.css';
+import Store from "Components/Assets/Stores/Stores";
 
 export interface cmpActions {
     do: 'add' | 'delete';
@@ -92,14 +93,14 @@ const Table = ({cProducts}:{cProducts: Product[]}) => {
                                 <td>
                                     <img className="compare-pimage" src={product.img} alt="error"/>
                                     <a href={product.url} target="_blank" rel="noreferer">
-                                        <STORE$icon store={product.store}/>
+                                        <Store.SVG store={product.store} />
                                     </a>
                                 </td>
                         )})
                     }
                 </tr>
                 <tr className="row-pname">
-                    <th className="compare-header">Product:</th>
+                    <th className="compare-header">Product</th>
                     {
                         cProducts.map(product => { return( <td> {product.name} </td>)})
                     }
@@ -127,19 +128,19 @@ const Table = ({cProducts}:{cProducts: Product[]}) => {
 const Compare = ({products,compareSet}: {products: Product[], compareSet: Set<string|unknown>}) => {
     let [len, setLen] = useState(compareSet.size);
     //let [len, setLen] = useState(compareSet.length);
-    const filterProducts = (c1: Product[],c2: Set<string|unknown>) => { return c1.filter(elem => c2.has(elem.id))}
+    const filterPDXBySpecs = (c1: Product[],c2: Set<string|unknown>) => { return c1.filter(elem => c2.has(elem.id))}
     const [prodData, setProdData] = useState<Product[]>([]); 
 
-    const [cloak,toggleCloak] = useToggle(false);
+    // const [cloak,toggleCloak] = useToggle(false);
     const [isCWinActive, toggleCWin] = useToggle(false);
     const onCButtonClick = () => {  toggleCWin();  }
 
     //useEffect(() => { setCloak(isCWinActive); }, [isCWinActive]);
-    useEffect(()=> {
         //setProdData(products.filter(product => compareSet.has(product.id)));
-        setLen(compareSet.size);
-        setProdData(filterProducts(products,compareSet));
         //console.log(compareSet,prodData);
+    useEffect(()=> {
+        setLen(compareSet.size);
+        setProdData(filterPDXBySpecs(products,compareSet));
     },[compareSet]);
 
                 //<h6>{len} items to compare..</h6>

@@ -6,6 +6,16 @@
             \/         \/                 \//_____/  
 */
 
+.toolkit-panel {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 1em;
+    background-color: transparent;
+
+    position: fixed;
+    z-index: 2;
+    inset: auto auto 1em 1em;
+}
 
 .product-section {
     display: flex;

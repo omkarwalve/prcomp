@@ -26,8 +26,10 @@ import { ReactComponent as Big } from './assets/lyt-big.svg'
 import { ReactComponent as Versus } from './assets/lyt-versus.svg'
 
 // Cogs
-import Product, { PriceModifiers, Sort, SortOption, SortOptions } from 'Components/Listings/cogs/product';
-import { Price, Store, Brand, Keyword } from './Filters';
+import Product from 'Components/Listings/cogs/product';
+import Sort, { SortOption, SortOptions, PriceModifiers, Limits, PriceOrder } from 'Components/Listings/cogs/sort';
+// import { Price, Store, Brand, Keyword } from './Filters';
+import Filters from './Filters';
 import Panel from './Panel';
 import TPanel from './TPanel';
 
@@ -35,6 +37,9 @@ import TPanel from './TPanel';
 import './menu.css';
 import useToggle from 'hooks/toggle';
 import useSET from 'hooks/set';
+import Store from 'Components/Assets/Stores/Stores';
+import { Item } from 'Components/Assets/List/list';
+import useObserve from 'hooks/observe';
 
 
 // Icon-Options-List Type Interface
@@ -82,41 +87,47 @@ interface FilterProps {
     setPDX: React.Dispatch<React.SetStateAction<Product[] | undefined>>;
     lyt: string;
     setLYT: React.Dispatch<React.SetStateAction<string>>;
+    stores: Set<string>;
 }
 /**  # Filter Menu
  * Component for sorting `Listings` by keywords or properties.
  * Also controls `Layout` of `Listings`.  */
-const Filter = ({pdx,setPDX,lyt,setLYT}: FilterProps) => {
+const Filter = ({pdx,setPDX,lyt,setLYT,stores}: FilterProps) => {
   const [width] = useContext(Viewport);
   const [isFilterActive,toggleFilter] = useToggle(false);
   const filterRef = useRef<HTMLDivElement>(null);
   // useOnClickOutside(filterRef,toggleFilter,isFilterActive);
   const onHamburgerClick = () => { toggleFilter(); }
-  useEffect(()=>{
-    console.info(isFilterActive);
-    //(isFilterActive) 
-        //? document.addEventListener('click',pageClickEvent)
-        //: document.removeEventListener('click', pageClickEvent)
-},[isFilterActive]);
+//   useEffect(()=>{
+//     console.info('isFilterActive:- ',isFilterActive);
+//     //(isFilterActive) 
+//         //? document.addEventListener('click',pageClickEvent)
+//         //: document.removeEventListener('click', pageClickEvent)
+// },[isFilterActive]);
 
   // Filter states
   const [prflt,setPrflt] = useState<PriceModifiers>();
+  const [storeflt,setStoreflt] = useState<Set<string>>();
+  const itemsFromSET = (storeSET: Set<string>): Item[] => {
+    const storeARR = Array.from(storeSET);
+    return storeARR.map(store => { return Store.Item(store); });
+  }
   const [kwrd,_,setKwrds] = useSET<string>();
 
   const filters: Options[] = [ 
-    { name: "Price"  , icon: <Money       /> , target: <Price prflt={prflt} setPrflt={setPrflt} /> },
-    { name: "Store"  , icon: <Storeicon   /> , target: <Store /> },
-    { name: "Brand"  , icon: <Brandicon   /> , target: <Brand /> },
-    { name: "Keyword", icon: <Keywordicon /> , target: <Keyword setKeywordlist={setKwrds} />},
+    { name: "Price"  , icon: <Money       /> , target: <Filters.Price prflt={prflt} setPrflt={setPrflt} /> },
+    { name: "Store"  , icon: <Storeicon   /> , target: <Filters.Store storelist={itemsFromSET(stores)} setStoreFlt={setStoreflt} /> },
+    { name: "Brand"  , icon: <Brandicon   /> , target: <Filters.Brand /> },
+    { name: "Keyword", icon: <Keywordicon /> , target: <Filters.Keyword setKeywordlist={setKwrds} />},
   ];
   // Products brute sort
   useMemo(() => {
     // var sopt: SortOptions = {price: {order: "HL", rng: {min: 1000, max: 55000}}, priority: [SortOption.price]};
     // var sopt: SortOptions = { price: 'HL', priority: [SortOption.price] };
     console.log(prflt);
-    var sopt: SortOptions = { price: prflt , priority: [SortOption.price] };
-    setPDX( pdx => (pdx) ? Sort.sort(pdx,sopt) : undefined );
-  }, [pdx,prflt]);
+    var sopt: SortOptions = { price: prflt ,store: storeflt, priority: [SortOption.store,SortOption.price] };
+    setPDX( pdx => (pdx) ? Sort.sort([...pdx],sopt) : undefined );
+  }, [prflt,storeflt]);
 
   return (
     <div className='filter-container'>

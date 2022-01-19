@@ -6,7 +6,7 @@
 //          \/         \/                 \//_____/  \/           \/       \/
 
 // Library Imports
-import React, { useEffect, useState, useReducer } from 'react';
+import React, { useEffect, useState, useReducer, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import Compare, { cmpReducer } from './Components/Compare/Compare';
 
@@ -48,9 +48,10 @@ const Listing = ({setCart}: {setCart: React.Dispatch<cartActions>}) => {
 
 
   //# On `category`/ `search` update do...
-  useEffect(()=> {
+  useMemo(()=> {
     //# Fetch Products
-    //Fetch.cGET(
+    // Fetch.GET(
+    // Fetch.cGET(
     Fetch.mockGET(
       category ?? '',
       search ?? '',
@@ -60,7 +61,8 @@ const Listing = ({setCart}: {setCart: React.Dispatch<cartActions>}) => {
         loading: setLoading,
         products: setProducts,
         setCache: setCache,
-      }
+      },
+      // false
     )
   }, [category,search]);
 
@@ -73,7 +75,7 @@ const Listing = ({setCart}: {setCart: React.Dispatch<cartActions>}) => {
     },[compareSet]);
 
   //# On `products` update..
-  useEffect(()=> {
+  useMemo(()=> {
     //# Update Stores
     if (products) { 
       let _stores: Set<string> = new Set();
@@ -82,7 +84,7 @@ const Listing = ({setCart}: {setCart: React.Dispatch<cartActions>}) => {
       });
       setStores(_stores);
     }
-    console.log(products);
+    // console.log(products);
   },[products]);
 
   switch(true) {
@@ -93,10 +95,10 @@ const Listing = ({setCart}: {setCart: React.Dispatch<cartActions>}) => {
           <>
           { 
             (products) 
-              ? (<>
-                   <Filter pdx={products} setPDX={setProducts} lyt={layout} setLYT={setLayout} />
+              ? (<div className='toolkit-panel'>
+                   <Filter pdx={products} setPDX={setProducts} lyt={layout} setLYT={setLayout} stores={stores} />
                    <Compare products={products} compareSet={compareSet} />
-                 </>
+                 </div>
                 )
             : <> </>
           }

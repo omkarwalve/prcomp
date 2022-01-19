@@ -66,6 +66,7 @@ class Product {
     shorten(): ShortProduct {
       return new ShortProduct(this);
     }
+    cloak(value?: boolean) {this.cloaked = (value) ? value : !this.cloaked; }
 }
 
 
@@ -94,66 +95,5 @@ class ShortProduct {
     }
 }
 
-export enum SortOption {
-  price,
-  store,
-  brand,
-  keyword
-}
-export type PriceModifiers = 'HL' | 'LH' | { order?: 'HL'| 'LH' , rng: Range };
-/** `Sorting Options` Object Type 
-  * @property {'HL' | 'LH' | { order ?: 'HL' | 'LH', rng: {min: number , max: number} }} price   - Price sorting options 
-  * @property {Set<string>}  store   - Store sorting options 
-  * @property {Set<string>}  brand   - Brand sorting options 
-  * @property {Set<string>}  keyword - Keyword sorting options 
-  * @property {'price' | 'store' | 'brand' | 'keyword'[]} priority - Set priority of options ; */
-export interface SortOptions {
-    price    ?: PriceModifiers;
-    store    ?: Set<string>;
-    brand    ?: Set<string>;
-    keyword  ?: Set<string>;
-    priority : Array<SortOption>;
-}
-export interface Range { min: number, max: number }
-class Sort {
-    private static LHSort = (pA: Product, pB: Product): number => { return (pA.price.amount - pB.price.amount); }
-    private static HLSort = (pA: Product, pB: Product): number => { return (pB.price.amount - pA.price.amount); }
-    private static RANGEFilter = (pArr: Product[], min: number, max: number, ord?: "LH" | "HL") => {
-      pArr.forEach((pdt,idx)  => {
-        if (pdt.price.amount < min || pdt.price.amount > max)  {
-          pdt.cloaked = true; 
-          pArr[idx] = pdt;
-        } else { pdt.cloaked = false; } });
-        if (ord) {
-          if (ord == "LH") { pArr.sort(Sort.LHSort) }
-          else if (ord == "HL") { pArr.sort(Sort.HLSort) }
-          else {}
-        }
-    }
-/** `sort()` - Used to sort a `Product[]` by passing a set of `SortOptions`.  */
-    static sort(products: Product[], sortopt: SortOptions): Product[] {
-      if (sortopt.priority.length) {
-        sortopt.priority.slice().reverse().forEach(opt => {
-          switch(opt) {
-            //# Price Sorting
-            case SortOption.price :
-              console.log("Sorting by price..");
-              if (sortopt.price == 'HL')      { products.sort(Sort.HLSort); }
-              else if (sortopt.price == 'LH') { products.sort(Sort.LHSort); }
-              else if (sortopt.price)         { Sort.RANGEFilter(products, sortopt.price.rng.min, sortopt.price.rng.max, sortopt.price.order); }
-              else { console.error("Undefined SortOption: `Price`"); }
-              break;
-            //# Store Sorting
-            case SortOption.store :
-              console.log("Sorting by store..");
-              break;
-          }
-          })
-      } else { console.log("Nothing in priority specified. Skipping sort."); }
-
-      return products;
-    }
-}
-
-export { ShortProduct, Sort }
+export { ShortProduct }
 export default Product;

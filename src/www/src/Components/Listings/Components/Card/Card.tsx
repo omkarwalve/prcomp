@@ -14,7 +14,7 @@ import Product, { ShortProduct } from 'Components/Listings/cogs/product';
 import periodParser from './parser';
 import { Checkbox, cmpActions } from '../Compare/Compare';
 import { Add, cartActions } from 'Components/Assets/Cart/Cart';
-import STORE$icon from 'Components/Assets/Stores/Stores';
+import Store from 'Components/Assets/Stores/Stores';
 
 import { ReactComponent as Specs } from './assets/specs.svg';
 //import { ReactComponent as Rating } from './assets/rating.svg';
@@ -116,7 +116,7 @@ const Card = ({product,layout,setCmp,setCartItems}: CardProps) => {
   {/*PNAME*/}  <Name name={product.name} layout={layout} />
   {/*RETPL*/}  <span className="product-retpolicy"><Replace  className="card-icon" />{(layout == "compact") ? periodParser(product.return_replace) : product.return_replace ?? '-'}</span>
   {/*WARPL*/}  <span className="product-warpolicy"><Warranty className="card-icon" />{(layout == "compact") ? periodParser(product.warranty) : product.warranty ?? '-' }            </span>
-        {/*STORE*/}  <span className="product-store" onClick={storeClick}><STORE$icon store={product.store}/></span>
+        {/*STORE*/}  <span className="product-store" onClick={storeClick}><Store.SVG store={product.store}/></span>
   {/*SPECS*/}  <Specifications specs={product.specs} />
   {/* CMP */}  <Checkbox pid={product.id} setCompare={setCmp}/>
   {/*CART */}  <Add product={product.shorten()} setCart={setCartItems} />

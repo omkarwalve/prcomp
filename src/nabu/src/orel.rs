@@ -142,7 +142,7 @@ impl Orel<String> {
 }
 
 pub fn parse_orel(orel_file_path: &String) -> Orel<String> {
-    println!("File to parse is: {}",orel_file_path);
+    println!("Config: {}",orel_file_path);
     let orelfile = match File::open(orel_file_path) {
         Err(why) => panic!("Couldn't open {} ,\nbecause {}", orel_file_path,why),
         Ok(file) => file,

@@ -1,7 +1,7 @@
 
 .compare-table {
     --td-width: 20ch;
-    --tborder: 1px solid #f0f0f0;
+    --tborder: .1px dotted #cacaca;
     --spechd-fntsz: 0.8em;
     --pname-fntsz: 0.8em;
     --spec-fontsz: 0.9em;

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { isOmittedExpression } from 'typescript';
 import ResultsCache from './cache';
 import Product from './product';
 
@@ -42,6 +43,15 @@ interface setters {
 
 class Fetch {
   static #SERVER_URL = 'http://localhost:8000';
+  static #FETCH_OPTIONS: RequestInit = {
+    method: 'GET',
+    mode: 'cors',
+    credentials: 'omit',
+    headers: { 'Content-Type': 'application/json' },
+    redirect: 'follow',
+    referrerPolicy: 'origin-when-cross-origin',
+    signal: Fetch.timeout(20).signal
+  };
 
   /**
    * Cache aware GET to backend server and update the setters.
@@ -107,10 +117,14 @@ class Fetch {
     var setProducts = setterz.products;
     //setIfHas(setterz,'loading',true);
     setLoading(true);
+    var reqOpts = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" }
+    };
     try {
         const response = await fetch(`${Fetch.#SERVER_URL}/${category}/${query.split(/\s+/).join('+')}`
-                                    , { signal: Fetch.timeout(15).signal })
-                                    .then(response => response.json())
+                                    , Fetch.#FETCH_OPTIONS)
+                                    .then(response => { console.log("GET:- ",response); return response.json(); });
         response?.listings 
         ? setProducts(response?.listings)
         : setCrashed(true)
@@ -119,7 +133,8 @@ class Fetch {
                   ? response?.listings
                   : null )
     } catch(err) { 
-      setLoading(false); 
+      console.error(err);
+      setLoading(false);
       setCrashed(true); 
     }
   }

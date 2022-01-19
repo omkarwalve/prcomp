@@ -1,0 +1,51 @@
+.sorter-button {
+    visibility: hidden;
+    opacity: 0;
+    display: inline-grid;
+    place-items: center;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: .1em solid black;
+    border-radius: 100%;
+    object-fit: contain;
+    position: relative;
+    width: 0em;
+    height: auto;
+    padding: .5em;
+    transition: all .1s ease-in-out;
+}
+.sorter-button > svg { width: 100%; height: auto; object-fit: contain; }
+.sorter-button > svg > path { stroke-width: 1; }
+.sorter-button.active {
+    visibility: visible;
+    width: 4em;
+    opacity: 1;
+}
+.sorter-panel { 
+    visibility: hidden;
+    opacity: 0;
+    max-height: 0rem;
+    height: auto;
+    position: absolute;
+    display: block;
+    background-color: white;
+    border: .1em solid black;
+    z-index: 2;
+    padding: .5em;
+    transition: all .3s ease-in-out;
+}
+.sorter-panel.active { 
+    visibility: visible;
+    max-height: 20ch;
+    opacity: 1;
+}
+.sorter-items {
+    user-select: none;
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-flow: column wrap;
+    row-gap: .5em;
+}
+.sorter-item { display: block; cursor:grab; text-transform: capitalize; }

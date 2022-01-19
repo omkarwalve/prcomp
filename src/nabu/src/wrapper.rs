@@ -14,7 +14,8 @@ use std::{ fs::File ,
          };
 use crate::orel;
 use crate::nabu;
-use crate::types::{ Listing , Listings, JSONize };
+use crate::log;
+use crate::types::{ Listing , Listings};
 use ansi_term::Color;
 use chrono::offset::Local as time;
 use rocket::serde::json::Json;
@@ -66,6 +67,7 @@ fn make_url(root_url: &String, query_cmd: &String, uri_seperator: &str, query: &
     format!("{}/{}={}",root_url,query_cmd,query.replace(" ", uri_seperator))
 }
 
+// Configuration directory mode
 macro_rules! dir_mode {
     ("raw",$cdir:ident,$pdir:ident) => {
         let $cdir: &str = &format!("{}/src/cnp/categories",env!("CARGO_MANIFEST_DIR"));
@@ -107,24 +109,23 @@ pub fn nabu_fetch(category: String, query: String) -> Option<crate::types::Listi
         fetch_handle.push(
             w_thread.spawn(move || {
                 let thread_name = thread::current().name().expect("Failed to get current thread name").to_string();
-                println!("⌛ Spawned Thread: {}", thread_name );
+                log!("c",format!("⌛ Spawned Thread: {}", thread_name ));
                 let site_profile = read_profile(&pdir,&slist[i]);
                 let results 
                     = nabu::stage_two(nabu::stage_one(match &nabu::make_request(&make_url(&site_profile.root_uri
                                                                                          ,&site_profile.query_cmd
                                                                                          ,&site_profile.uri_seperator
                                                                                          ,&squery)) { 
-                                                        Err(why) => stringify!("ERROR::NO_RESPONSE:: Failed to get response from the server.\n",
+                                                        Err(_why) => stringify!("[x] ERROR::NO_RESPONSE:: Failed to get response from the server.\n",
                                                                                "Reason: " + why  + "\nKind: " + why.kind()),
                                                         Ok(response) => response }
                                                      ,&site_profile));
-                tx_t.send(results).expect(&format!("{}"
-                                         ,Color::Red.paint(
-                                            format!("-- ERROR::MPSC_SEND_FALIURE:T->{}:- Couldn't Send Acquired results across threads!",thread_name))));
-                println!("{}",Color::Green.paint(format!("Sent to MPSC channel from {}", thread_name )));
+                tx_t.send(results)
+                    .expect(&format!("{}" ,Color::Red.paint( format!("[x] ERROR::MPSC_SEND_FALIURE:T->{}:- Couldn't Send Acquired results across threads!",thread_name))));
+            log!("g",format!("Sent to MPSC channel ↣ {}", thread_name ));
                 //listng.lock().expect("Error acquiring mutex lock").push(results);
-                println!("{}",Color::Green.paint(format!("Done scraping from {}", thread_name)));
-            }).expect(&format!("Failed to create thread {}",t_name)));
+                log!("g",format!("Done scraping ↣ {}", thread_name));
+            }).expect(&format!("[x] Failed to create thread ↣ {}",t_name)));
     }
     // Joining all threads to the main thread -- BLOCKING!
     fetch_handle.into_iter()
@@ -138,7 +139,7 @@ pub fn nabu_fetch(category: String, query: String) -> Option<crate::types::Listi
     let mut temp: Vec<Listing<String>> = Default::default();
     for i in 0..sites_count {
         let temp_raw = rx.recv_timeout(Duration::from_secs(5))
-                        .expect(&format!("{}",Color::Red.paint("-- ERROR::MPSC_RECIEVE_FALIURE:- Couldn't Receive acquired results on main thread!")));
+                        .expect(&format!("{}",Color::Red.paint("[x] ERROR::MPSC_RECIEVE_FALIURE:- Couldn't Receive acquired results on main thread!")));
         if temp_raw.is_some() {
             if i == 0 {
                 temp = temp_raw.unwrap();
@@ -149,10 +150,12 @@ pub fn nabu_fetch(category: String, query: String) -> Option<crate::types::Listi
         }
     }
 
+    log!("p","Ready to pass json");
+    // # Write to file
     //write_json(category.to_string(),(&search_query).to_string(),listings.lock().unwrap().to_vec());
+
     //write_json(category.to_string(),(&search_query).to_string(),temp.clone());
  
-    println!("Ready to pass json");
     //let all_listings =  &listings.lock().expect("Failed to acquire lock on listings mutex");
     Some(Listings{ date_time: format!("{}", time::now()),
                    category: category.to_string(),

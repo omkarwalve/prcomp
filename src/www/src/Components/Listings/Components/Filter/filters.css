@@ -10,20 +10,30 @@
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
+    justify-content: space-evenly;
     column-gap: .5em;
 }
 .price-range-filter label {
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: column-reverse nowrap;
+    user-select: none;
     align-items: center;
     column-gap: .5em;
+    font-size: .8em;
+    color: rgb(131, 131, 131);
 }
 .price-range-box {
     appearance: none;
-    max-width: 10ch;
+    text-align: center;
+    font-weight: lighter;
+    font-size: 1.4em;
+    max-width: 8ch;
+    border: none;
     outline: none;
-    border: .1rem solid rgba(0, 0, 0, 0.199)
+    border-bottom: .1em solid rgba(43, 43, 43, 0.555);
+    transition: all .5s ease-in-out;
 }
+.price-range-box.error { border-style: none none dashed none; border-bottom-width: .14em; }
 /* Disable arrows in range boxes */
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -37,6 +47,8 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+.error{ border-color: crimson !important; }
+
 .price-order-filter {
     display: flex;
     flex-flow: row nowrap;
@@ -45,9 +57,7 @@ input[type=number] {
     user-select: none;
 }
 
-.price-order-radio { 
-    appearance: none; 
-}
+.price-order-radio { appearance: none; }
 .price-order-radio + span {
     display: flex;
     flex-flow: row nowrap;

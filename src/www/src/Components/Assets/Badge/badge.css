@@ -15,8 +15,9 @@
     padding: 4%;
 
     position: absolute;
-    bottom:var(--badgeXY,3%);
-    right: var(--badgeXY,3%);
+    /* bottom:var(--badgeXY,3%);
+    right: var(--badgeXY,3%); */
+    inset: auto var(--badgeXY,3%) var(--badgeXY,3%) auto;
 
     font-weight: bold;
 }

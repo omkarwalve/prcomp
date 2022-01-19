@@ -1,6 +1,6 @@
 
 import { Options } from './Menu';
-import Product, { PriceModifiers, Sort, SortOption, SortOptions } from 'Components/Listings/cogs/product';
+import { SortOption } from 'Components/Listings/cogs/sort';
 
 /** ### Filters Discrete Menu [*Small screens*]
  * Filter Menu options for screens less than 992px wide(mobile).*/
