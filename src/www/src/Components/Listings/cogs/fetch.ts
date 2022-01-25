@@ -1,12 +1,12 @@
 
 import React from 'react';
-import { isOmittedExpression } from 'typescript';
 import ResultsCache from './cache';
 import Product from './product';
 
 
 // Cached product feed
 import sample_json from './razer_laptop.json';
+
 // /**
 //  * Assigns a value to the property if the property exists for the object.
 //  * Else logs an error to the console.
@@ -43,14 +43,15 @@ interface setters {
 
 class Fetch {
   static #SERVER_URL = 'http://localhost:8000';
+  static #TIMEOUT = 30;
   static #FETCH_OPTIONS: RequestInit = {
     method: 'GET',
     mode: 'cors',
     credentials: 'omit',
     headers: { 'Content-Type': 'application/json' },
     redirect: 'follow',
-    referrerPolicy: 'origin-when-cross-origin',
-    signal: Fetch.timeout(20).signal
+    // referrerPolicy: 'origin-when-cross-origin',
+    signal: Fetch.timeout(Fetch.#TIMEOUT).signal
   };
 
   /**
@@ -95,7 +96,10 @@ class Fetch {
   static async mockGET(_ : string,__: string,setterz: setters) {
     var setProducts = setterz.products;
     setterz.loading(true);
-    setProducts(Product.from(sample_json));
+    console.info("SAMPLE_JSON::RAW - ",sample_json);
+    const parsedPDX = Product.from(sample_json);
+    console.info("SAMPLE_JSON::PARSED - ",parsedPDX);
+    setProducts(parsedPDX);
     await Fetch.sleep(2);
     setterz.loading(false);
   }
@@ -122,20 +126,22 @@ class Fetch {
       headers: { "Content-Type": "application/json" }
     };
     try {
-        const response = await fetch(`${Fetch.#SERVER_URL}/${category}/${query.split(/\s+/).join('+')}`
+        const response = await fetch(`${Fetch.#SERVER_URL}/q/${category}/${query.split(/\s+/).join('+')}`
                                     , Fetch.#FETCH_OPTIONS)
                                     .then(response => { console.log("GET:- ",response); return response.json(); });
-        response?.listings 
-        ? setProducts(response?.listings)
-        : setCrashed(true)
+        if (response?.listings) {
+         setLoading(false);
+         console.log("response?.listings:- ",response?.listings);
+         setProducts(Product.from(response));
+        } else { setCrashed(true) }
 
         return ( shouldReturn && response?.listings
                   ? response?.listings
                   : null )
-    } catch(err) { 
+    } catch(err) {
       console.error(err);
       setLoading(false);
-      setCrashed(true); 
+      setCrashed(true);
     }
   }
 
