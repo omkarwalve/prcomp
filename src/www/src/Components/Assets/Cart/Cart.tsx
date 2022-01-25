@@ -6,7 +6,7 @@
 //                      
 
 // Library Imports
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { ShortProduct } from 'Components/Listings/cogs/product';
 import Tooltip from 'Components/Assets/Tooltip/Tooltip';
 
@@ -27,7 +27,7 @@ function cartReducer(state: Set<ShortProduct | unknown>, action: cartActions): S
         case 'add':
             return new Set([...state,action.product]);
         case 'delete':
-            return new Set([...state].filter(set_item => set_item!= action.product))
+            return new Set([...state].filter(set_item => set_item !== action.product))
         default:
             return state
     }
@@ -67,5 +67,5 @@ const Cart = ({cart}: {cart: Set<ShortProduct| unknown>}) => {
     )
 }
 
-export { Add, cartReducer };
-export default Cart;
+export { Cart, cartReducer };
+export default memo(Add);

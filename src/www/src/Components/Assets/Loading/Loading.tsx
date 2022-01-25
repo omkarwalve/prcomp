@@ -6,6 +6,8 @@
 //  |       ||       ||   _   ||       ||   || | |   ||   |_| |
 //  |_______||_______||__| |__||______| |___||_|  |__||_______|
 
+import {memo} from "react";
+
 // SVG
 import { ReactComponent as Data } from './assets/datasheet.svg';
 import { ReactComponent as Product } from './assets/product.svg';
@@ -46,4 +48,4 @@ function dotti(i: number) {
     return { '--i' : i };
 }
 
-export default Loading
+export default memo(Loading)

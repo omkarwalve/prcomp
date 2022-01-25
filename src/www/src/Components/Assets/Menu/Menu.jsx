@@ -6,7 +6,7 @@
 //                        
 
 // Library Imports
-import React, { useEffect, useState, useRef} from 'react';
+import React, { memo, useEffect, useState, useRef} from 'react';
 
 // File Imports
 import './menu.css';
@@ -75,4 +75,4 @@ const Menu = ({menuSwitch,items}) => {
     )
 }
 
-export default Menu
+export default memo(Menu);

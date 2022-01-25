@@ -4,11 +4,10 @@
 //    `-'   `----'  `----' `----'`-'  `-'`-'    
 
 // Library Imports
-import React from 'react';
+import React,{memo} from 'react';
 
 // File Imports
 import './tooltip.css';
-
 
 const Tooltip = ({text}) => {
     return(
@@ -16,4 +15,4 @@ const Tooltip = ({text}) => {
     )
 }
 
-export default Tooltip
+export default memo(Tooltip);

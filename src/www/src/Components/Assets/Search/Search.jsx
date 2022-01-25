@@ -4,7 +4,7 @@
 //                           
 
 // Library Imports
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 
 // File Imports
 import { FaSearch } from "react-icons/fa";
@@ -27,7 +27,7 @@ function Search({queryHolder}) {
                    type="search"
                    placeholder={plhold}
                    size="37"
-                   required="true"
+                   required={true}
                    onChange={(e) => setQuery(e.target.value)}
                    onKeyDown={handleKeyDown}
             />
@@ -38,4 +38,4 @@ function Search({queryHolder}) {
     )
 }
 
-export default Search
+export default memo(Search)

@@ -6,7 +6,7 @@
 //                                   
 
 // Library Imports
-import React from 'react';
+import React, { memo } from 'react';
 //import { FiRefreshCcw as Refresh } from 'react-icons/fi';
 //import { BiRefresh as Refresh } from 'react-icons/bi';
 //import { IoRefresh as Refresh } from 'react-icons/io5';
@@ -31,4 +31,4 @@ const Crash = () => {
     )
 }
 
-export default Crash
+export default memo(Crash);

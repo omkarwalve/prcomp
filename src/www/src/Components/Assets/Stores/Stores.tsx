@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useCallback} from 'react';
 import { Item } from '../List/list';
 import { ReactComponent as Amazon }      from './assets/Amazon.svg';
 import { ReactComponent as Flipkart }    from './assets/Flipkart.svg';

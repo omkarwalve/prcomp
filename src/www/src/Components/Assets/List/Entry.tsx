@@ -1,6 +1,6 @@
 import useSET from 'hooks/set';
 import useToggle from 'hooks/toggle';
-import React, { useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Item } from './list';
 
 import './list.css';
@@ -29,10 +29,10 @@ const EntryItem = ({item,setChecked,remover}: EIProps) => {
 
 interface ELProps { entryHandler: React.Dispatch<React.SetStateAction<Set<string>>> }
 /** ## `EntryList`
- * A list creator with checkbox capabilities.  */
+ * A list creator with checkbox and delete capabilities.*/
 const EntryList = ({entryHandler}: ELProps) => {
     const [entryList,setEntryList] = useSET<string>();
-    const [checkedItems, setCheckedItems] = useSET<string>();
+    const [checkedItems, updateCheckedItems] = useSET<string>();
     const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key == "Enter") {
             e.preventDefault(); e.stopPropagation();
@@ -50,7 +50,7 @@ const EntryList = ({entryHandler}: ELProps) => {
                 {
                     Array.from(entryList).map(entry => {
                         return (
-                            <EntryItem item={entry} setChecked={setCheckedItems} remover={setEntryList} />
+                            <EntryItem item={entry} setChecked={updateCheckedItems} remover={setEntryList} />
                         )
                     })
                 }
@@ -59,4 +59,4 @@ const EntryList = ({entryHandler}: ELProps) => {
     )
 }
 
-export default EntryList;
+export default memo(EntryList);

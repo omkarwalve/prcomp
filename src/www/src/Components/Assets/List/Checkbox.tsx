@@ -2,7 +2,7 @@ import useObserve from "hooks/observe";
 import useSET from "hooks/set";
 import useToggle from "hooks/toggle";
 import { listenerCount } from "process";
-import React, { useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { Item, checkedSort } from './list';
 
 import './list.css';
@@ -20,10 +20,10 @@ interface CBXItemProps {
 /** ### `CheckboxItem` 
  * An item for the CheckboxList. Can be `string` or `JSX.Element` */
 const CheckboxItem = ({item,idx,setChecked,setReorder}: CBXItemProps ) => {
-    const [checked, toggleChecked,setChk] = useToggle(item.checked ? item.checked : false);
+    const [checked, toggleChecked, setChk] = useToggle(item.checked ? item.checked : false);
     const onItemClick = (e : React.MouseEvent<HTMLLIElement>) => { e.stopPropagation(); toggleChecked(); }
     useEffect(()=>{ setChk(item.checked ? item.checked : false)}, [item.checked])
-    useObserve(checked,`checked for ${item.key}`);
+    // useObserve(checked,`checked for ${item.key}`);
     useEffect(() => {
         item.checked = checked;
         (checked)
@@ -53,6 +53,7 @@ const CheckboxItem = ({item,idx,setChecked,setReorder}: CBXItemProps ) => {
     }
     return ( <li
                className={`list-item ${item.checked ? 'check' : '' }`} 
+               key={item.key}
                onClick={onItemClick}
                draggable={`${item.checked ? 'true':'false'}`}
                onDragStart={(e) => onDragStart(e,idx)}
@@ -88,7 +89,8 @@ interface CheckDatalist<S,T> {
  */
 const CheckboxList = ({list,selectHandler,placeholder = "search for..."}: CBLProps) => {
     const [dataList, setDataList] = useState<typeof list>(list);
-    const [checkedItems, updateCheckedItems,setChkItems] = useSET<string>();
+    const [checkedItems, updateCheckedItems, setChkItems] = useSET<string>();
+    const updateCheckedCallback = useCallback(updateCheckedItems,[]);
     const [reOrder, setReorder] = useState<Move<number>>();
     const [filter, setFilterText] = useState<string>('');
     const onSearchTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,7 +126,7 @@ const CheckboxList = ({list,selectHandler,placeholder = "search for..."}: CBLPro
                     dataList.map((litem,idx) => {
                         if (!litem.conceal){
                             return ( 
-                               <CheckboxItem item={litem} idx={idx} setChecked={updateCheckedItems} setReorder={setReorder}/> 
+                               <CheckboxItem item={litem} idx={idx} setChecked={updateCheckedCallback} setReorder={setReorder}/> 
                             )
                         }
                     })
@@ -134,4 +136,4 @@ const CheckboxList = ({list,selectHandler,placeholder = "search for..."}: CBLPro
     )
 }
 
-export default CheckboxList;
+export default memo(CheckboxList);

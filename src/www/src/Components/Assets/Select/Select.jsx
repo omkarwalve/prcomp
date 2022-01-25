@@ -5,7 +5,7 @@
 //
 
 // Library Imports
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 
 // File Imports
 import './select.css';
@@ -78,4 +78,4 @@ const Select = ({items,optionHolder,position}) => {
     )
 }
 
-export default Select
+export default memo(Select)
