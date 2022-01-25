@@ -1,21 +1,21 @@
-//                       /$$                
-//                      | $$                
-//   /$$$$$$$   /$$$$$$ | $$$$$$$  /$$   /$$
-//  | $$__  $$ |____  $$| $$__  $$| $$  | $$
-//  | $$  \ $$  /$$$$$$$| $$  \ $$| $$  | $$
-//  | $$  | $$ /$$__  $$| $$  | $$| $$  | $$
-//  | $$  | $$|  $$$$$$$| $$$$$$$/|  $$$$$$/
-//  |__/  |__/ \_______/|_______/  \______/ 
-//                              src/scrape/mod.rs
-//                                  - The core scraper/crawler nabu.
+                            
+//  __  __  __  __  __  ______  
+// |  |/ / |  \/  \|  ||   ___| 
+// |     \ |     /\   | `-.`-.  
+// |__|\__\|____/  \__||______| 
+//                   kws/mod.rs
+//                   - The kilowog core scraper/crawler(formerly nabu).
 
 #[allow(deprecated)]
 
 use crate::orel;
-use crate::types::{ self, JSONize};
+use crate::types;
 use crate::log;
-use std::time::Duration;
-use std::sync::{ Arc, Mutex};
+use std::{
+    time::Duration,
+    sync::mpsc::{Sender,Receiver,channel},
+    sync::{ Arc, Mutex}
+};
 use fastrand;
 use ureq::{Agent, AgentBuilder, Error};
 use select::document::Document;
@@ -28,7 +28,7 @@ use ansi_term::Color;
 //use serde_json;
 
 const ALT_CHAR: char = '|';
-const WAIT_FOR_RESPONSE_TIMEOUT : u64 = 5;
+const WAIT_FOR_RESPONSE_TIMEOUT : Duration = Duration::from_secs(5);
 const USER_AGENT_POOL : [&'static str; 7] = [
                                               "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.3 Safari/605.1.15",
                                               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
@@ -57,8 +57,9 @@ const USER_AGENT_POOL : [&'static str; 7] = [
 const NOT_FOUND_MESSAGE : &'static str = "❔";
 const CONFIG_ERROR_MESSAGE : &'static str = "❗CONFIGURATION-ERROR❗";
 const FAKE_RESPONSE : &'static str = "<h1>REQUEST FAILED</h1>";
-
-//const FIND_BY : [&'static String; 4 ] = [ &"Attr.d".to_string(), &"Class.d".to_string() , &"Attr".to_string() , &"Class".to_string() ];
+/// Number of concurrent requests to be made. Always `< 1`. 
+/// No point going above since cannot make more requests than the `size` of `URL` pool.
+const REQUEST_FACTOR : usize = 1;
 
 macro_rules! mkvec {
     ($node: expr) => { $node.into_iter()
@@ -75,7 +76,7 @@ macro_rules! clean {
 pub fn make_request(url: &str) -> Result<String,Error>{
     log!("c",format!("Making Request to {}",url));
     let n_agent: Agent = AgentBuilder::new()
-                              .timeout(Duration::from_secs(WAIT_FOR_RESPONSE_TIMEOUT))
+                              .timeout(WAIT_FOR_RESPONSE_TIMEOUT)
                               .user_agent(USER_AGENT_POOL[fastrand::usize(..USER_AGENT_POOL.len())])
                               //.proxy(ureq::Proxy::new(PROXY_POOL[fastrand::usize(..PROXY_POOL.len())]).unwrap())
                               .build();
@@ -94,17 +95,20 @@ pub fn make_request(url: &str) -> Result<String,Error>{
                                        .set("Upgrade-Insecure-Requests", "1")
                                        .call()?
                                        .into_string()?;
-    log!("g",format!("Got Response from {}",url));
+    log!("gl",format!("Acquired Response ↣ {}",url));
     Ok(http_response)
 }
 
-pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String>) -> Option<(Vec<types::Listing<String>>,&'t orel::Orel<String>)> {
-    //println!("{:#?}",html_response); // VERBOSE
-    //panic!("--BREAKPOINT--");
-    // print!("[◔] Parsing.. | ");
+/// ## Stage One :: `Synchronous`
+/// Level 1 depth data collection.
+pub fn s1<'t>(html_response: &str, website_profile: &'t orel::Orel<String>) -> Option<(Vec<types::Listing<String>>,&'t orel::Orel<String>)> {
+    log!("c",r#"
+ ____   __  
+/ ___) /  \ 
+\___ \(_/ / 
+(____/ (__) "#);
     let html_document = Document::from(html_response);
     let mut plistings : Vec<types::Listing<String>> = Vec::new();
-    // print!("[◔] Finding root node in DOM.. | ");
     log!("c","Finding nodelist in DOM..");
     let listing_iterator: Option<Box<dyn Iterator<Item = select::node::Node>>>
         = match website_profile.listing_find_by.as_str() {
@@ -124,10 +128,8 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                                                          &website_profile.listing_ivalue[..])))),
             _ => { print!("Failed to build iterator |"); None },
         };
-    // print!("root node found.. |");
     let mut id_counter: u8 = 0;
     if listing_iterator.is_some() {
-        // println!("{}",Color::Yellow.paint("[◔] Iterating through root nodes in document.."));
         log!("c","Iterating through matched nodelist..");
         for lnode in listing_iterator.unwrap() {
             let mut plisting: types::Listing<String> = Default::default();
@@ -172,11 +174,9 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                     _ => CONFIG_ERROR_MESSAGE.to_string()
                 };
             //-- IMAGE
-            //println!("imageurl..");
             plisting.img = lnode.find(Class(&website_profile.image_identifier[..]))
                                 .next().unwrap().attr("src").unwrap().to_string();
             //-- PRODUCT NAME
-            //println!("pname..");
             plisting.name
                 = match website_profile.product_name_find_by.as_str() {
                     "Class" => lnode.find(Class(&website_profile.product_name_identifier[..]))
@@ -197,7 +197,6 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
                     _ => CONFIG_ERROR_MESSAGE.to_string(),
             };
             //-- PRICE
-            //println!("price..");
             plisting.price
                 = match website_profile.product_price_find_by.as_str() {
                     "Class.d" => match lnode.find(Class(&website_profile.product_price_identifier[..])
@@ -214,7 +213,7 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
             plisting.store = website_profile.name.clone();
             plisting.id = format!("{}#{:#02X}",website_profile.name.clone()[0..2].to_string(),id_counter);
             id_counter +=1;
-            println!("━━━━{}━━━━\n  {}... [{}...]  [{}...] {}",
+            println!("━━━━[ {} ]━━━━\n┆ [{}...] :: [{}...] :: [{}...] :- {} ┆",
                      plisting.store,
                      &plisting.name[..20],
                      &plisting.url[..25],
@@ -232,14 +231,16 @@ pub fn stage_one<'t>(html_response: &str, website_profile: &'t orel::Orel<String
     }
 }
 
-//#[tokio::main]
-async fn concurrent_requests(urls: Vec<String>) -> Result<Vec<select::document::Document>, Box<dyn std::error::Error>> {
-    let concurrent_requests: usize = urls.len() / 2;
+/// ## Request :: `Async`
+/// Asynchronous requests using `reqwest`.
+/// Takes a list of url's and returns a list of `Document`[`select`] type.
+async fn make_requests(urls: Vec<String>) -> Result<Vec<select::document::Document>, Box<dyn std::error::Error>> {
+    let concurrency: usize = urls.len() * REQUEST_FACTOR;
     let mut headers = reqwest::header::HeaderMap::new();
           headers.insert("Accept", reqwest::header::HeaderValue::from_static("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
           headers.insert("Accept-Language", reqwest::header::HeaderValue::from_static("en-us"));
           headers.insert("Cache-Control", reqwest::header::HeaderValue::from_static("no-cache"));
-          headers.insert("Connection", reqwest::header::HeaderValue::from_static("keep-alive"));
+        //   headers.insert("Connection", reqwest::header::HeaderValue::from_static("keep-alive"));
           headers.insert("Referer", reqwest::header::HeaderValue::from_static("https://www.google.com/search?q=shopping"));
           headers.insert("Sec-CH-UA", reqwest::header::HeaderValue::from_static(r#""Chromium";v="93", " Not A;Brand";v="99""#));
           headers.insert("Sec-CH-UA-Mobile", reqwest::header::HeaderValue::from_static("?0"));
@@ -252,10 +253,16 @@ async fn concurrent_requests(urls: Vec<String>) -> Result<Vec<select::document::
     let nclient = reqwest::Client::builder()
                   .user_agent(USER_AGENT_POOL[fastrand::usize(..USER_AGENT_POOL.len())])
                   .default_headers(headers)
-                  .timeout(Duration::from_secs(WAIT_FOR_RESPONSE_TIMEOUT))
+                  .timeout(WAIT_FOR_RESPONSE_TIMEOUT)
                   .build().unwrap();
 
-    let all_the_responses = stream::iter(urls)
+    let (a_tx, a_rx) = channel();
+    // let (a_tx, a_rx): (Sender<String>,Receiver<String>) = channel();
+    let mut responses: Vec<Document> = Vec::new();
+    const MPSC_SEND_FAILURE: &str = "MPSC-SEND-FAILURE:MKRQS:: Could not send response from async block";
+    // const MPSC_RECV_FAILURE: &str = "MPSC-RECV-FAILURE:MKRQS:: Could not recieve response from async block";
+
+    let _all_the_responses = stream::iter(urls)
                             .map(|url| {
                                          let lc_nclient = &nclient;
                                          async move {
@@ -263,45 +270,54 @@ async fn concurrent_requests(urls: Vec<String>) -> Result<Vec<select::document::
                                          }
                                        }
                                 )
-                            .buffered(concurrent_requests);
+                            .buffered(concurrency)
+                            .for_each(|resp| async {
+                                let a_tx_local = a_tx.clone();
+                                match resp {
+                                    // Ok(res) => response_vec.lock().unwrap().push(Document::from(res.as_str())),
+                                    Ok(res) => a_tx_local.send(Some(res)).expect(MPSC_SEND_FAILURE),
+                                    Err(e) => { 
+                                        log!("r",format!("ASYNC-REQUEST-FAILURE::{}",e));
+                                        a_tx_local.send(None).expect(MPSC_SEND_FAILURE);
+                                        // println!("{}",Color::Red.bold().paint(format!("Async Request failed\tReason: {}",e)));
+                                        // response_vec.lock().unwrap().push(Document::from(FAKE_RESPONSE))
+                                    },
+                                }
+                            }).await;
+    // let output = a_rx.recv()
+    //                  .into_iter()
+    //                  .filter_map(|st| match st { 
+    //                      Some(stg) => Some(Document::from(stg.as_str())),
+    //                      None => None 
+    //                  }).collect();
+    // .filter(|st| st.is_some()).map(|st| Document::from(st.some())).collect();
+    while let Ok(string) = a_rx.recv_timeout(WAIT_FOR_RESPONSE_TIMEOUT) {
+        if let Some(stg) = string { responses.push(Document::from(stg.as_str())) }
+        else { responses.push(Document::from(FAKE_RESPONSE)) }
+    }
 
-    let response_vec: Arc<Mutex<Vec<select::document::Document>>> = Arc::new(Mutex::new(Vec::new()));
+    // let response_vec: Arc<Mutex<Vec<select::document::Document>>> = Arc::new(Mutex::new(Vec::new()));
 
-    all_the_responses
-        .for_each(|resp| async {
-            match resp {
-                Ok(res) => response_vec.lock().unwrap().push(Document::from(res.as_str())),
-                Err(e) => { 
-                    // println!("{}",Color::Red.bold().paint(format!("Async Request failed\tReason: {}",e)));
-                    log!("r",format!("ASYNC-REQUEST-FAILURE::{}",e));
-                    response_vec.lock().unwrap().push(Document::from(FAKE_RESPONSE))
-                },
-            }
-        }).await;
-    let output = response_vec.lock().unwrap();
+    // let output = response_vec.lock().expect("MAKE-REQUESTS::Failed to acquire lock on mutex");
 
-    Ok(output.to_vec())
+    Ok(responses)
 }
 
-//pub fn stage_two(Some((mut listings,profile)) : Option<(Vec<types::Listing<String>>, &orel::Orel<String>)>) -> Vec<types::Listing<String>> {
-pub fn stage_two(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String>)>) -> Option<Vec<types::Listing<String>>> {
+/// ## Stage Two :: `Internally Async`
+/// Level 2 depth data collection.
+pub fn s2(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String>)>) -> Option<Vec<types::Listing<String>>> {
+    log!("c",r#"
+  ____  ____ 
+ / ___)(___ \
+ \___ \ / __/
+ (____/(____)"#);
   if tupie.is_some() {
-    let (mut listings, profile ) = tupie.unwrap();
+    let (mut listings, profile ) = tupie?;
     let urls: Vec<String> = listings.iter().map(|listing| listing.url.clone()).collect();
-    //let mut urls: Vec<String> = Vec::new();
-    //for listing in listings.iter() {
-        //urls.push(listing.url.clone());
-    //}
-    let product_pages = tokio::runtime::Runtime::new().unwrap().block_on(concurrent_requests(urls)).unwrap();
-    //println!("Found the following::-----------------\n{:#?}",product_pages);
-    //panic!("------BREAKPOINT-------");
+    let product_pages = tokio::runtime::Runtime::new().ok()?.block_on(make_requests(urls)).ok()?;
     let mut count: usize = 0;
     for listing in listings.iter_mut() {
-        //let product_page = Document::from(make_request(&listing.url).unwrap().as_str());
-        //let product_page = &product_pages[count];
-        //println!("The following page is for the first product::\n-----------------\n{:#?}",product_page);
-        //panic!("------BREAKPOINT-------");
-        println!("S2 ↣ {} ↣ {}...", &listing.store, &listing.name[..15]);
+        println!("S2 ↣ {} ↣ {}...", &listing.store, &listing.name[..25]);
         // RETURN POLICY
         listing.return_replace 
             = match profile.product_return_policy_find_by.as_str() {
@@ -323,8 +339,7 @@ pub fn stage_two(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
                 _ => CONFIG_ERROR_MESSAGE.to_string()
         };
-        // println!("Done with replace");
-        log!("g","REPL");
+        log!("g","REPL ");
         // WARRANTY
         listing.warranty
             = match profile.product_warranty_find_by.as_str() {
@@ -346,8 +361,7 @@ pub fn stage_two(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String
                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
                 _ => CONFIG_ERROR_MESSAGE.to_string()
         };
-        // println!("Done with warranty");
-        log!("g","WRT");
+        log!("g","WRT ");
         // SPECS
         listing.specs
             = match profile.product_specs_find_by.as_str() {
@@ -358,72 +372,73 @@ pub fn stage_two(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String
                                                                             ,profile.product_specs_val_find_by.as_str()) {
                                                                         ("Class","Class") => { types::Spectable { key : mkvec!(node.find(Class(&profile.product_specs_keyi[..]))),
                                                                                                                   value : mkvec!(node.find(Class(&profile.product_specs_vali[..])))
-                                                                                                                 }.to_json()
+                                                                                                                 }
                                                                                              },
                                                                         ("Attr","Attr") => { types::Spectable { key : mkvec!(node.find(Attr(&profile.product_specs_keyi[..]
                                                                                                                                     ,&profile.product_specs_keyv[..]))),
                                                                                                                 value : mkvec!(node.find(Attr(&profile.product_specs_vali[..],
                                                                                                                                          &profile.product_specs_valv[..])))
-                                                                                                              }.to_json()
+                                                                                                              }
                                                                                              },
-                                                                        _ => CONFIG_ERROR_MESSAGE.to_string(),
+                                                                        _ => types::Spectable::default(),
                                                                       },
-                                                        None => format!("{}", NOT_FOUND_MESSAGE) },
+                                                        // None => format!("{}", NOT_FOUND_MESSAGE) },
+                                                        None =>  types::Spectable::default() },
                 "Class.d" => match product_pages[count].find(Class(&profile.product_specs_identifier[..])
                                                      .descendant(Name(&profile.product_specs_idescendant[..])))
                                               .next() { Some(node) => match (profile.product_specs_key_find_by.as_str(),
                                                                              profile.product_specs_val_find_by.as_str()) {
                                                                         ("Class","Class") => { types::Spectable { key : mkvec!(node.find(Class(&profile.product_specs_keyi[..]))),
                                                                                                                   value : mkvec!(node.find(Class(&profile.product_specs_vali[..])))
-                                                                                                                 }.to_json()
+                                                                                                                 }
                                                                                              },
                                                                         ("Attr","Attr") => { types::Spectable { key : mkvec!(node.find(Attr(&profile.product_specs_keyi[..]
                                                                                                                                     ,&profile.product_specs_keyv[..]))),
                                                                                                                 value : mkvec!(node.find(Attr(&profile.product_specs_vali[..],
                                                                                                                                          &profile.product_specs_valv[..])))
-                                                                                                              }.to_json()
+                                                                                                              }
                                                                                              },
-                                                                        _ => CONFIG_ERROR_MESSAGE.to_string(),
+                                                                        _ => types::Spectable::default(),
                                                                       },
-                                                         None => format!("{}", NOT_FOUND_MESSAGE) },
+                                                        None =>  types::Spectable::default() },
                 "Class" => match product_pages[count].find(Class(&profile.product_specs_identifier[..]))
                                               .next() { Some(node) => match (profile.product_specs_key_find_by.as_str(),
                                                                              profile.product_specs_val_find_by.as_str()) {
                                                                         ("Class","Class") => { types::Spectable { key : mkvec!(node.find(Class(&profile.product_specs_keyi[..]))),
                                                                                                                   value : mkvec!(node.find(Class(&profile.product_specs_vali[..])))
-                                                                                                                 }.to_json()
+                                                                                                                 }
                                                                                              },
                                                                         ("Attr","Attr") => { types::Spectable { key : mkvec!(node.find(Attr(&profile.product_specs_keyi[..]
                                                                                                                                     ,&profile.product_specs_keyv[..]))),
                                                                                                                 value : mkvec!(node.find(Attr(&profile.product_specs_vali[..],
                                                                                                                                          &profile.product_specs_valv[..])))
-                                                                                                               }.to_json()
+                                                                                                               }
                                                                                              },
-                                                                        _ => CONFIG_ERROR_MESSAGE.to_string(),
+                                                                        _ => types::Spectable::default(),
                                                                       },
-                                                       None => format!("{}", NOT_FOUND_MESSAGE) },
+                                                        None =>  types::Spectable::default() },
                 "Attr" => match product_pages[count].find(Attr(&profile.product_specs_identifier[..],
                                                        &profile.product_specs_ivalue[..]))
                                               .next() { Some(node) => match (profile.product_specs_key_find_by.as_str(),
                                                                              profile.product_specs_val_find_by.as_str()) {
                                                                         ("Class","Class") => { types::Spectable { key : mkvec!(node.find(Class(&profile.product_specs_keyi[..]))),
                                                                                                                   value : mkvec!(node.find(Class(&profile.product_specs_vali[..])))
-                                                                                                                 }.to_json()
+                                                                                                                 }
                                                                                              },
                                                                         ("Attr","Attr") => { types::Spectable { key : mkvec!(node.find(Attr(&profile.product_specs_keyi[..]
                                                                                                                                     ,&profile.product_specs_keyv[..]))
                                                                                                                             ),
                                                                                                                 value : mkvec!(node.find(Attr(&profile.product_specs_vali[..],
                                                                                                                                          &profile.product_specs_valv[..])))
-                                                                                                               }.to_json()
+                                                                                                               }
                                                                                              },
-                                                                        _ => CONFIG_ERROR_MESSAGE.to_string(),
+                                                                        _ => types::Spectable::default(),
                                                                       },
-                                                      None => format!("{}", NOT_FOUND_MESSAGE) },
-                _ => CONFIG_ERROR_MESSAGE.to_string()
+                                                    None =>  types::Spectable::default() },
+                // _ => CONFIG_ERROR_MESSAGE.to_string()
+                _ => types::Spectable::default()
         };
-        // println!("Done with specs");
-        log!("g","SPEC");
+        log!("g","SPEC\n");
         count = count+1;
     }
   Some(listings)
@@ -440,8 +455,8 @@ fn is_http_request_working() {
 
 #[test]
 fn spectable_test() {
-    println!("{}", types::Spectable {
+    println!("{:#?}", types::Spectable {
                                     key: vec!["Display".to_string(), "Os".to_string(), "Ram".to_string()],
                                     value: vec!["14inch".to_string(), "Linux".to_string() , "2Gb".to_string()]
-                   }.to_json());
+                   });
 }

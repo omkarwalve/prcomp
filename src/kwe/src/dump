@@ -1,5 +1,27 @@
 // Some old code from nabu.rs
-
+#//====== Redundant lines from s1() =======
+    // print!("[◔] Parsing.. | ");
+    // print!("[◔] Finding root node in DOM.. | ");
+    // print!("root node found.. |");
+    // println!("{}",Color::Yellow.paint("[◔] Iterating through root nodes in document.."));
+        //println!("imageurl..");
+        //println!("pname..");
+        //println!("price..");
+#//====== Redundant lines from s2() =======
+    //pub fn s2(Some((mut listings,profile)) : Option<(Vec<types::Listing<String>>, &orel::Orel<String>)>) -> Vec<types::Listing<String>> {
+        //println!("Found the following::-----------------\n{:#?}",product_pages);
+        //panic!("------BREAKPOINT-------");
+        //let mut urls: Vec<String> = Vec::new();
+        //for listing in listings.iter() {
+            //urls.push(listing.url.clone());
+        //}
+        //let product_page = Document::from(make_request(&listing.url).unwrap().as_str());
+        //let product_page = &product_pages[count];
+        //println!("The following page is for the first product::\n-----------------\n{:#?}",product_page);
+        //panic!("------BREAKPOINT-------");
+        // println!("Done with replace");
+        // println!("Done with warranty");
+        // println!("Done with specs");
 #//====== Old if else blocks from stage_one() ======
     //if website_profile.listing_find_by == "Class"
     //{   for lnode in html_document.find(Class(&website_profile.listing_identifier[..])) {
@@ -146,3 +168,71 @@
 
                 //raw_listings.push(results);//drop(listings);
             //}).join().unwrap();
+
+#// ========= Mutex code from kwe-fetch() =========
+    //let listings: Arc<Mutex<Vec<Vec<Listing<String>>>>> = Arc::new(Mutex::new(Vec::new()));
+    //println!("Category: {}\nQuery: {}\nWebsites: {:#?}\nSite Count: {}", category,&search_query,&site_list,sites_count); // Verbose Output
+                //listng.lock().expect("Error acquiring mutex lock").push(results);
+                // log!("gl",format!("Done scraping ↣ {}", thread_name));
+#// ========= JSONize from types.rs ==========
+    // pub trait JSONize {
+    //     fn to_json(&self) -> String;
+    // }
+    // impl JSONize for Listing<String> {
+    //     fn to_json(&self) -> String {
+    //         format!("{{
+    //                     \"NAME\" : \"{}\",
+    //                     \"STORE\" : \"{}\",
+    //                     \"RET_POLICY\" : \"{}\",
+    //                     \"WARRANTY\" : \"{}\",
+    //                     \"SPECS\" :  {} ,
+    //                     \"PRICE\" : \"{}\",
+    //                     \"IMG\" : \"{}\",
+    //                     \"URL\" : \"{}\"
+    //                 }}",self.name,
+    //                       self.store,
+    //                       self.return_replace.trim(),
+    //                       self.warranty.trim(),
+    //                       { let spec = self.specs.trim().replace("\n",""); if spec.chars().count() < 2 { "\"❔\"".to_string() } else { spec } },
+    //                       self.price,
+    //                       self.img,
+    //                       self.url)
+    //     }
+    // }
+
+    // impl JSONize for Listings<String> {
+    //     fn to_json(&self) -> String {
+    //         format!("{{
+    //                     \"DATE\" : \"{}\",
+    //                     \"CATEGORY\" : \"{}\",
+    //                     \"QUERY\" : \"{}\",
+    //                     \"RESULTS\" : [ {} ]
+    //                 }}",self.date_time,
+    //                       self.category,
+    //                       self.query,
+    //                       self.listings_to_json().join(",")
+    //                       )
+    //     }
+    // }
+
+    // impl Listings<String>{ 
+    //     pub fn listings_to_json(&self) -> Vec<String> { 
+    //         let mut product_json : Vec<String> = Vec::new();
+    //         for listing in self.listings.iter() {
+    //             //for product in listing.iter() { 
+    //                 product_json.push(listing.to_json())
+                
+    //         }
+    //         product_json
+    //     }
+    // }
+
+    // impl JSONize for Spectable<String> {
+    //     fn to_json(&self) -> String {
+    //         let mut jsonized_kv_pairs: Vec<String> = Vec::new();
+    //         for i in 0..self.len() {
+    //             jsonized_kv_pairs.push(format!("\"{}\" : \"{}\"", { let x = self.key[i].replace("\"","\\\""); x.replace("\n"," ") }, { let x = self.value[i].replace("\"","\\\""); x.replace("\n"," ") } ));
+    //         }
+    //         format!("{{ {} }}", jsonized_kv_pairs.join(","))
+    //     }
+    // }

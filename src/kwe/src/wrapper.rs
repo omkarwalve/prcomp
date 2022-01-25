@@ -3,6 +3,7 @@
 //    |/\||  \/~~\|   |   |___|  \ 
 //                      src/wrapper.rs
 //                       - A wrapper for the underlying scraper.
+// #![allow(dead_code)]
 
 use std::{ fs::File , 
            io::{ BufRead, BufReader, Write },
@@ -13,12 +14,13 @@ use std::{ fs::File ,
            rc::Rc,
          };
 use crate::orel;
-use crate::nabu;
+use crate::kws;
 use crate::log;
 use crate::types::{ Listing , Listings};
 use ansi_term::Color;
 use chrono::offset::Local as time;
-use rocket::serde::json::Json;
+use actix_web::web::Json;
+// use rocket_contrib::json::Json;
 
 #[macro_export]
 macro_rules! debug {
@@ -29,15 +31,11 @@ macro_rules! debug {
 
 // == Global Variables
 const CONFIG_EXTENSION: &str = "orel";
-const NABU: &str = r#"
-███▄▄▄▄      ▄████████ ▀█████████▄  ███    █▄  
-███▀▀▀██▄   ███    ███   ███    ███ ███    ███ 
-███   ███   ███    ███   ███    ███ ███    ███ 
-███   ███   ███    ███  ▄███▄▄▄██▀  ███    ███ 
-███   ███ ▀███████████ ▀▀███▀▀▀██▄  ███    ███ 
-███   ███   ███    ███   ███    ██▄ ███    ███ 
-███   ███   ███    ███   ███    ███ ███    ███ 
- ▀█   █▀    ███    █▀  ▄█████████▀  ████████▀"#;
+const ENGINE: &str = r#"
+ __  __  __  __  __  ______  
+|  |/ / |  \/  \|  ||   ___| 
+|     \ |     /\   ||   ___| 
+|__|\__\|____/  \__||______|"#;
 
 // Common function for opening files
 fn fopen(fname: &String) -> File {
@@ -85,17 +83,17 @@ macro_rules! dir_mode {
     };
 }
 
-// Call the function as `nabu(CATEGORY,SEARCH_QUERY)`
-pub fn nabu_fetch(category: String, query: String) -> Option<crate::types::Listings<String>> {
-    println!("{}", Color::Fixed(54).paint(NABU));
+/// # KWE Fetch
+/// The main interface to the KWE(kilowog-engine).
+/// Used to fetch data from targets decided using `category` regarding `query`.
+pub fn kwe_fetch(category: &str, query: String) -> Option<crate::types::Listings<String>> {
+    println!("{}", Color::Fixed(13).paint(ENGINE));
     dir_mode!("raw",category_dir,profile_dir);
     let search_query = Arc::new(query);
-    let site_list = Arc::new(read_category(category_dir,category.as_str()));
+    let site_list = Arc::new(read_category(category_dir,category));
     let sites_count = site_list.len();
     let _n_output = Arc::new(Mutex::new(String::new()));
-    //let listings: Arc<Mutex<Vec<Vec<Listing<String>>>>> = Arc::new(Mutex::new(Vec::new()));
     let mut fetch_handle: Vec<thread::JoinHandle<()>> = Vec::new();
-    //println!("Category: {}\nQuery: {}\nWebsites: {:#?}\nSite Count: {}", category,&search_query,&site_list,sites_count); // Verbose Output
     // Spawn a thread for each concurrent website
     let (tx, rx) = channel();
     for i in 0..sites_count { 
@@ -112,29 +110,23 @@ pub fn nabu_fetch(category: String, query: String) -> Option<crate::types::Listi
                 log!("c",format!("⌛ Spawned Thread: {}", thread_name ));
                 let site_profile = read_profile(&pdir,&slist[i]);
                 let results 
-                    = nabu::stage_two(nabu::stage_one(match &nabu::make_request(&make_url(&site_profile.root_uri
+                    = kws::s2(kws::s1(match &kws::make_request(&make_url(&site_profile.root_uri
                                                                                          ,&site_profile.query_cmd
                                                                                          ,&site_profile.uri_seperator
                                                                                          ,&squery)) { 
-                                                        Err(_why) => stringify!("[x] ERROR::NO_RESPONSE:: Failed to get response from the server.\n",
-                                                                               "Reason: " + why  + "\nKind: " + why.kind()),
+                                                        Err(_why) => "[x] ERROR::NO_RESPONSE:: Failed to get response from the server.",
                                                         Ok(response) => response }
                                                      ,&site_profile));
                 tx_t.send(results)
                     .expect(&format!("{}" ,Color::Red.paint( format!("[x] ERROR::MPSC_SEND_FALIURE:T->{}:- Couldn't Send Acquired results across threads!",thread_name))));
-            log!("g",format!("Sent to MPSC channel ↣ {}", thread_name ));
-                //listng.lock().expect("Error acquiring mutex lock").push(results);
-                log!("g",format!("Done scraping ↣ {}", thread_name));
+                log!("gl",format!("Sent to MPSC channel ↣ {}", thread_name ));
             }).expect(&format!("[x] Failed to create thread ↣ {}",t_name)));
     }
     // Joining all threads to the main thread -- BLOCKING!
-    fetch_handle.into_iter()
-                .for_each(|thread| 
-                          thread.join()
-                                .expect(&format!("{}"
-                                                , Color::Fixed(202)
-                                                        .bold()
-                                                        .paint("---- ERROR::THREAD_JOIN_FAILURE ----"))));
+    fetch_handle
+    .into_iter()
+    .for_each(|thread| thread.join()
+                             .expect(&format!("{}" , Color::Fixed(202).bold().paint("---- ERROR::THREAD_JOIN_FAILURE ----"))));
 
     let mut temp: Vec<Listing<String>> = Default::default();
     for i in 0..sites_count {
@@ -150,7 +142,7 @@ pub fn nabu_fetch(category: String, query: String) -> Option<crate::types::Listi
         }
     }
 
-    log!("p","Ready to pass json");
+    log!("m","Passing JSON from KWE.Fetch");
     // # Write to file
     //write_json(category.to_string(),(&search_query).to_string(),listings.lock().unwrap().to_vec());
 

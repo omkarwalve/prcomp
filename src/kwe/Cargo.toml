@@ -1,5 +1,5 @@
 [package]
-name = "nabu"
+name = "kwe"
 version = "0.1.0"
 edition = "2018"
 authors = ["Rakshit Shetty <decentboi6969@gmail.com>"]
@@ -14,11 +14,19 @@ chrono = "0.4.19"                   # Date and time library for Rust
 futures = "0.3.17"                # An implementation of futures and streams featuring zero allocations, composability, and itera…
 reqwest = { version = "0.11.4" , default-features= false, features = [ "rustls-tls"] }                               # higher level HTTP client library
 tokio = { version = "1.11.0"  , features = [ "full" ] }                # An event-driven, non-blocking I/O platform for writing asynchronous I/O backed applications.…
-rocket = { version = "0.5.0-rc.1" , features = [ "json" ] }                # Web framework with a focus on usability, security, extensibility, and speed. 
-rocket_cors = "0.5.2"    # Cross-origin resource sharing (CORS) for Rocket.rs applications
 ansi_term = "0.12.1"           # Library for ANSI terminal colours and styles (bold, underline)
 serde_json = "1.0.68"                     # A JSON serialization file format
-serde = "1.0.130"                         # A generic serialization/deserialization framework
+serde = { version = "1.0.130" , features = ["derive"] }    # A generic serialization/deserialization framework
+
+# Actix
+actix-web = "3.3.3"        # Actix Web is a powerful, pragmatic, and extremely fast web framework for Rust
+actix-cors = "0.5.4"     # Cross-Origin Resource Sharing (CORS) controls for Actix Web
+env_logger = "0.9.0"
+
+# Rocket
+# rocket = { version = "0.4.10" }            # Web framework with a focus on usability, security, extensibility, and speed. 
+# rocket_cors = "0.5.2"    # Cross-origin resource sharing (CORS) for Rocket.rs applications
+# rocket_contrib = "0.4.10"            # Community contributed libraries for the Rocket web framework.
 
 [profile.dev.package."*"]
 opt-level = 3
