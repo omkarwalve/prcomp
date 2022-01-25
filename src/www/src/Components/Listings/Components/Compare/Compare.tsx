@@ -85,6 +85,7 @@ const Table = ({cProducts}:{cProducts: Product[]}) => {
 
     return (
             <table className="compare-table">
+                <tbody>
                 <tr className="compare-row-image">
                     <th /> {/* Top Left Blank Gap*/}
                     {
@@ -120,6 +121,7 @@ const Table = ({cProducts}:{cProducts: Product[]}) => {
                         )
                     })
                 }
+            </tbody>
             </table>
     )
 };

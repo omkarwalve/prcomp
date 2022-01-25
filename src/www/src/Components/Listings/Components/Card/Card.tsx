@@ -7,13 +7,13 @@
 //                                                
 //                                                
 
-import React from 'react';
+import React, { useContext } from 'react';
 
 // Cog Imports
 import Product, { ShortProduct } from 'Components/Listings/cogs/product';
 import periodParser from './parser';
 import { Checkbox, cmpActions } from '../Compare/Compare';
-import { Add, cartActions } from 'Components/Assets/Cart/Cart';
+import Add, { cartActions } from 'Components/Assets/Cart/Cart';
 import Store from 'Components/Assets/Stores/Stores';
 
 import { ReactComponent as Specs } from './assets/specs.svg';
@@ -23,6 +23,7 @@ import { ReactComponent as Warranty } from './assets/warranty.svg';
 
 // CSS
 import './card.css';
+import { ProductCart } from 'App';
 
 // -- Helper Functions
 /** `Ignore a Parent's Click` */
@@ -64,7 +65,7 @@ const Specifications = ({specs}: {specs: object | null}) => {
                     {
                       Object.keys(specs).map(key => {
                         return(
-                          <tr>
+                          <tr key={key.toLowerCase()}>
                             <td>{key}</td> <td>{specs[key as keyof typeof specs]}</td>
                           </tr>
                         )
@@ -85,9 +86,10 @@ interface CardProps {
   product: Product;
   layout: string;
   setCmp: React.Dispatch<cmpActions>;
-  setCartItems: React.Dispatch<cartActions>;
+  // setCartItems: React.Dispatch<cartActions>;
 }
-const Card = ({product,layout,setCmp,setCartItems}: CardProps) => {
+const Card = ({product,layout,setCmp}: CardProps) => {
+  const setCartItems = useContext(ProductCart)[1];
   if (product.price.display === "Not Available" || product.cloaked) {
     return null;
   }
@@ -111,17 +113,15 @@ const Card = ({product,layout,setCmp,setCartItems}: CardProps) => {
         //</a>
     return (
       <div className={`product-card ${layout}`} onClick={cardClick}>
-
-  {/*IMAGE*/}  <img className="product-image" src={product.img} alt="error" />
-  {/*PNAME*/}  <Name name={product.name} layout={layout} />
-  {/*RETPL*/}  <span className="product-retpolicy"><Replace  className="card-icon" />{(layout == "compact") ? periodParser(product.return_replace) : product.return_replace ?? '-'}</span>
-  {/*WARPL*/}  <span className="product-warpolicy"><Warranty className="card-icon" />{(layout == "compact") ? periodParser(product.warranty) : product.warranty ?? '-' }            </span>
+        {/*IMAGE*/}  <img className="product-image" src={product.img} alt="error" />
+        {/*PNAME*/}  <Name name={product.name} layout={layout} />
+        {/*RETPL*/}  <span className="product-retpolicy"><Replace  className="card-icon" />{(layout == "compact") ? periodParser(product.return_replace) : product.return_replace ?? '-'}</span>
+        {/*WARPL*/}  <span className="product-warpolicy"><Warranty className="card-icon" />{(layout == "compact") ? periodParser(product.warranty) : product.warranty ?? '-' }            </span>
         {/*STORE*/}  <span className="product-store" onClick={storeClick}><Store.SVG store={product.store}/></span>
-  {/*SPECS*/}  <Specifications specs={product.specs} />
-  {/* CMP */}  <Checkbox pid={product.id} setCompare={setCmp}/>
-  {/*CART */}  <Add product={product.shorten()} setCart={setCartItems} />
-  {/*PRICE*/}  <span className="product-price">{product.price.display}</span>
-
+        {/*SPECS*/}  <Specifications specs={product.specs} />
+        {/* CMP */}  <Checkbox pid={product.id} setCompare={setCmp}/>
+        {/*CART */}  <Add product={new ShortProduct(product)} setCart={setCartItems} />
+        {/*PRICE*/}  <span className="product-price">{product.price.display}</span>
       </div>
     )
   }
