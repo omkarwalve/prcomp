@@ -1,5 +1,5 @@
 import useToggle from 'hooks/toggle';
-import { Options } from './Menu';
+import { Options } from './Wrapper';
 import './panel.css';
 
 const PanelSection = ({filter}: {filter: Options}) => {

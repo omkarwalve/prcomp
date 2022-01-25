@@ -1,5 +1,5 @@
 
-import { Options } from './Menu';
+import { Options } from './Wrapper';
 import { SortOption } from 'Components/Listings/cogs/sort';
 
 /** ### Filters Discrete Menu [*Small screens*]
