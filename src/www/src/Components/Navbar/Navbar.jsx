@@ -5,7 +5,7 @@
 //  \_)__)\_/\_/ \__/ (____/\_/\_/(__\_)
   
 // Library Imports
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import {useHistory} from 'react-router-dom';
 
 // Component Imports
@@ -13,16 +13,17 @@ import Select from 'Components/Assets/Select/Select';
 import Search from 'Components/Assets/Search/Search';
 import Tooltip from 'Components/Assets/Tooltip/Tooltip';
 import Menu from 'Components/Assets/Menu/Menu';
-import Cart from 'Components/Assets/Cart/Cart';
+import { Cart } from 'Components/Assets/Cart/Cart';
 import './navbar.css';
 // SVG Imports
 import { ReactComponent as Kilowog } from "assets/kilowog.svg";
 import { ReactComponent as Analytics } from "./assets/analytics.svg";
 //import { ReactComponent as Cart } from "./assets/cart.svg";
 import { ReactComponent as User } from "./assets/user.svg";
+import { ProductCart } from 'App';
 
 
-function Navbar({cartItems}) {
+function Navbar() {
     // Search Bar Group
     const categories = [
         {
@@ -38,6 +39,7 @@ function Navbar({cartItems}) {
             value:'fur'
         }
     ]
+    const cartItems = useContext(ProductCart)[0];
     const history = useHistory();
     const [selectedCategory,setSelectedCategory] = useState(null);
     const [searchWord,setSearchWord] = useState('');
@@ -108,4 +110,4 @@ function Navbar({cartItems}) {
     )
 }
 
-export default Navbar
+export default memo(Navbar);
