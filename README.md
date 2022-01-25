@@ -1,27 +1,55 @@
-# prcomp
+# prcomp/ui-2
 
-A website which compares product prices,stat,store services,etc
-
-Have you ever come across the problem of finding the best possible offer on a product?
-Isn't it hard to surf through plethora of online shopping websites just to find the best balance between price and services offered(warranty,returns,shipping,etc) while also trying to dodge despicable seller practices(**huge discounts = no after-sales services**..sound familiar?)
-
-This project aims to solve this exact problem by enhancing on the problem of a standard shopping comparsison website by not only offering listings by price but also be able to see the services provided by the particular seller.
+A feature branch looking to redefine the user interface of the original kilowog.
 
 ## Progress Tracker
 
-- [x] **Frontend**
-    - [x] Design
-    - [x] HTML/CSS Implementation
-    - [x] ReactJS Framework
-- [x] **Backend**
-    - [x] Scraper
-        - [x] Configuration Model(*OREL*)
-        - [x] Website Profiling
-            - [x] Stage One Profiling
-            - [x] Stage Two Profiling
-        - [x] Stage One Scraping
-        - [x] Stage Two Scraping
-        - [x] JSON Output
-        - [x] Asynchronization+Multithreading
-    - [x] Server
-        - [x] Actix/Rocket Implementation
+- [ ] **Frontend**
+  
+  - [x] Homepage
+  
+  - [x] Navigation Bar
+  
+  - [x] Footer
+  
+  - [ ] Listings
+    
+    - [ ] Layouts
+      
+      - [ ] Big
+      
+      - [x] Compact
+      
+      - [x] Flow
+      
+      - [ ] Versus
+    
+    - [ ] Filters + Sorting
+      
+      - [x] Price
+      
+      - [x] Store
+      
+      - [ ] Brand
+      
+      - [ ] Keyword
+    
+    - [x] Compare Window
+    
+    - [ ] Details Pane
+  
+  - [ ] Logic
+    
+    - [x] Products 
+    
+    - [ ] Fetch
+
+- [ ]  **Backend**
+  
+  - [ ] Freezing Bug
+  
+  - [ ] `Mutex` -> `MPSC` migration
+  
+  - [ ] Fully Async Mode
+
+
