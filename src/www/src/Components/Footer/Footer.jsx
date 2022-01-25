@@ -24,7 +24,7 @@ const Block = ({items}) => {
                 items.map( item => {
                     var liObj = Object.values(item);
                     return (
-                        <li className="service-item">
+                        <li key={ liObj[0].toLowerCase() } className="service-item">
                             <a href={liObj[1]}>{liObj[0]}</a>
                         </li>
                 )})
@@ -49,7 +49,7 @@ const Footer = () => {
             href : '#'
         },
         {
-            label: 'Contact Us',
+            label: 'About Us',
             href : '#'
         },
     ];
