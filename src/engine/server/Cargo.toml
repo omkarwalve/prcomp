@@ -1,0 +1,17 @@
+[package]
+name = "server"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+kws = { path = "../kws" }
+
+# Actix
+actix-web = "3.3.3"  # Actix Web is a powerful, pragmatic, and extremely fast web framework for Rust
+actix-cors = "0.5.4" # Cross-Origin Resource Sharing (CORS) controls for Actix Web
+env_logger = "0.9.0" # Logger for Actix
+
+# lazy_static
+lazy_static = "1.4.0" # A macro for declaring lazily evaluated statics in Rust.

@@ -1,0 +1,31 @@
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+ENVIRONMENT_DIR = "env"
+ENGINE_BINARY = "server"
+
+[tasks.build]
+workspace = false
+description = "Build the entire KWE"
+# category = "Build"
+command = "cargo"
+args = ["build","--${@}"]
+
+[tasks.clean]
+workspace = false
+description = "Cleanup older engine binary from env"
+ignore_errors = true
+command = "rm"
+args = ["${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/${ENVIRONMENT_DIR}/${ENGINE_BINARY}"]
+
+[tasks.move]
+workspace = false
+description = "Move the engine binary into the environment."
+dependencies = ["build","clean"]
+command = "cp"
+args = ["${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/target/${@}/${ENGINE_BINARY}","${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/${ENVIRONMENT_DIR}/"]
+
+[tasks.start]
+workspace = false
+description = "Initialize the Engine Server."
+dependencies = ["move"]
+command = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/${ENVIRONMENT_DIR}/${ENGINE_BINARY}"
