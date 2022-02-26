@@ -1,0 +1,20 @@
+
+        /// ## Assignment `:: vars`
+        /// Used to specify variables.
+        /// 
+        /// e.g. Specifying the scraping type:
+        /// ```
+        /// type = "web/HTML"
+        /// ```
+        /// e.g: 
+        /// ```
+        /// type = "web/js"
+        /// ```
+        ASSIGNMENT{lhs: T, rhs: T},
+
+
+        /// - A `BATCH` type:
+        /// ```
+        /// P1 :: [ name = (Attr,data-name,pname)
+        ///         , uri = (Name,a) ];
+        /// ```

@@ -8,6 +8,7 @@ mod parse;
 mod fetch;
 mod vars;
 mod types;
+mod test;
 
 // Re-exports
 pub use fetch::{
@@ -16,4 +17,4 @@ pub use fetch::{
     Request,
     Schema,
 };
-pub use types::Map;
+pub use types::{Map,Tree};

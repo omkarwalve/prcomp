@@ -1,0 +1,2 @@
+S1 :: [ name = (Class,pcontainer) => [ uri = (Name,a)
+                                     , price = (Attr,data-name,product-price) ] ];

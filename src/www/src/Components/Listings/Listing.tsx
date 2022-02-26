@@ -65,9 +65,9 @@ const Listing = () => {
 
   const [compareSet,setCompare] = useReducer(cmpReducer,new Set());
   const GET = useCallback(async () => {
-    Fetch.GET(
+    // Fetch.GET(
     // Fetch.cGET(
-    // Fetch.mockGET(
+    Fetch.mockGET(
       category ?? '',
       search ?? '',
       {
@@ -77,7 +77,7 @@ const Listing = () => {
         products: setProducts,
         setCache: setCache,
       },
-      false
+      // false
     );
   },[category,search]);
 

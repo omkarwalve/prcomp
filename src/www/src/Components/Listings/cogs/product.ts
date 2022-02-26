@@ -50,8 +50,8 @@ class Product {
       this.store = object.store;
       this.return_replace = (object.warranty != "❔") ? object.return_replace : null;
       this.warranty = (object.warranty != "❔") ? object.warranty : null;
-      this.specs = (object.specs != "❔") ? object.specs : null;
-        // ? JSON.parse(object.specs) || console.info("OBJECT.SPECS:- ", object.specs)
+      this.specs = (object.specs != "❔") ? JSON.parse(object.specs) || console.info("OBJECT.SPECS:- ", object.specs): void(0);
+      // ? object.specs : null;
       this.price = new Price(object.price);
       this.img = object.img;
       this.url = object.url;
