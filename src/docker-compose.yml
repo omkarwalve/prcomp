@@ -5,7 +5,7 @@ services:
     container_name: React
     command: sh -c "cd www && yarn && yarn start"
     depends_on:
-      nabu:
+      kwe:
         condition: service_started
     ports:
       - 6969:3000
@@ -15,19 +15,19 @@ services:
     working_dir: /www
     volumes:
       - ./:/www
-  nabu:
+  kwe:
     image: rustlang/rust:nightly-slim
-    command: sh -c "cd nabu && CARGO_HOME=./Cargo.deps cargo run"
-    container_name: nabu
+    command: sh -c "cd kwe && CARGO_HOME=./Cargo.deps cargo run"
+    container_name: kwe
     networks:
       - bNet
     #expose: 
     #- 8000
     ports:
       - 8000:8000
-    working_dir: /nabu
+    working_dir: /kwe
     volumes:
-      - ./:/nabu
+      - ./:/kwe
 
 networks:
   fNet:
