@@ -16,7 +16,7 @@ import { ReactComponent as Garden } from './assets/gar.svg';
 import { ReactComponent as Toys } from './assets/toy.svg';
 import { ReactComponent as Books } from './assets/bok.svg';
 // Css File
-import './catalog.css';
+import './Catalog.css';
 
 function Catalog () {
   const catalog = [

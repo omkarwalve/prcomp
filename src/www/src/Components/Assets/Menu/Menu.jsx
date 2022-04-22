@@ -60,12 +60,13 @@ const Menu = ({menuSwitch,items}) => {
         <div className={`menu-container ${menuSwitch ? 'active' : 'inactive'}`}>
             <ul type="none" className="menu-list">
                 {
-                    items.map(({text,uri}) => {
+                    items.map(({text,uri,action}) => {
                         return(
                             <li className="menu-option">
-                                <a href={uri} rel="no-referrer">
-                                    {text}
-                                </a>
+								{(action) 
+									? ( <button rel="no-referrer" onClick={action}> {text} </button>) 
+									: ( <a href={uri} rel="no-referrer"> {text} </a>) 
+								}
                             </li>
                         )
                     })

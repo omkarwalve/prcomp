@@ -14,13 +14,13 @@ import Search from 'Components/Assets/Search/Search';
 import Tooltip from 'Components/Assets/Tooltip/Tooltip';
 import Menu from 'Components/Assets/Menu/Menu';
 import { Cart } from 'Components/Assets/Cart/Cart';
-import './navbar.css';
+import './Navbar.css';
 // SVG Imports
 import { ReactComponent as Kilowog } from "assets/kilowog.svg";
 import { ReactComponent as Analytics } from "./assets/analytics.svg";
 //import { ReactComponent as Cart } from "./assets/cart.svg";
 import { ReactComponent as User } from "./assets/user.svg";
-import { ProductCart } from 'App';
+import { ProductCart, ShowLogin } from 'App';
 
 
 function Navbar() {
@@ -57,7 +57,8 @@ function Navbar() {
     const menu = [
         {
             text: 'My Account',
-            uri : '#'
+            uri : '#',
+			action: useContext(ShowLogin)
         },
         {
             text: 'Browse History',

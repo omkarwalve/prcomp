@@ -66,3 +66,12 @@
     text-decoration: none;
     color: var(--menu-items-color);
 }
+
+.menu-option button {
+	appearance: none;
+	background-color: transparent;
+	padding: 0;
+	border: none;
+    text-decoration: none;
+    color: var(--menu-items-color);
+}

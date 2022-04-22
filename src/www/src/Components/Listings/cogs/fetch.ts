@@ -5,7 +5,7 @@ import Product from './product';
 
 
 // Cached product feed
-import sample_json from './razer_laptop.json';
+import sample_json from './mock.json';
 
 // /**
 //  * Assigns a value to the property if the property exists for the object.
@@ -43,7 +43,7 @@ interface setters {
 
 class Fetch {
   static #SERVER_URL = 'http://localhost:8000';
-  static #TIMEOUT = 30;
+  static #TIMEOUT = 60;
   static #FETCH_OPTIONS: RequestInit = {
     method: 'GET',
     mode: 'cors',

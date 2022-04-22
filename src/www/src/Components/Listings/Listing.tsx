@@ -22,7 +22,7 @@ import Crash from 'Components/Assets/Crash/Crash';
 import Loading from 'Components/Assets/Loading/Loading';
 
 // CSS
-import './listing.css';
+import './Listing.css';
 import Sort, { SortOptions } from './cogs/sort';
 import useToggle from 'hooks/toggle';
 

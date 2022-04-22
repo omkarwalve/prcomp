@@ -15,7 +15,7 @@ import { ReactComponent as Kilowog } from 'assets/kilowog.svg';
 import { ReactComponent as Globe } from './assets/globe.svg';
 
 // CSS
-import './footer.css';
+import './Footer.css';
 
 const Block = ({items}) => {
     return(

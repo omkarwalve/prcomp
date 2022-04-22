@@ -32,11 +32,11 @@ const ignoreClick = (e: React.MouseEvent<any>) => { e.stopPropagation(); }
 // -- Helper Components
 const Name = ({name,layout}: {name: string,layout: string}) => {
   let maxchar: number;
-    (layout == "compact") 
+    (layout === "compact") 
       ? maxchar = 59
-      : (layout == "flow" || layout == "versus") 
+      : (layout === "flow" || layout === "versus") 
         ? maxchar = 105 
-        : (layout == "big") 
+        : (layout === "big") 
           ? maxchar = 208 
           : maxchar = 0
   
@@ -85,7 +85,7 @@ const Specifications = ({specs}: {specs: object | null}) => {
 interface CardProps {
   product: Product;
   layout: string;
-  setCmp: React.Dispatch<cmpActions>;
+  setCmp?: React.Dispatch<cmpActions>;
   // setCartItems: React.Dispatch<cartActions>;
 }
 const Card = ({product,layout,setCmp}: CardProps) => {
@@ -115,11 +115,11 @@ const Card = ({product,layout,setCmp}: CardProps) => {
       <div className={`product-card ${layout}`} onClick={cardClick}>
         {/*IMAGE*/}  <img className="product-image" src={product.img} alt="error" />
         {/*PNAME*/}  <Name name={product.name} layout={layout} />
-        {/*RETPL*/}  <span className="product-retpolicy"><Replace  className="card-icon" />{(layout == "compact") ? periodParser(product.return_replace) : product.return_replace ?? '-'}</span>
-        {/*WARPL*/}  <span className="product-warpolicy"><Warranty className="card-icon" />{(layout == "compact") ? periodParser(product.warranty) : product.warranty ?? '-' }            </span>
+        {/*RETPL*/}  <span className="product-retpolicy"><Replace  className="card-icon" />{(layout === "compact") ? periodParser(product.return_replace) : product.return_replace ?? '-'}</span>
+        {/*WARPL*/}  <span className="product-warpolicy"><Warranty className="card-icon" />{(layout === "compact") ? periodParser(product.warranty) : product.warranty ?? '-' }            </span>
         {/*STORE*/}  <span className="product-store" onClick={storeClick}><Store.SVG store={product.store}/></span>
         {/*SPECS*/}  <Specifications specs={product.specs} />
-        {/* CMP */}  <Checkbox pid={product.id} setCompare={setCmp}/>
+        {/* CMP */}  {(setCmp) && (<Checkbox pid={product.id} setCompare={setCmp}/>)}
         {/*CART */}  <Add product={new ShortProduct(product)} setCart={setCartItems} />
         {/*PRICE*/}  <span className="product-price">{product.price.display}</span>
       </div>
