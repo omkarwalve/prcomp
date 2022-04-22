@@ -28,7 +28,7 @@ use ansi_term::Color;
 //use serde_json;
 
 const ALT_CHAR: char = '|';
-const WAIT_FOR_RESPONSE_TIMEOUT : Duration = Duration::from_secs(5);
+const WAIT_FOR_RESPONSE_TIMEOUT : Duration = Duration::from_secs(10);
 const USER_AGENT_POOL : [&'static str; 7] = [
                                               "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.3 Safari/605.1.15",
                                               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
@@ -132,6 +132,7 @@ pub fn s1<'t>(html_response: &str, website_profile: &'t orel::Orel<String>) -> O
     if listing_iterator.is_some() {
         log!("c","Iterating through matched nodelist..");
         for lnode in listing_iterator.unwrap() {
+            log!("c","Within nodelist..");
             let mut plisting: types::Listing<String> = Default::default();
             //-- URL
             plisting.url

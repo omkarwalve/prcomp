@@ -116,7 +116,7 @@ pub fn kwe_fetch(category: &str, query: String) -> Option<crate::types::Listings
                                                                                          ,&squery)) { 
                                                         Err(_why) => "[x] ERROR::NO_RESPONSE:: Failed to get response from the server.",
                                                         Ok(response) => response }
-                                                     ,&site_profile));
+                                                     , &site_profile));
                 tx_t.send(results)
                     .expect(&format!("{}" ,Color::Red.paint( format!("[x] ERROR::MPSC_SEND_FALIURE:T->{}:- Couldn't Send Acquired results across threads!",thread_name))));
                 log!("gl",format!("Sent to MPSC channel ↣ {}", thread_name ));

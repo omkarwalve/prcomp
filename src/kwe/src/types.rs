@@ -56,17 +56,32 @@ impl Serialize for Spectable<String> {
     }
 }
 
-impl Responder for Listings<String> {
-    type Error = Error;
-    type Future = Ready<Result<HttpResponse,Error>>;
-    fn respond_to(self,_req: &HttpRequest) -> Self::Future {
-        let body = serde_json::to_string(&self).expect("Failed to stringify `Listings<String>`");
-        ready(Ok(HttpResponse::Ok()
-                .content_type("application/json")
-                .body(body)
-            ))
-    }
-}
+// Actix-web 3.*.* code
+// impl Responder for Listings<String> {
+//     type Error = Error;
+//     type Future = Ready<Result<HttpResponse,Error>>;
+//     fn respond_to(self,_req: &HttpRequest) -> Self::Future {
+//         let body = serde_json::to_string(&self).expect("Failed to stringify `Listings<String>`");
+//         ready(Ok(HttpResponse::Ok()
+//                 .content_type("application/json")
+//                 .body(body)
+//             ))
+//     }
+// }
+
+// Actix-web 4.*.* code
+// impl Responder for Listings<String> {
+//     // type Error = Error;
+//     // type Future = Ready<Result<HttpResponse,Error>>;
+//     type Body = 
+//     fn respond_to(self,_req: &HttpRequest) -> HttpResponse<Self::Body> {
+//         let body = serde_json::to_string(&self).expect("Failed to stringify `Listings<String>`");
+//         ready(Ok(HttpResponse::Ok()
+//                 .content_type("application/json")
+//                 .body(body)
+//             ))
+//     }
+// }
 impl Default for Listings<String> {
     fn default() -> Self {
         let def: String = String::from("-");

@@ -1,20 +1,23 @@
 //   __  __  __  __  __  ______  
 //  |  |/ / |  \/  \|  ||   ___| 
 //  |     \ |     /\   ||   ___| 
-//  |__|\__\|____/  \__||______| 
-//                   src/main.rs                              
+//  |__|\__\|____/  \__||______| src/main.rs                              
 //       Kilowog's engine server.
+#![allow(dead_code)]
+#![feature(async_closure)]
 mod orel;
 mod kws;
 mod log;
 mod types;
 mod wrapper;
+mod db;
 
 use ansi_term::Color;
 use actix_web::{App,Error,get,HttpResponse,HttpServer,middleware::Logger,Responder,web};
 use env_logger::Env;
 use actix_cors::Cors;
-use std::{env,fs::File, io::{Read,Cursor}};
+use serde_json::json;
+use std::{env,fs::File, io::Read};
 // use types::{Listing,Listings};
 
 const ROUTES: [&'static str; 3] = ["elx","clo","fur"];
@@ -38,16 +41,18 @@ async fn root() -> impl Responder {
 /// ## KWE `:: API`
 /// The `api` for users who'd rather need `json`.
 #[get("/api/{category}/{query}")]
-async fn api(web::Path((category,query)): web::Path<(String,String)>) -> Result<impl Responder,Error> {
-    Ok(format!("Finding {} in {}",query,category))
+// async fn api(web::Path((category,query)): web::Path<(String,String)>) -> Result<impl Responder,Error> {
+async fn api(path: web::Path<(String,String)>) -> Result<impl Responder,Error> {
+    Ok(format!("Finding {} in {}",path.0,path.1))
 }
 
 /// ## KWE `:: Search`
 /// The main route that handles search requests on `kilowog`.
 #[get("/{category}/{query}")]
-async fn search(web::Path((category,query)): web::Path<(String,String)>) -> Option<impl Responder> {
-    match ROUTES.iter().any(|&s| s == &category) {
-        true => Some(match wrapper::kwe_fetch(&category, query.replace('+'," ")) {
+// async fn search(web::Path((category,query)): web::Path<(String,String)>) -> Option<impl Responder> {
+async fn search(path: web::Path<(String,String)>) -> Option<impl Responder> {
+    match ROUTES.iter().any(|&s| s == &path.0) {
+        true => Some(match wrapper::kwe_fetch(&path.0, path.1.replace('+'," ")) {
                     Some(results) => {log!("c","Sending JSON..."); web::Json(results)},
                     None => web::Json(Default::default())
                 }),
@@ -55,9 +60,26 @@ async fn search(web::Path((category,query)): web::Path<(String,String)>) -> Opti
     }
 }
 
-async fn preflight(web::Path((category,query)): web::Path<(String,String)>) -> impl Responder {
-    HttpResponse::Ok().body("")
+/// ## KWE `:: Database`
+/// The main endpoint to get user's click data
+#[get("/clk/{uid}")]
+async fn get_clk(uid: web::Path<String>) -> impl Responder {
+    match uid.parse::<i32>() {
+        Ok(id) => 
+        match db::init().await {
+            Ok(client) => match db::get_clicks(id, client).await {
+                Ok(list) => web::Json( json!({ "code": 200, "success": true , "data": list }) ),
+                Err(y) => web::Json(json!({ "code": 1, "success": false, "reason": y.to_string() })), 
+            },
+            Err(y) => web::Json( json!({ "code": 2, "success": false, "reason": y.to_string() }) )
+        },
+        Err(y) => web::Json( json!({ "code": 0, "success": false, "reason": format!("{} :: {}",y.to_string(), uid) }) )
+    }
 }
+
+// async fn preflight(web::Path((category,query)): web::Path<(String,String)>) -> impl Responder {
+//     HttpResponse::Ok().body("")
+// }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -70,6 +92,7 @@ async fn main() -> std::io::Result<()> {
                     .service(search).wrap(Cors::permissive()) 
             )
             .service(api)
+            .service(get_clk)
             .wrap(Logger::default())
     })
     .shutdown_timeout(10)

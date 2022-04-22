@@ -1,7 +1,7 @@
 [package]
 name = "kwe"
 version = "0.1.0"
-edition = "2018"
+edition = "2021"
 authors = ["Rakshit Shetty <decentboi6969@gmail.com>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -18,10 +18,14 @@ ansi_term = "0.12.1"           # Library for ANSI terminal colours and styles (b
 serde_json = "1.0.68"                     # A JSON serialization file format
 serde = { version = "1.0.130" , features = ["derive"] }    # A generic serialization/deserialization framework
 
+# MongoDB
+mongodb = "2.2.0"                        # The official MongoDB driver for Rust
+
 # Actix
-actix-web = "3.3.3"        # Actix Web is a powerful, pragmatic, and extremely fast web framework for Rust
-actix-cors = "0.5.4"     # Cross-Origin Resource Sharing (CORS) controls for Actix Web
+actix-web = "4.0.1"        # Actix Web is a powerful, pragmatic, and extremely fast web framework for Rust
+actix-cors = "0.6.1"     # Cross-Origin Resource Sharing (CORS) controls for Actix Web
 env_logger = "0.9.0"
+
 
 # Rocket
 # rocket = { version = "0.4.10" }            # Web framework with a focus on usability, security, extensibility, and speed. 
