@@ -1,9 +1,5 @@
 use std::{
-    error::Error,
-    collections::HashSet,
     fmt::{self,Display,Debug},
-    rc::Rc,
-    cell::RefCell,
 };
 
 //  ┌┬┐┌─┐┌─┐
@@ -62,51 +58,4 @@ impl<K: Eq + Display,V: Clone + Display> Display for Map<K,V> {
         write!(f,"{{\n\t{}\n}}",maps.join("\n"))
     }
 
-}
-
-//  ┌┬┐┬─┐┌─┐┌─┐
-//   │ ├┬┘├┤ ├┤ 
-//   ┴ ┴└─└─┘└─┘
-/// ## Tree
-/// A simple tree type(arena style).
-pub struct Tree<T> {
-    nodes: Vec<Node<T>>,
-    pub depth: usize,
-}
-impl<T> Tree<T> {
-    pub fn new() -> Self {
-        Self {
-            nodes: vec![],
-            depth: 0
-        }
-    }
-}
-/// ## Node
-/// A node of an arena styled `Tree`.
-pub struct Node<N> {
-    idx: usize,
-    parent: Option<usize>,
-    prev: Option<usize>,
-    next: Option<usize>,
-    children: HashSet<usize>,
-    data: N,
-    // chilren: Option<Rc<RefCell<Box<Node<N>>>>>,
-}
-impl<N> Node<N> {
-    pub fn new(data: N,idx: usize) -> Self {
-        Self {
-            idx,
-            parent: None,
-            prev: None,
-            next: None,
-            children: HashSet::new(),
-            data
-        }
-    }
-    pub fn add_child(&mut self,child_idx: usize) -> Result<(),&str> {
-        match self.children.insert(child_idx) {
-            true => Ok(()),
-            false => Err("Child already present"),
-        }
-    }
 }
