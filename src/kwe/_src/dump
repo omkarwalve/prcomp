@@ -1,0 +1,238 @@
+// Some old code from nabu.rs
+#//====== Redundant lines from s1() =======
+    // print!("[◔] Parsing.. | ");
+    // print!("[◔] Finding root node in DOM.. | ");
+    // print!("root node found.. |");
+    // println!("{}",Color::Yellow.paint("[◔] Iterating through root nodes in document.."));
+        //println!("imageurl..");
+        //println!("pname..");
+        //println!("price..");
+#//====== Redundant lines from s2() =======
+    //pub fn s2(Some((mut listings,profile)) : Option<(Vec<types::Listing<String>>, &orel::Orel<String>)>) -> Vec<types::Listing<String>> {
+        //println!("Found the following::-----------------\n{:#?}",product_pages);
+        //panic!("------BREAKPOINT-------");
+        //let mut urls: Vec<String> = Vec::new();
+        //for listing in listings.iter() {
+            //urls.push(listing.url.clone());
+        //}
+        //let product_page = Document::from(make_request(&listing.url).unwrap().as_str());
+        //let product_page = &product_pages[count];
+        //println!("The following page is for the first product::\n-----------------\n{:#?}",product_page);
+        //panic!("------BREAKPOINT-------");
+        // println!("Done with replace");
+        // println!("Done with warranty");
+        // println!("Done with specs");
+#//====== Old if else blocks from stage_one() ======
+    //if website_profile.listing_find_by == "Class"
+    //{   for lnode in html_document.find(Class(&website_profile.listing_identifier[..])) {
+
+            //if website_profile.product_url_find_by == "Class" {
+                //plisting.url = format!("{}{}",&website_profile.root_uri,lnode.find(Class(&website_profile.product_url_identifier[..]))
+                                                                             //.next().unwrap().attr("href").unwrap().to_string());
+            //} else {
+                //plisting.url = format!("{}{}",&website_profile.root_uri,lnode.find(Attr(&website_profile.product_url_identifier[..],
+                                                                                        //&website_profile.product_url_ivalue[..]))
+                                                                             //.next().unwrap().attr("href").unwrap().to_string());
+            //}
+
+            //if website_profile.product_name_find_by == "Class" {
+                //plisting.name = lnode.find(Class(&website_profile.product_url_identifier[..]))
+                                     //.next().unwrap().text();
+            //} else {
+                //plisting.name = lnode.find(Attr(&website_profile.product_name_identifier[..],
+                                                //&website_profile.product_name_ivalue[..]))
+                                     //.next().unwrap().text();
+            //}
+
+            //if website_profile.product_price_find_by == "Class.d" {
+                //plisting.price = match lnode.find(Class(&website_profile.product_price_identifier[..])
+                                                   //.descendant(Name(&website_profile.product_price_ivalue[..])))
+                                            //.next() { Some(node) => node.text(), 
+                                                      //None => "Not Available".to_string(), };
+            //} else {
+                //plisting.price = match lnode.find(Attr(&website_profile.product_price_identifier[..], &website_profile.product_price_ivalue[..]))
+                                                   //.next() { Some(node) => node.text(),
+                                                             //None => "Not Available".to_string(), };
+            //}
+
+#//====== Old if else blocks from stage_two() ======
+        //if profile.product_return_policy_find_by == "Attr.d" {
+        //listing.return_replace = product_page.find(Attr(&profile.product_return_policy_identifier[..],
+                                                        //&profile.product_return_policy_ivalue[..])
+                                                   //.descendant(Name(&profile.product_return_policy_idescendant[..])))
+                                             //.next().unwrap().text();
+        //}
+        //else if profile.product_return_policy_find_by == "Class.d" {
+        //listing.return_replace = product_page.find(Class(&profile.product_return_policy_identifier[..])
+                                                   //.descendant(Name(&profile.product_return_policy_idescendant[..])))
+                                             //.next().unwrap().text();
+        //}
+        //else if profile.product_return_policy_find_by == "Class" {
+        //listing.return_replace = product_page.find(Class(&profile.product_return_policy_identifier[..]))
+                                             //.next().unwrap().text();
+        //}
+        //else if profile.product_return_policy_find_by == "Attr" {
+        //listing.return_replace = product_page.find(Attr(&profile.product_return_policy_identifier[..],
+                                                        //&profile.product_return_policy_ivalue[..]))
+                                             //.next().unwrap().text();
+        //}
+
+
+        //if profile.product_warranty_find_by == "Attr.d" { 
+        //listing.warranty = product_page.find(Attr(&profile.product_warranty_identifier[..],
+                                                  //&profile.product_warranty_ivalue[..])
+                                              //.descendant(Name(&profile.product_warranty_idescendant[..])))
+                                       //.next().unwrap().text();
+        //}
+        //else if profile.product_warranty_find_by == "Class.d" { 
+        //listing.warranty = product_page.find(Class(&profile.product_warranty_identifier[..])
+                                               //.descendant(Name(&profile.product_warranty_idescendant[..])))
+                                       //.next().unwrap().text();
+        //}
+        //else if profile.product_warranty_find_by == "Class" {
+        //listing.warranty = product_page.find(Class(&profile.product_warranty_identifier[..]))
+                                       //.next().unwrap().text();
+        //}
+        //else if profile.product_warranty_find_by == "Attr" {
+        //listing.warranty = product_page.find(Attr(&profile.product_warranty_identifier[..],
+                                                  //&profile.product_warranty_ivalue[..]))
+                                       //.next().unwrap().text();
+        //}
+
+
+        //if profile.product_specs_find_by == "Attr.d" { 
+        //listing.specs = product_page.find(Attr(&profile.product_specs_identifier[..],
+                                               //&profile.product_specs_ivalue[..])
+                                           //.descendant(Name(&profile.product_specs_idescendant[..])))
+                                    //.next().unwrap().html();
+        //}
+        //else if profile.product_specs_find_by == "Class.d" { 
+        //listing.specs = product_page.find(Class(&profile.product_specs_identifier[..])
+                                             //.descendant(Name(&profile.product_specs_idescendant[..])))
+                                    //.next().unwrap().html();
+        //}
+        //else if profile.product_specs_find_by == "Class" {
+        //listing.specs = product_page.find(Class(&profile.product_specs_identifier[..]))
+                                    //.next().unwrap().html();
+        //}
+        //else if profile.product_specs_find_by == "Attr" {
+        //listing.specs = product_page.find(Attr(&profile.product_specs_identifier[..],
+                                               //&profile.product_specs_ivalue[..]))
+                                    //.next().unwrap().html();
+        //}
+# some code from linear specs grabber
+            //listing.specs
+                //= match profile.product_specs_find_by.as_str() {
+                    //"Attr.d" => match product_pages[count].find(Attr(&profile.product_specs_identifier[..],
+                                                             //&profile.product_specs_ivalue[..])
+                                                        //.descendant(Name(&profile.product_specs_idescendant[..])))
+                                                  //.next() { Some(node) => node.html().replace("\"","\\\""),
+                                                            //None => format!("{}", NOT_FOUND_MESSAGE) },
+                    //"Class.d" => match product_pages[count].find(Class(&profile.product_specs_identifier[..])
+                                                         //.descendant(Name(&profile.product_specs_idescendant[..])))
+                                                   //.next() { Some(node) => node.html().replace("\"","\\\""),
+                                                             //None => format!("{}", NOT_FOUND_MESSAGE) },
+                    //"Class" => match product_pages[count].find(Class(&profile.product_specs_identifier[..]))
+                                                 //.next() { Some(node) => node.html().replace("\"","\\\""),
+                                                           //None => format!("{}", NOT_FOUND_MESSAGE) },
+                    //"Attr" => match product_pages[count].find(Attr(&profile.product_specs_identifier[..],
+                                                           //&profile.product_specs_ivalue[..]))
+                                                //.next() { Some(node) => node.html().replace("\"","\\\""),
+                                                          //None => format!("{}", NOT_FOUND_MESSAGE) },
+                    //_ => CONFIG_ERROR_MESSAGE.to_string()
+            //};
+
+// Ancient code from main.rs for non-threaded stage::one
+    //println!("Website Configuration is:\n{:#?}",read_profiles(read_category(category)));
+    //println!("{}",scrape::make_request("https://www.amazon.in/s?k=mac+m1").unwrap());
+    //scrape::stage_one(&scrape::make_request("https://www.flipkart.com/search?q=m1%20macbook").unwrap());
+    //scrape::stage_one(&scrape::make_request("https://www.myntra.com/kurta-for-men?plaEnabled=false&rf=Price%3A319.0_2240.0_319.0%20TO%202240.0").unwrap());
+    //scrape::stage_one(&scrape::make_request("https://www.myntra.com").unwrap());
+    //scrape::stage_one(&scrape::make_request("https://www.ajio.com/search/?text=black+sneakers").unwrap());
+    //scrape::stage_one(&scrape::make_request("https://www.urbanladder.com/products/search?utf8=%E2%9C%93&keywords=queen+size+bed").unwrap());
+// Ancient code from main.rs to read multiple profiles at the same time - single threaded
+      // Function to read the websites profiles
+      fn read_profiles(profile_folder: &str, website_list: Vec<String>)  -> Vec<orel::Orel<String>> {
+          let mut nabu_index: Vec<orel::Orel<String>> = Vec::new();
+          for website_file in website_list.iter() {
+              //println!("Website Configuration is:\n{:?}",orel::parse_orel(&format!("{}/{}",PROFILE_DIR,website_file))); // VERBOSE
+              nabu_index.push(orel::parse_orel(&format!("{}/{}",profile_folder,website_file)));
+          }
+          nabu_index
+      }
+// Ancient code to verify configuration in wrapper
+                //println!("☀ Configuration:");
+                //site_profile.pretty_print();
+                //let mut raw_listings = listng.lock().unwrap();
+                //println!("{}",make_url(&site_profile.root_uri,&site_profile.query_cmd,&site_profile.uri_seperator,&squery));
+
+                //raw_listings.push(results);//drop(listings);
+            //}).join().unwrap();
+
+#// ========= Mutex code from kwe-fetch() =========
+    //let listings: Arc<Mutex<Vec<Vec<Listing<String>>>>> = Arc::new(Mutex::new(Vec::new()));
+    //println!("Category: {}\nQuery: {}\nWebsites: {:#?}\nSite Count: {}", category,&search_query,&site_list,sites_count); // Verbose Output
+                //listng.lock().expect("Error acquiring mutex lock").push(results);
+                // log!("gl",format!("Done scraping ↣ {}", thread_name));
+#// ========= JSONize from types.rs ==========
+    // pub trait JSONize {
+    //     fn to_json(&self) -> String;
+    // }
+    // impl JSONize for Listing<String> {
+    //     fn to_json(&self) -> String {
+    //         format!("{{
+    //                     \"NAME\" : \"{}\",
+    //                     \"STORE\" : \"{}\",
+    //                     \"RET_POLICY\" : \"{}\",
+    //                     \"WARRANTY\" : \"{}\",
+    //                     \"SPECS\" :  {} ,
+    //                     \"PRICE\" : \"{}\",
+    //                     \"IMG\" : \"{}\",
+    //                     \"URL\" : \"{}\"
+    //                 }}",self.name,
+    //                       self.store,
+    //                       self.return_replace.trim(),
+    //                       self.warranty.trim(),
+    //                       { let spec = self.specs.trim().replace("\n",""); if spec.chars().count() < 2 { "\"❔\"".to_string() } else { spec } },
+    //                       self.price,
+    //                       self.img,
+    //                       self.url)
+    //     }
+    // }
+
+    // impl JSONize for Listings<String> {
+    //     fn to_json(&self) -> String {
+    //         format!("{{
+    //                     \"DATE\" : \"{}\",
+    //                     \"CATEGORY\" : \"{}\",
+    //                     \"QUERY\" : \"{}\",
+    //                     \"RESULTS\" : [ {} ]
+    //                 }}",self.date_time,
+    //                       self.category,
+    //                       self.query,
+    //                       self.listings_to_json().join(",")
+    //                       )
+    //     }
+    // }
+
+    // impl Listings<String>{ 
+    //     pub fn listings_to_json(&self) -> Vec<String> { 
+    //         let mut product_json : Vec<String> = Vec::new();
+    //         for listing in self.listings.iter() {
+    //             //for product in listing.iter() { 
+    //                 product_json.push(listing.to_json())
+                
+    //         }
+    //         product_json
+    //     }
+    // }
+
+    // impl JSONize for Spectable<String> {
+    //     fn to_json(&self) -> String {
+    //         let mut jsonized_kv_pairs: Vec<String> = Vec::new();
+    //         for i in 0..self.len() {
+    //             jsonized_kv_pairs.push(format!("\"{}\" : \"{}\"", { let x = self.key[i].replace("\"","\\\""); x.replace("\n"," ") }, { let x = self.value[i].replace("\"","\\\""); x.replace("\n"," ") } ));
+    //         }
+    //         format!("{{ {} }}", jsonized_kv_pairs.join(","))
+    //     }
+    // }

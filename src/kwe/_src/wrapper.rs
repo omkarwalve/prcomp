@@ -110,13 +110,13 @@ pub fn kwe_fetch(category: &str, query: String) -> Option<crate::types::Listings
                 log!("c",format!("⌛ Spawned Thread: {}", thread_name ));
                 let site_profile = read_profile(&pdir,&slist[i]);
                 let results 
-                    = tokio::runtime::Runtime::new().expect("tokio::runtime_spawn_failure").block_on(kws::s2(kws::s1(match &kws::make_request(&make_url(&site_profile.root_uri
+                    = kws::s2(kws::s1(match &kws::make_request(&make_url(&site_profile.root_uri
                                                                                          ,&site_profile.query_cmd
                                                                                          ,&site_profile.uri_seperator
                                                                                          ,&squery)) { 
                                                         Err(_why) => "[x] ERROR::NO_RESPONSE:: Failed to get response from the server.",
                                                         Ok(response) => response }
-                                                     , &site_profile)));
+                                                     , &site_profile));
                 tx_t.send(results)
                     .expect(&format!("{}" ,Color::Red.paint( format!("[x] ERROR::MPSC_SEND_FALIURE:T->{}:- Couldn't Send Acquired results across threads!",thread_name))));
                 log!("gl",format!("Sent to MPSC channel ↣ {}", thread_name ));
@@ -156,36 +156,73 @@ pub fn kwe_fetch(category: &str, query: String) -> Option<crate::types::Listings
                  })
 }
 
-pub async fn kwe_multi_fetch(category: &str, queries: Vec<String>) -> Option<crate::types::Listings<String>> {
+
+pub fn kwe_multi_fetch(category: &str, queries: Vec<String>) -> Option<crate::types::Listings<String>> {
     println!("{}", Color::Fixed(13).paint(ENGINE));
     dir_mode!("raw",category_dir,profile_dir);
-    let search_query = queries;
-    let site_list = read_category(category_dir,category);
+    let search_query = Arc::new(queries);
+    let site_list = Arc::new(read_category(category_dir,category));
     let sites_count = site_list.len();
-    let mut all_resps = Vec::new();
+    // let _n_output = Arc::new(Mutex::new(String::new()));
+    let mut fetch_handle: Vec<thread::JoinHandle<()>> = Vec::new();
+    // Spawn a thread for each concurrent website
+    let (tx, rx) = channel();
     for i in 0..sites_count { 
-        let site_profile = read_profile(&profile_dir,&site_list[i]);
-        for q in &search_query {
-            match kws::s2(kws::s1(
-                    match &kws::make_request( &make_url(&site_profile.root_uri ,&site_profile.query_cmd ,&site_profile.uri_seperator ,q)) { 
-                        Err(_why) => "[x] ERROR::NO_RESPONSE:: Failed to get response from the server.",
-                        Ok(response) => response 
-                    }, &site_profile)).await {
-                    Some(list) => all_resps.extend(list),
-                    None => {},
+        let tx_t = tx.clone();
+        let squery = Arc::clone(&search_query);
+        let slist = Arc::clone(&site_list);
+        //let listng = Arc::clone(&listings);
+        let pdir = Arc::clone(&profile_dir);
+        let t_name = Rc::new(slist[i].clone().replace(".orel","").to_uppercase());
+        let w_thread = thread::Builder::new().name(t_name.to_string());
+        fetch_handle.push(
+            w_thread.spawn( move || {
+                let thread_name = thread::current().name().expect("Failed to get current thread name").to_string();
+                log!("c",format!("⌛ Spawned Thread: {}", thread_name ));
+                let site_profile = read_profile(&pdir,&slist[i]);
+                let mut all_resps: Vec<Option<Vec<Listing<String>>>> = Vec::new();
+                for q in &(*squery) {
+                    all_resps.push(
+                        kws::s2(kws::s1(
+                            match &kws::make_request( &make_url(&site_profile.root_uri ,&site_profile.query_cmd ,&site_profile.uri_seperator ,q)) { 
+                                Err(_why) => "[x] ERROR::NO_RESPONSE:: Failed to get response from the server.",
+                                Ok(response) => response 
+                            }
+                            , &site_profile)));
                 }
+                tx_t.send(all_resps)
+                    .expect(&format!("{}" ,Color::Red.paint( format!("[x] ERROR::MPSC_SEND_FALIURE:T->{}:- Couldn't Send Acquired results across threads!",thread_name))));
+            }).expect(&format!("[x] Failed to create thread ↣ {}",t_name)));
+    }
+    // Join worker threads
+    fetch_handle
+    .into_iter()
+    .for_each(|thread| thread.join()
+                             .expect(&format!("{}" , Color::Fixed(202).bold().paint("---- ERROR::THREAD_JOIN_FAILURE ----"))));
+
+    let mut temp: Vec<Listing<String>> = Default::default();
+    for i in 0..sites_count {
+        let temp_raw = rx.recv_timeout( Duration::from_secs(60) )
+                        .expect(&format!("{}",Color::Red.paint("[x] ERROR::MPSC_RECIEVE_FALIURE:- Couldn't Receive acquired results on main thread!")));
+        for l in temp_raw {
+            if l.is_some() {
+                if i == 0 {
+                    temp = l.unwrap();
+                }
+                else {
+                    temp.extend(l.unwrap());
+                }
+            }
         }
     }
 
     log!("m","Passing JSON from KWE.Multi.Fetch");
 
-    Some( 
-        Listings { date_time: format!("{}", time::now()),
+    Some(Listings{ date_time: format!("{}", time::now()),
                    category: category.to_string(),
                    query: (&search_query).join(" + ").to_string(),
-                   listings: all_resps
-        }
-    )
+                   listings: temp
+                 })
 }
 
 fn write_json(cat: String, query: String, lst: Vec<Listing<String>> ) -> () {

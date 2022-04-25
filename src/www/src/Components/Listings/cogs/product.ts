@@ -29,6 +29,7 @@ class Price {
  * @property {string} return_replace - Product Returns Policy
  * @property {string} warranty       - Product Warranty Policy
  * @property {string} specs          - Product Image URL
+ * @property {string} order          - Relevance Order
  * @property {string} image          - Product Image URL
  * @property {string} price          - Product Price
  * @property {string} url            - Product URL
@@ -39,6 +40,7 @@ class Product {
     readonly return_replace: string | null;
     readonly warranty: string | null;
     readonly specs: object | null;
+    readonly order: number | null;
     readonly price: Price;
     readonly img: string;
     readonly url: string;
@@ -54,6 +56,8 @@ class Product {
 			// ? JSON.parse(object.specs) || console.info("OBJECT.SPECS:- ", object.specs)
 			? object.specs
 			: null
+	  
+	  this.order = object.order ? object.order : null;
       this.price = new Price(object.price);
       this.img = object.img;
       this.url = object.url;

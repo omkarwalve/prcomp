@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Product from "Components/Listings/cogs/product";
 import Card from "Components/Listings/Components/Card/Card";
-import mock_json from './iphone.json';
+import mock_json from './mock.json';
 
 const RECOMMENDER_URI = "http://localhost:8051/u/";
 

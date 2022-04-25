@@ -306,7 +306,7 @@ async fn make_requests(urls: Vec<String>) -> Result<Vec<select::document::Docume
 
 /// ## Stage Two :: `Internally Async`
 /// Level 2 depth data collection.
-pub async fn s2(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String>)>) -> Option<Vec<types::Listing<String>>> {
+pub fn s2(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String>)>) -> Option<Vec<types::Listing<String>>> {
     log!("c",r#"
   ____  ____ 
  / ___)(___ \
@@ -315,7 +315,7 @@ pub async fn s2(tupie : Option<(Vec<types::Listing<String>>, &orel::Orel<String>
   if tupie.is_some() {
     let (mut listings, profile ) = tupie?;
     let urls: Vec<String> = listings.iter().map(|listing| listing.url.clone()).collect();
-    let product_pages = make_requests(urls).await.ok()?;
+    let product_pages = tokio::runtime::Runtime::new().ok()?.block_on(make_requests(urls)).ok()?;
     let mut count: usize = 0;
     for listing in listings.iter_mut() {
         println!("S2 ↣ {} ↣ {}...", &listing.store, &listing.name[..25]);

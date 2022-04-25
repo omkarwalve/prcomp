@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useState, useContext, createContext } from 'react';
+import React, { useReducer, useEffect, useState, createContext } from 'react';
 
 import './App.css';
 import Home from './Components/Home/Home';
@@ -20,6 +20,7 @@ function App() {
   /** `Cart Global State` */
   const [cart, setCart] = useReducer(cartReducer, new Set());
   const [login, toggleLogin ] = useToggle(false);
+  const [isLoggedIn, toggleLoggedIn ]  = useToggle(false);
   useObserve(cart,"cart");
 
   const [winWidth, setWinWidth] = useState<number>(window.innerWidth);
@@ -37,7 +38,7 @@ function App() {
       <Viewport.Provider value={[winWidth,winHeight]}>
         <ProductCart.Provider value={[cart,setCart]}>
 		<ShowLogin.Provider value={toggleLogin}>
-		{(login) && (<Login />)}
+		{(login) && (<Login isLoggedIn={isLoggedIn} toggleLoggedIn={toggleLoggedIn} />)}
         <Router>
             <Navbar />
               <main id="main-content">

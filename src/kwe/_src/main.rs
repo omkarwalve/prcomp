@@ -90,7 +90,7 @@ async fn msearch(category: web::Path<String>, body: web::Json<MSearch>) -> impl 
     // web::Json( json!({ "qrs" : body.queries.join("|") }) )
     let cat = category.into_inner();
     match ROUTES.iter().any(|&s| s == cat) {
-        true => Some(match wrapper::kwe_multi_fetch(&cat, body.queries.clone()).await {
+        true => Some(match wrapper::kwe_multi_fetch(&cat, body.queries.clone()) {
                     Some(results) => {log!("c","Sending JSON..."); web::Json(results)},
                     None => web::Json(Default::default())
                 }),
