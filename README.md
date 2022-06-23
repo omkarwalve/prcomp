@@ -16,7 +16,7 @@ A feature branch looking to redefine the user interface of the original kilowog.
     
     - [ ] Layouts
       
-      - [ ] Big
+      - [x] Big
       
       - [x] Compact
       
@@ -51,5 +51,3 @@ A feature branch looking to redefine the user interface of the original kilowog.
   - [ ] `Mutex` -> `MPSC` migration
   
   - [ ] Fully Async Mode
-
-

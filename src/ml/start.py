@@ -2,6 +2,7 @@ import flask
 import urllib3
 import requests
 from flask import Flask, request
+from flask_cors import CORS,cross_origin
 import json
 
 from relv import rvs
@@ -10,6 +11,7 @@ from recom import genValidQueries,rcSort
 # Setup flask server
 app = flask.Flask(__name__)
 http = urllib3.PoolManager()
+CORS(app)
 devServerDomain = 'http://localhost:8000'
 
 @app.route("/")
@@ -40,8 +42,11 @@ def mQuery_result(querylist):
 
 @app.route('/rlv/<query>')
 def rlv_sort(query):
-    json = KWE(query)
-    return rvs(json)
+    # json = KWE(query)
+    # return rvs(json)
+    with open('../kwe_responses/jblFlip.json', 'r') as f:
+        # return json.load(f)
+        return rvs(json.load(f))
 
 def KWE(qry):
    return requests.get(f'{devServerDomain}/q/elx/{qry}').json()

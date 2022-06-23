@@ -27,3 +27,6 @@ yarn-error.log*
 
 # obisidian
 **obsidian**
+
+#Pycache
+**__pycache__**/**

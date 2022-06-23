@@ -9,7 +9,7 @@ function Homepage() {
 		<>
 			<Catalog />
 			<hr className='seperator'/>
-			<MiniListings uid={0} />
+			<MiniListings uid={1001} />
 		</>
     );
 }

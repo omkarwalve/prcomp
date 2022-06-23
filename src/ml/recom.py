@@ -1,4 +1,3 @@
-import collections.abc
 import math
 import json
 import numpy
@@ -7,9 +6,9 @@ import nltk
 import re
 from itertools import combinations
 from sklearn.feature_extraction.text import TfidfVectorizer
+from relv import rvs as format_json
 from nltk.corpus import stopwords
 from sklearn.metrics.pairwise import cosine_similarity
-from relv import rvs as format_json
 
 def genValidQueries(clicks):
     wordfreqs = {}

@@ -42,7 +42,8 @@ interface setters {
   }
 
 class Fetch {
-  static #SERVER_URL = 'http://localhost:8000';
+  // static #SERVER_URL = 'http://localhost:8000';
+  static #SERVER_URL = 'http://localhost:8051';
   static #TIMEOUT = 60;
   static #FETCH_OPTIONS: RequestInit = {
     method: 'GET',
@@ -115,7 +116,7 @@ class Fetch {
 //   * @param {object} setterz - The object containing all the setters update on different stages of GET.
 //   * @param {boolean} shouldReturn - If should return the response.
    */
-  static async GET(category: string,query: string,setterz: setters,shouldReturn: boolean) {
+  static async GET(category: string,query: string,setterz: setters, shouldReturn: boolean) {
     var setCrashed  = setterz.crashed ;
     var setLoading  = setterz.loading ;
     var setProducts = setterz.products;
@@ -126,7 +127,8 @@ class Fetch {
       headers: { "Content-Type": "application/json" }
     };
     try {
-        const response = await fetch(`${Fetch.#SERVER_URL}/q/${category}/${query.split(/\s+/).join('+')}`
+        // const response = await fetch(`${Fetch.#SERVER_URL}/q/${category}/${query.split(/\s+/).join('+')}`
+        const response = await fetch(`${Fetch.#SERVER_URL}/rlv/${query.split(/\s+/).join('+')}`
                                     , Fetch.#FETCH_OPTIONS)
                                     .then(response => { console.log("GET:- ",response); return response.json(); });
         if (response?.listings) {

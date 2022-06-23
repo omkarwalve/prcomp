@@ -3,7 +3,7 @@ import Product from "Components/Listings/cogs/product";
 import Card from "Components/Listings/Components/Card/Card";
 import mock_json from './mock.json';
 
-const RECOMMENDER_URI = "http://localhost:8051/u/";
+const RECOMMENDER_URI = "http://localhost:8051/rc";
 
 function ftimeout(ms: number) {
      let controller = new AbortController();
@@ -43,7 +43,7 @@ function MiniListings({uid}:{uid: number}) {
 	const [recommended, setRecommended] = useState<Product[]|undefined>([]);
 	useEffect(() => { 
 		async function worker() {
-			await mock_recommend(uid).then((pdx) => { console.log(pdx); setRecommended(pdx);}) 
+			await recommend(uid).then((pdx) => { setRecommended(pdx);}) 
 		}
 		worker()
 	}, [uid]);
