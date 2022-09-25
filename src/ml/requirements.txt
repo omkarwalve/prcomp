@@ -1,0 +1,8 @@
+flask
+urllib3
+requests
+pandas
+flask_cors
+numpy
+scikit-learn
+nltk

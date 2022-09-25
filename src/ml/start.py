@@ -26,6 +26,7 @@ def getRecommendations(uid):
     user_clicks = []
     if response.status_code == 200:
         # user clicks stored in user_clicks
+        print(response.json())
         user_clicks = response.json()['data']
 
     x = genValidQueries(user_clicks)
@@ -42,11 +43,11 @@ def mQuery_result(querylist):
 
 @app.route('/rlv/<query>')
 def rlv_sort(query):
-    # json = KWE(query)
-    # return rvs(json)
-    with open('../kwe_responses/jblFlip.json', 'r') as f:
+     json = KWE(query)
+     return rvs(json)
+    #with open('./jblFlip.json', 'r') as f:
         # return json.load(f)
-        return rvs(json.load(f))
+     #   return rvs(json.load(f))
 
 def KWE(qry):
    return requests.get(f'{devServerDomain}/q/elx/{qry}').json()

@@ -44,7 +44,7 @@ interface setters {
 class Fetch {
   // static #SERVER_URL = 'http://localhost:8000';
   static #SERVER_URL = 'http://localhost:8051';
-  static #TIMEOUT = 60;
+  static #TIMEOUT = 90;
   static #FETCH_OPTIONS: RequestInit = {
     method: 'GET',
     mode: 'cors',

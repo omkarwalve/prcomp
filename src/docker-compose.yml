@@ -28,6 +28,19 @@ services:
     working_dir: /kwe
     volumes:
       - ./:/kwe
+  #pyml:
+   # image: python:buster
+    #command: sh -c "cd ml && python3 -m ensurepip && pip3 install -r requirements.txt && python3 start.py"
+    #container_name: MLSERVER
+    #networks:
+     # - bNet
+    #expose: 
+     #- 8051
+    #ports:
+     # - 8051:8051
+    #working_dir: /ml
+    #volumes:
+     # - ./:/ml
 
 networks:
   fNet:
