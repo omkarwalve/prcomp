@@ -44,7 +44,7 @@ Once the new backend is brought up to speed, the project will be ready for live 
 
 ---
 
-### Technologies...
+### Technologies..
 ##### Frontend
 - <u>Design</u>: Figma
 - <u>UI</u>: React + TypeScript + HTML + CSS
