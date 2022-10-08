@@ -1,9 +1,9 @@
 
-//   __ _   __   _  _  ____   __   ____ 
+//   __ _   __   _  _  ____   __   ____
 //  (  ( \ / _\ / )( \(  _ \ / _\ (  _ \
 //  /    //    \\ \/ / ) _ (/    \ )   /
 //  \_)__)\_/\_/ \__/ (____/\_/\_/(__\_)
-  
+
 // Library Imports
 import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import {useHistory} from 'react-router-dom';
@@ -35,7 +35,7 @@ function Navbar() {
             value:'clo'
         },
         {
-            key:'Furniture',
+            key:'Fresh',
             value:'fur'
         }
     ]
@@ -61,18 +61,15 @@ function Navbar() {
 			action: useContext(ShowLogin)
         },
         {
-            text: 'Browse History',
+            text: 'Wishlist',
             uri : '#'
         },
-        {
-            text: 'Watchlist Analytics',
-            uri : '#'
-        },
+
     ]
     const menuRef = useRef(null);
     const [isMenuActive,setMenuActive] = useState(false);
     const onMenuClick = () => setMenuActive(!isMenuActive);
-    
+
     // on Mount useEffect for Menu event listener
     const pageClickEvent = (e) => {
         if (menuRef.current && !menuRef.current.contains(e.target) ) {
@@ -80,16 +77,17 @@ function Navbar() {
         }
     }
     useEffect(()=>{
-        //if (isMenuActive) { document.addEventListener('click',pageClickEvent); }
-        //return () => { document.removeEventListener('click', pageClickEvent); }
-        (isMenuActive) 
+        // if (isMenuActive) { document.addEventListener('click',pageClickEvent); }
+        // return () => { document.removeEventListener('click', pageClickEvent); }
+        (isMenuActive)
             ? document.addEventListener('click',pageClickEvent)
             : document.removeEventListener('click', pageClickEvent)
     },[isMenuActive]);
     return (
         <div className="navbar">
             <div className="nav-flex">
-                <Kilowog className="website-logo" onClick={() => history.push('/')} />
+              <h1>Comparbro</h1>
+
                 <div className="search-bar-group">
                     <Select items={categories} optionHolder={setSelectedCategory} />
                     <Search queryHolder={setSearchWord} />

@@ -1,5 +1,5 @@
-//    ___       _           _   
-//   / __| ___ | | ___  __ | |_ 
+//    ___       _           _
+//   / __| ___ | | ___  __ | |_
 //   \__ \/ -_)| |/ -_)/ _||  _|
 //   |___/\___||_|\___|\__| \__|
 //
@@ -15,16 +15,16 @@ const Select = ({items,optionHolder,position}) => {
 
     const selectRef = useRef(null);
     const [isSelectActive, setSelectActive] = useState(false);
-    const [option, setOption] = 
+    const [option, setOption] =
         useState(() => {
             var obj = Object.values(items[0]);
-             return { 
+             return {
                       key  : obj[0],
                       value: obj[1]
                     }
         });
     const onSelectClick = () => {
-        setSelectActive(!isSelectActive); 
+        setSelectActive(!isSelectActive);
         //console.info("Hey Clicker!");
     }
 
@@ -69,7 +69,7 @@ const Select = ({items,optionHolder,position}) => {
                                 value={obj[1]}
                                 onClick={changeOption}>
                              {obj[0]}
-                            </li> 
+                            </li>
                         )
                 })
                 }

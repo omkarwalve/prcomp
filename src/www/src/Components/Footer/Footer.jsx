@@ -1,7 +1,7 @@
-//   _______  _______  _______  _______  _______  ______   
-//  |       ||       ||       ||       ||       ||    _ |  
-//  |    ___||   _   ||   _   ||_     _||    ___||   | ||  
-//  |   |___ |  | |  ||  | |  |  |   |  |   |___ |   |_||_ 
+//   _______  _______  _______  _______  _______  ______
+//  |       ||       ||       ||       ||       ||    _ |
+//  |    ___||   _   ||   _   ||_     _||    ___||   | ||
+//  |   |___ |  | |  ||  | |  |  |   |  |   |___ |   |_||_
 //  |    ___||  |_|  ||  |_|  |  |   |  |    ___||    __  |
 //  |   |    |       ||       |  |   |  |   |___ |   |  | |
 //  |___|    |_______||_______|  |___|  |_______||___|  |_|
@@ -53,24 +53,7 @@ const Footer = () => {
             href : '#'
         },
     ];
-    const businessOptions = [
-        {
-            label: 'Setup Your Store',
-            href : '#'
-        },
-        {
-            label: 'Affiliate Plans',
-            href : '#'
-        },
-        {
-            label: 'Using our API',
-            href : '#'
-        },
-        {
-            label: 'Have an issue?',
-            href : '#'
-        },
-    ];
+
     const languages = [
         {
             label: 'English',
@@ -105,14 +88,13 @@ const Footer = () => {
     return (
         <footer className="footer-section">
             <div className="footer-content">
-                <Kilowog />
+                <h2> Comparbro</h2>
                 <span className="region-selection">
                     <Globe />
                     <Select items={regions} optionHolder={setRegion} position="top" />
                 </span>
                 <Select items={languages} optionHolder={setLang} position="top" />
-                <Block items={customerOptions}/>
-                <Block items={businessOptions}/>
+                <Block  items={customerOptions}/>
             </div>
         </footer>
     )

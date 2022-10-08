@@ -49,7 +49,7 @@ function Navbar() {
             <div className="navBar">
                 <div className="nav-flex">
                     <div className="logo-section" onClick={() => history.push('/')}>
-                        <img className="logo" src="/_kilowog_.svg" alt=""/>
+                        <img className="logo" src="cb.png" alt=""/>
                     </div>
                     <div className="search-bar-group">
                         <div className="category-selection">
@@ -74,7 +74,7 @@ function Navbar() {
                             <span className="tooltip_msg">Empty</span>
                         </div>
                          <div className="dropMenu">
-                         <FaUserCircle className="user-icon"/> 
+                         <FaUserCircle className="user-icon"/>
                              <div className="dropMenuContent">
                                  <a href="#">My Account</a>
                                  <a href="#">Orders</a>

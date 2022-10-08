@@ -4,7 +4,7 @@ import './home.css'
 
 
 function Homepage() {
-  document.title = "kilowog - The Product Comparison Engine";
+  document.title = "Comparbro- The Product Comparison Engine";
   return (
 		<>
 			<Catalog />

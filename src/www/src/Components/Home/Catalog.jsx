@@ -1,4 +1,4 @@
-//    ___   __  ____  __   __     __    ___ 
+//    ___   __  ____  __   __     __    ___
 //   / __) / _\(_  _)/ _\ (  )   /  \  / __)
 //  ( (__ /    \ )( /    \/ (_/\(  O )( (_ \
 //   \___)\_/\_/(__)\_/\_/\____/ \__/  \___/
@@ -20,35 +20,35 @@ import './Catalog.css';
 
 function Catalog () {
   const catalog = [
-    {  
+    {
       name: 'Electronics',
       image: <Electronics />
     },
-    {  
+    {
       name: 'Furniture',
       image: <Furniture />
     },
-    {  
+    {
       name: 'Fashion',
       image: <Fashion />
     },
-    {  
+    {
       name: 'Grocery',
       image: <Grocery />
     },
-    {  
+    {
       name: 'Stationary',
       image: <Stationary />
     },
-    {  
-      name: 'Garden',
+    {
+      name: 'Service',
       image: <Garden />
     },
-    {  
+    {
       name: 'Toys',
       image: <Toys />
     },
-    {  
+    {
       name: 'Books',
       image: <Books />
     },
